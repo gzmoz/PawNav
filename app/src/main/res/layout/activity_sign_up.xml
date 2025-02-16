@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".SignUpActivity">
+
+        <TextView
+            android:id="@+id/createAccountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserratregular"
+            android:text="Create an account"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/uploadPhotoText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.767" />
+
+        <TextView
+            android:id="@+id/uploadPhotoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="@font/montserratextralight"
+            android:text="Upload a photo (optional)"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/uploadPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/uploadPhoto"
+            android:onClick="addPhotoImage"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginBottom="44dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/addphotocircle"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
+        />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="338dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/signUpButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <EditText
+                android:id="@+id/signUpNameText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_text_view"
+                android:drawableStart="@drawable/nameicon"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:fontFamily="@font/montserratregular"
+                android:hint="Name"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/signUpEmailText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_text_view"
+                android:drawableStart="@drawable/emailicon"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:fontFamily="@font/montserratregular"
+                android:hint="E-mail"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/signUpPasswordText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_text_view"
+                android:drawableStart="@drawable/passwordicon"
+                android:drawableEnd="@drawable/showicon"
+                android:drawablePadding="10dp"
+                android:ems="10"
+                android:fontFamily="@font/montserratregular"
+                android:hint="Password"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:onClick="signUpClicked"
+            android:id="@+id/signUpButton"
+            android:layout_width="174dp"
+            android:layout_height="59dp"
+            android:layout_marginBottom="84dp"
+            android:fontFamily="@font/montserratregular"
+            android:text="Create Account"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:backgroundTint="@color/deepSlateBlue"
+            app:cornerRadius="26dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

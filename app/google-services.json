@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "710322551525",
+    "project_id": "kotlininstaclone-e119b",
+    "storage_bucket": "kotlininstaclone-e119b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710322551525:android:6fe8e33f75a4e9f23c320c",
+        "android_client_info": {
+          "package_name": "com.example.pawnav"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXA6Io_eqc_iAW6kU5sTu0v6rXVZbbYAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
