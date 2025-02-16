@@ -11,7 +11,7 @@ PawNav is a mobile application designed to help pet owners quickly and efficient
 - **Firebase** - For user authentication, data storage, and push notifications
 - **Google Maps API** - To integrate mapping and location-based features
 
-## 📷 Screenshots
+## 📷 Screenshots (Design Mockups)
 
 *![1](https://github.com/user-attachments/assets/7a83b582-2006-435a-b469-22a788d666f1)
 ![2](https://github.com/user-attachments/assets/8e5ffcb8-210c-48d5-a234-b1d0a48c5c53)
