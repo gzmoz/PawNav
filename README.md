@@ -14,9 +14,10 @@ PawNav is a mobile application designed to help pet owners quickly and efficient
 ## 📷 Screenshots (Design Mockups)
 
 *
-![3](https://github.com/user-attachments/assets/f4e4b33d-9572-4610-b9a9-d4fca4c6698a)
 ![1](https://github.com/user-attachments/assets/5d65868d-c6a8-484a-83a6-951eca0a2ea5)
 ![2](https://github.com/user-attachments/assets/f0f3bdb9-1134-46a6-961b-589bc7bce189)
+![congrats](https://github.com/user-attachments/assets/5c9fd714-4eb6-46f6-b169-a94de2d1c022)
+![3](https://github.com/user-attachments/assets/f4e4b33d-9572-4610-b9a9-d4fca4c6698a)
 ![4](https://github.com/user-attachments/assets/2edf010c-0a2b-4949-b611-bc57fef5a1b7)
 ![5](https://github.com/user-attachments/assets/c581d585-ef7a-4caf-a357-1d4d0f670a6d)
 ![6](https://github.com/user-attachments/assets/68a6fa15-6e33-4199-a67d-fee5a1cae65c)
