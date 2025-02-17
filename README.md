@@ -24,3 +24,14 @@ PawNav is a mobile application designed to help pet owners quickly and efficient
 ![7](https://github.com/user-attachments/assets/17f353e5-1f5a-474a-8616-906ae5d21603)
 ![8](https://github.com/user-attachments/assets/7983c6a7-68a0-4e4e-834b-55fec0a0212a)
 ![9](https://github.com/user-attachments/assets/e2b774eb-6704-4012-b25f-b409de3cb791)
+
+
+## 🚀 Features
+
+- 📍 **Interactive Map with Pet Listings:** Users can browse and post lost pet notices directly on an interactive map, making it easier to locate missing pets within a specific area.
+- 🔎 **Advanced Filtering Options:** Filter pet listings based on animal type, breed, status (lost, found, adoption), and location to refine search results efficiently.
+- 📨 **In-App Messaging System:** Connect with pet owners or finders directly through the app’s chat system to share updates and coordinate meetups.
+- 📍 **Google Maps Integration:** Navigate to reported pet locations and search for nearby adoption opportunities.
+- 🐾 **Pet Profile Management:** Create and edit pet profiles, including medical history, distinguishing features, and owner details.
+- 📊 **Community Engagement:** Engage with pet finders and adopters through comments and direct messages to enhance the search process.
+- 🏡 **Adoption Listings:** Explore adoption opportunities for pets in need of a new home, helping rescued animals find loving families.
