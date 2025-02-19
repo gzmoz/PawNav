@@ -4,12 +4,17 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <!--define the camera hardware-->
-    <!--android:required="false" allows to devices to load the even if it has no camera -->
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CROP_IM" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- define the camera hardware -->
+    <!-- android:required="false" allows to devices to load the even if it has no camera -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PawNav"
         tools:targetApi="31">
+        <activity
+            android:name=".CropProfilePhotoActivity"
+            android:exported="false" />
         <activity
             android:name=".UploadProfilePhotoActivity"
             android:exported="false" />

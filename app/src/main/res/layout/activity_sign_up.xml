@@ -51,7 +51,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/addphotocircle"
             app:shapeAppearanceOverlay="@style/RoundedImageView"
-        />
+            />
 
 
         <LinearLayout

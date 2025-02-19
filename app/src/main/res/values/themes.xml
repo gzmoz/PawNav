@@ -1,23 +1,31 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PawNav" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- Uygulamanın Ana Teması -->
+    <style name="Theme.PawNav" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Genel Arka Plan Rengi (Beyaz) -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
+
+        <!-- Renk Ayarları -->
+        <item name="colorPrimary">@color/deepSlateBlue</item>
+        <item name="colorPrimaryContainer">@color/deepSlateBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/deepSlateBlue</item>
+        <item name="colorSecondaryContainer">@color/deepSlateBlue</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Durum Çubuğu ve Navigasyon Bar Renkleri -->
+        <item name="android:statusBarColor">@color/darkPlum</item>
+        <item name="android:navigationBarColor">@color/deepSlateBlue</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- Durum çubuğu simgelerini koyu yapar -->
     </style>
 
-    <style name="Theme.PawNav" parent="Base.Theme.PawNav" />
-
-    <!--SplashScreen-->
-    <style name="Theme.PawNav.Splash" parent= "Theme.SplashScreen">
+    <!-- Splash Screen Teması -->
+    <style name="Theme.PawNav.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.PawNav</item>
-    </style>
-
-    <style name="Theme.YourApp" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/deepSlateBlue</item>
-        <item name="colorPrimaryVariant">@color/deepSlateBlue</item>
-        <item name="colorAccent">@color/deepSlateBlue</item>
     </style>
 
 </resources>

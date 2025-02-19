@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,13 +27,14 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-
+/**
+ * handles selecting a profile picture from the gallery or camera.
+ */
 class UploadProfilePhotoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUploadProfilePhotoBinding
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
-    private val selectedPicture : Bitmap? = null
     private var requestingCamera = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +51,9 @@ class UploadProfilePhotoActivity : AppCompatActivity() {
         registerLauncher()
     }
 
+    /**
+     * opens the gallery and request permission to select an image.
+     */
     fun addFromGalleryClicked(view: View) {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
@@ -96,77 +101,79 @@ class UploadProfilePhotoActivity : AppCompatActivity() {
                 activityResultLauncher.launch(intentToGallery)
             }
         }
-
-
-
     }
 
-     private fun registerLauncher(){
+    /**
+     * registers activity launchers for gallery and camera selection.
+     */
+    private fun registerLauncher(){
 
-         // activityResultLauncher -> is used to start an activity and get a result.
-         //callback --> is used to start an activity and get the result
-         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        // activityResultLauncher -> is used to start an activity and get a result.
+        //callback --> is used to start an activity and get the result
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val imageUri = result.data?.data
+                val imageBitmap = result.data?.extras?.get("data") as? Bitmap
 
-             if (result.resultCode == RESULT_OK && result.data != null) { //if the user made a succesfull operation and it turned to be a successfull result
-                 val imageUri = result.data?.data //check if a photo is selected from the gallery.
-                 if (imageUri != null) {
-                     //TO GALLERY
-                     //create an intent to sent the photo to SignUpActivity
-                     val resultIntent = Intent()
-                     resultIntent.putExtra("selectedImage", imageUri.toString())
-                     setResult(RESULT_OK, resultIntent)
-                     finish()
-                 }else { //if imageUri == null, the used didn't select a photo from gallery. so check if there is any photo comes from camera
-                     //take the captured photo as a Bitmap
-                     val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-                     if (imageBitmap != null) {
-                         //save the bitmap and take URI
-                         val savedImageUri = saveBitmapToFile(imageBitmap)
-                         //create an intent to sent the photo to SignUpActivity
-                         val resultIntent = Intent()
-                         resultIntent.putExtra("capturedImageUri", savedImageUri.toString())
-                         setResult(RESULT_OK, resultIntent)
-                         finish()
-                     } else {
-                         Toast.makeText(this, "Kamera hatası: Fotoğraf alınamadı!", Toast.LENGTH_LONG).show()
-                     }
-                 }
-             }
-         }
+                val selectedUri = imageUri ?: imageBitmap?.let { saveBitmapToFile(it) }
 
-         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ result ->
-             if(result){
-                 //permission granted
-                 if(requestingCamera){
-                     val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                     activityResultLauncher.launch(intentToCamera)
-                 }else{
-                     val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                     activityResultLauncher.launch(intentToGallery)
-                 }
-             }else{
-                 //permission denied
-                 Toast.makeText(this@UploadProfilePhotoActivity,"Permission is needed!", Toast.LENGTH_LONG).show()
-             }
-         }
-     }
+                if (selectedUri != null) {
+                    Log.d("ImageSelection", "Sending URI: $selectedUri")
+                    val resultIntent = Intent().apply {
+                        putExtra("selectedImage", selectedUri.toString())
+                    }
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Fotoğraf alınamadı!", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
-    //to save a photo in Bitmap format as a temporary file and return its URI.
-    private fun saveBitmapToFile(bitmap: Bitmap): Uri {
-        val file = File(getExternalFilesDir(null), "profile_photo.jpg") //create a temporary file
-        try {
-            val stream = FileOutputStream(file) //opens a FileOutputStream to write the file.
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream) //converts bitmap image to JPEG format and compresses it.
-            stream.flush() //allows all data in memory to be written to the file.
-            stream.close() //ensures that the file is saved properly by closing the file stream.
+
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ result ->
+            if(result){
+                //permission granted
+                if(requestingCamera){
+                    val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    activityResultLauncher.launch(intentToCamera)
+                }else{
+                    val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    activityResultLauncher.launch(intentToGallery)
+                }
+            }else{
+                //permission denied
+                Toast.makeText(this@UploadProfilePhotoActivity,"Permission is needed!", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /**
+     * Saves a bitmap image as a temporary file and returns its URI.
+     * Used when a photo is taken with the camera.
+     *
+     * @param bitmap The captured image as a Bitmap.
+     * @return The URI of the saved file, or null if an error occurs.
+     */
+
+    private fun saveBitmapToFile(bitmap: Bitmap): Uri? {
+        val file = File(getExternalFilesDir(null), "profile_photo.jpg")
+        return try {
+            val stream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+            stream.flush()
+            stream.close()
+            Uri.fromFile(file)
         } catch (e: IOException) {
             e.printStackTrace()
+            null
         }
-        return Uri.fromFile(file) // return the URI of the file
     }
 
-
-
+    /**
+     * opens the camera and requests permission if needed.
+     * allows the user to take a photo.
+     */
     fun takePhotoClicked(view: View) {
 
         requestingCamera = true
@@ -185,4 +192,5 @@ class UploadProfilePhotoActivity : AppCompatActivity() {
         }
 
     }
+
 }

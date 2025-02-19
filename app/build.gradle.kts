@@ -66,6 +66,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
 
+    implementation ("com.github.yalantis:ucrop:2.2.8")
+
+    implementation("com.google.android.material:material:1.12.0")
+   
+
 
 
 }
