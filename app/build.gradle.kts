@@ -69,6 +69,9 @@ dependencies {
     implementation ("com.github.yalantis:ucrop:2.2.8")
 
     implementation("com.google.android.material:material:1.12.0")
+
+    implementation ("com.google.android.material:material:1.11.0-beta01")
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
    
 
 

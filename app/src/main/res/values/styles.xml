@@ -9,4 +9,17 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Normal (Seçili Olmayan) Sekme Yazı Stili -->
+    <style name="TabTextNormal" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Seçili Sekme Yazı Stili -->
+    <style name="TabTextSelected" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">30sp</item> <!-- Daha büyük yazı boyutu -->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item> <!-- Kalın yapabiliriz (isteğe bağlı) -->
+    </style>
+
 </resources>

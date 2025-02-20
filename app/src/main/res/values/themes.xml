@@ -16,7 +16,7 @@
         <item name="colorOnSecondary">@color/white</item>
 
         <!-- Durum Çubuğu ve Navigasyon Bar Renkleri -->
-        <item name="android:statusBarColor">@color/darkPlum</item>
+        <item name="android:statusBarColor">@color/slateGray</item>
         <item name="android:navigationBarColor">@color/deepSlateBlue</item>
         <item name="android:windowLightStatusBar">true</item> <!-- Durum çubuğu simgelerini koyu yapar -->
     </style>

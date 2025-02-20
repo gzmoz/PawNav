@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
             //user already signed in
-            val intent = Intent(this, ActionOrientedActivity::class.java)
+            val intent = Intent(this, MainActivity ::class.java)
             startActivity(intent)
             finish()
         }
@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this@LoginActivity, "Enter e-mail and password", Toast.LENGTH_LONG).show()
         }else{
             auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
-                val intent = Intent(this@LoginActivity, ActionOrientedActivity::class.java)
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }.addOnFailureListener {
