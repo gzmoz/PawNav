@@ -13,4 +13,31 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="100dp"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:orientation="vertical"
+        android:layout_margin="16dp">
+
+        <!-- İlk Buton -->
+        <ImageView
+            android:id="@+id/btnToggleMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/satellite_icon"
+            android:background="@drawable/mapbuttons_rounded_background"
+            android:padding="10dp"/>
+
+        <!-- Altındaki Yeni Buton -->
+        <ImageView
+            android:id="@+id/btnMyLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/my_location_icon"
+            android:background="@drawable/mapbuttons_rounded_background"
+            android:padding="10dp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
 </FrameLayout>
