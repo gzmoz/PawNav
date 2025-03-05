@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CROP_IM" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- define the camera hardware -->
     <!-- android:required="false" allows to devices to load the even if it has no camera -->
     <uses-feature
@@ -27,8 +29,23 @@
         android:theme="@style/Theme.PawNav"
         tools:targetApi="31">
         <activity
-            android:name=".CropProfilePhotoActivity"
+            android:name=".PostFragment"
             android:exported="false" />
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDx95DNGmzkk-62I_4UvcDgeT2AqtOMJWM" />
+
         <activity
             android:name=".UploadProfilePhotoActivity"
             android:exported="false" />
@@ -52,6 +69,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
     </application>
 

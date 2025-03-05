@@ -2,7 +2,7 @@
 <resources>
     <!--to use the specific font for the all app-->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:fontFamily">@font/montserratregular</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="RoundedImageView" parent="ShapeAppearance.MaterialComponents.SmallComponent">
