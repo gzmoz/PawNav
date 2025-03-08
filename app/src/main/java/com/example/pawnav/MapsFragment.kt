@@ -112,19 +112,19 @@ class MapsFragment : Fragment() {
 
             }
 
+        }
 
 
-            // Set up toggle button for map type switching
-            binding.btnToggleMap.setOnClickListener{
-                isSatelliteView = !isSatelliteView //toggle boolean
+        // Set up toggle button for map type switching
+        binding.btnToggleMap.setOnClickListener{
+            isSatelliteView = !isSatelliteView //toggle boolean
 
-                if(isSatelliteView){
-                    googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-                    binding.btnToggleMap.setImageResource(R.drawable.map_icon)
-                }else{
-                    googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-                    binding.btnToggleMap.setImageResource(R.drawable.satellite_icon)
-                }
+            if(isSatelliteView){
+                googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                binding.btnToggleMap.setImageResource(R.drawable.map_icon)
+            }else{
+                googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+                binding.btnToggleMap.setImageResource(R.drawable.satellite_icon)
             }
         }
 
