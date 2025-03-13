@@ -44,6 +44,13 @@ class AddPostFragment : Fragment() {
             transaction.addToBackStack(null)
             transaction.commit()
         }
+
+        //take the location from lastSeenLocationFragment
+        val receivedLocation = arguments?.getString("locationKey")
+        //if the data is not null, print it into the lastSeenLocationText
+        receivedLocation?.let {
+            binding.lastSeenLocation.setText(it)
+        }
     }
 
 

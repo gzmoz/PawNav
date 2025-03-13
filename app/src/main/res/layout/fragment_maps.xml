@@ -30,7 +30,7 @@
             android:padding="10dp"/>
 
         <!-- Altındaki Yeni Buton -->
-        <ImageView
+        <ImageButton
             android:id="@+id/btnMyLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

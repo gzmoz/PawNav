@@ -53,9 +53,9 @@ class MapsFragment : Fragment() {
         mMap = googleMap
 
 
-       /* val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15f))*/
+        /* val sydney = LatLng(-34.0, 151.0)
+         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15f))*/
 
         //requireContext() or requireActivity() : because Because OnMapReadyCallback is running
         // inside Fragment and this refers to OnMapReadyCallback here.
@@ -111,8 +111,9 @@ class MapsFragment : Fragment() {
 
 
             }
-
         }
+
+
 
 
         // Set up toggle button for map type switching
@@ -130,6 +131,8 @@ class MapsFragment : Fragment() {
 
 
     }
+
+
 
     private fun registerLauncher(){
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ result ->
@@ -154,6 +157,9 @@ class MapsFragment : Fragment() {
         }
     }
 
+
+
+
     /*This function is responsible for creating and returning the view for the fragment.
     It inflates the fragment_maps.xml layout.*/
     override fun onCreateView(
@@ -175,6 +181,7 @@ class MapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
+
 
 
 
