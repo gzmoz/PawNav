@@ -46,6 +46,7 @@ class MapsFragment : Fragment() {
     You can add markers, move the camera, or set event listeners inside this function.*/
     private val callback = OnMapReadyCallback { googleMap ->
         // Google Maps UI
+        //googleMap.uiSettings.isMyLocationButtonEnabled = false
         googleMap.uiSettings.isZoomGesturesEnabled = true
         googleMap.uiSettings.isScrollGesturesEnabled = true
         googleMap.uiSettings.isZoomControlsEnabled = true
@@ -105,6 +106,9 @@ class MapsFragment : Fragment() {
                 //start from the lastknown location
                 if(lastLocation != null){
                     val lastUserLocation = LatLng(lastLocation.latitude,lastLocation.longitude)
+                    // Add marker for user's location
+                    googleMap.clear()
+                    googleMap.addMarker(MarkerOptions().position(lastUserLocation).title("My Location"))
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastUserLocation, 15f))
 
                 }

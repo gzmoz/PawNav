@@ -1,94 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddPostFragment"
-    android:paddingBottom="70dp">
+    android:paddingBottom="70dp"
+    tools:context=".AddPostFragment">
 
     <TextView
         android:id="@+id/tv_add_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/montserratbold"
         android:text="Add Post"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/montserratbold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/addPetPhoto"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/addphotocircle"
-        android:scaleType="centerInside"
-        app:layout_constraintTop_toBottomOf="@id/tv_add_post"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/viewFlipper"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/circleIndicator"
+        android:layout_width="144dp"
+        android:layout_height="20dp"
+        android:background="@drawable/mapbuttons_rounded_background"
+        tools:layout_editor_absoluteX="133dp"
+        tools:layout_editor_absoluteY="148dp" />-->
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addImagesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/slateGray"
+        android:text="Select Images"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/uploadimage"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@null"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editImagesButton"
+        app:layout_constraintEnd_toStartOf="@+id/editImagesButton"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </com.google.android.material.button.MaterialButton>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/editImagesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/slateGray"
+        android:text="Edit Images"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/editimage"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addImagesButton"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlipper">
+
+    </com.google.android.material.button.MaterialButton>
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="235dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="7dp"
+        android:autoStart="true"
+        android:flipInterval="3000"
+        app:layout_constraintBottom_toTopOf="@+id/editImagesButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_add_post">
+
+        <ImageView
+            android:id="@+id/addPetPhoto"
+            android:layout_width="114dp"
+            android:layout_height="112dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            android:padding="5dp"
+            android:src="@drawable/addphotocircle" />
+
+
+    </ViewFlipper>
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/addPetPhoto"
+        android:layout_marginBottom="5dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:fillViewport="true">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editImagesButton">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="25dp"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
+            android:padding="10dp">
 
             <!-- Post Type Seçimi (RadioGroup) -->
             <RadioGroup
                 android:id="@+id/postType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/edittext_background"
-                android:padding="5dp"
-                android:layout_marginTop="16dp">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Post Type:"
-                    android:fontFamily="@font/montserratregular"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"/>
+                    android:fontFamily="@font/montserratregular"
+                    android:text="Post Type:" />
 
                 <RadioButton
                     android:id="@+id/rb_lost"
-                    android:fontFamily="@font/montserratregular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:fontFamily="@font/montserratregular"
                     android:text="Lost"
-                    android:textSize="12dp"
-                    android:checked="true"/>
+                    android:textSize="12dp" />
 
                 <RadioButton
                     android:id="@+id/rb_found"
-                    android:fontFamily="@font/montserratregular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:text="Found"/>
+                    android:fontFamily="@font/montserratregular"
+                    android:text="Found"
+                    android:textSize="12dp" />
 
                 <RadioButton
                     android:id="@+id/rb_adoption"
-                    android:fontFamily="@font/montserratregular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:text="Adoption"/>
+                    android:fontFamily="@font/montserratregular"
+                    android:text="Adoption"
+                    android:textSize="12dp" />
             </RadioGroup>
 
             <!-- Form Alanları -->
@@ -96,97 +164,97 @@
                 android:id="@+id/petName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pet Name..."
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="12dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Pet Name..."
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/animalType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Animal Type (Cat, Dog,...)"
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Animal Type (Cat, Dog,...)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/animalBreed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Breed (Golden Retriever, Persian Cat...)"
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Breed (Golden Retriever, Persian Cat...)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/animalGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Gender (Male, Female, Unknown)"
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Gender (Male, Female, Unknown)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/animalColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Color (Black, White, Brown...)"
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Color (Black, White, Brown...)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/lastSeenLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Last Seen Location (Park, Street...)"
-                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_background"
+                android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:cursorVisible="false"
                 android:fontFamily="@font/montserratregular"
-                android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:hint="Last Seen Location (Park, Street...)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/dateLostFound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Date Lost/Found (DD/MM/YYYY)"
-                android:padding="8dp"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:hint="Date Lost/Found (DD/MM/YYYY)"
+                android:padding="8dp" />
 
             <EditText
                 android:id="@+id/descriptionBox"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="Description (Additional Details)"
-                android:padding="8dp"
-                android:gravity="top"
-                android:fontFamily="@font/montserratregular"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/edittext_background"
-                android:layout_marginTop="8dp"/>
+                android:fontFamily="@font/montserratregular"
+                android:gravity="top"
+                android:hint="Description (Additional Details)"
+                android:padding="8dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addPostButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Add Post"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/slateGray"
-                app:cornerRadius="12dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="36dp"/>
+                android:layout_marginBottom="36dp"
+                android:backgroundTint="@color/slateGray"
+                android:text="Add Post"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </ScrollView>
