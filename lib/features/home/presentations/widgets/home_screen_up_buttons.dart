@@ -23,11 +23,12 @@ class HomeButtonComponent extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: width * 0.4,
-        height: height * 0.19,
+        width: width * 0.3,
+        // height: height * 0.19,
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: AppColors.buttonBlue,
+          // color: AppColors.background,
+          color: AppColors.lightBlue,
           // color: AppColors.primary.withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -39,7 +40,7 @@ class HomeButtonComponent extends StatelessWidget {
               size: height * 0.05,
             ),
             SizedBox(
-              height: height * 0.01,
+              height: height * 0.003,
             ),
             Text(
               title,
@@ -49,7 +50,7 @@ class HomeButtonComponent extends StatelessWidget {
                   color: Colors.black87),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: height * 0.01),
+            SizedBox(height: height * 0.003),
             Text(
               subtitle,
               style: TextStyle(

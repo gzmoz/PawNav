@@ -1,6 +1,10 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/features/home/presentations/widgets/community_tips_card.dart';
+import 'package:pawnav/features/home/presentations/widgets/feature_pet_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/home_screen_up_buttons.dart';
+import 'package:pawnav/features/home/presentations/widgets/success_stories_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,7 +13,23 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+final List<String> imagePaths = [
+  "assets/representative/cat1.jpg",
+  "assets/representative/cat2.jpg",
+  "assets/representative/dog1.jpg"
+];
+
+late List<Widget> _pages;
+
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pages = List.generate(imagePaths.length,
+        (index) => SuccessStoriesCustom(imagePath: imagePaths[index]));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -29,7 +49,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/app_icon/android_icon.png',
+                  'assets/app_icon/icon_transparent.png',
                   height: 28,
                 ),
                 const SizedBox(width: 8),
@@ -56,6 +76,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 50),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Padding(
@@ -64,7 +87,8 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12), // sol & sağ boşluk
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  // sol & sağ boşluk
 
                   child: Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -79,15 +103,14 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                       SizedBox(width: width * 0.01),
-
                       HomeButtonComponent(
                         icon: Icons.place_outlined,
                         title: "Found a Pet",
-                        subtitle: "Share a post to reunite the pet with its owner.",
+                        subtitle:
+                            "Share a post to reunite the pet with its owner.",
                         onTap: () {},
                       ),
                       SizedBox(width: width * 0.01),
-
                       HomeButtonComponent(
                         icon: Icons.home_outlined,
                         title: "Adopt a Pet",
@@ -99,6 +122,208 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            ),
+
+            //SUCCESS STORIES
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      top: height * 0.02,
+                      bottom: height * 0.015),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Success Stories",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.05,
+                        ),
+                      ),
+                      Text(
+                        "View More",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.03,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: height * 0.25,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: height * 0.25,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      // ortadaki büyür, kenarlarda boşluk olur
+                      padEnds: true,
+                      enlargeFactor: 0.19,
+                      viewportFraction: 0.85,
+                    ),
+                    items: imagePaths.map((imagePath) {
+                      return Builder(
+                        builder: (context) {
+                          return SuccessStoriesCustom(
+                            imagePath: imagePath,
+                            title: "Reunited: Rocky & His Family",
+                            description:
+                                "We never lost hope, and thanks to a fellow PawNav user, Rocky is back home!",
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  /*PageView.builder(
+                      itemCount: imagePaths.length,
+                      itemBuilder: (context, index ) {
+                        return _pages[index];
+                      }),*/
+                ),
+              ],
+            ),
+
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      top: height * 0.02,
+                      bottom: height * 0.015),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Featured Pets",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.05,
+                        ),
+                      ),
+                      Text(
+                        "View More",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.03,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        FeaturedPetCard(
+                          petName: "Buddy",
+                          status: "Lost",
+                          location: "San Francisco, CA",
+                          imageUrl:
+                              "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800",
+                        ),
+                        FeaturedPetCard(
+                          petName: "Lucy",
+                          status: "Found",
+                          location: "Oakland, CA",
+                          imageUrl:
+                              "https://images.unsplash.com/photo-1568572933382-74d440642117?w=800",
+                        ),
+                        FeaturedPetCard(
+                          petName: "Max",
+                          status: "Lost",
+                          location: "Los Angeles, CA",
+                          imageUrl:
+                              "https://images.unsplash.com/photo-1558788353-f76d92427f16?w=800",
+                        ),
+                        FeaturedPetCard(
+                          petName: "Bella",
+                          status: "Adoption",
+                          location: "San Diego, CA",
+                          imageUrl:
+                              "https://images.unsplash.com/photo-1507149833265-60c372daea22?w=800",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      top: height * 0.02,
+                      bottom: height * 0.015),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Community Tips",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.05,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Column(
+                    children: [
+                      CommunityTipsCard(
+                          icon: Icons.tips_and_updates,
+                          iconColor: AppColors.primary,
+                          title: "What to do if you find a lost pet",
+                          description:
+                              "Check for ID, take them to a vet to scan for a microchip, and post on PawNav."),
+                      SizedBox(
+                        height: 0.05,
+                      ),
+                      CommunityTipsCard(
+                          icon: Icons.pets,
+                          iconColor: AppColors.primary,
+                          title: "Keeping your pet safe",
+                          description:
+                              "Ensure your pet is microchipped and wears a collar with your contact information."),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      top: height * 0.02,
+                      bottom: height * 0.015),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Recent Activity",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.05,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

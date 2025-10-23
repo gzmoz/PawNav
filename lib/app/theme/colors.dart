@@ -8,6 +8,7 @@ class AppColors{
   // Background colors
   static const Color background = Color(0xFFE4E8F1);
   static const Color buttonBlue = Color(0xFFCBD3E2);
+  static const Color lightBlue = Color(0xFFebf5ff);
 
   static Color cardColor= Color(0xFFF4F4F4);
   static const Color background2= Color(0xFFEAEAEA);

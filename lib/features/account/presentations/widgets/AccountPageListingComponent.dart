@@ -12,10 +12,13 @@ class AccountPageListingComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sizeInfo = MediaQuery.of(context);
+    final double width = sizeInfo.size.width;
+    final double height = sizeInfo.size.height;
     return ListTile(
       leading: Icon(icon, color: AppColors.primary,),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold),),
-      subtitle: Text(subtitle),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: width * 0.04),),
+      subtitle: Text(subtitle,style: TextStyle(fontSize: width * 0.035)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
     );
