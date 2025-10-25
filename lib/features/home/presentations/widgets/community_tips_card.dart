@@ -21,7 +21,7 @@ class CommunityTipsCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         // color: Colors.blue.withOpacity(0.08), // yumuşak açık mavi arka plan
-        color: AppColors.background,
+        color: AppColors.lightBlue,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

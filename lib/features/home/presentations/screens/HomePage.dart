@@ -304,6 +304,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+
                 Padding(
                   padding: EdgeInsets.only(
                       left: width * 0.05,
@@ -318,6 +319,14 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: width * 0.05,
+                        ),
+                      ),
+                      Text(
+                        "View More",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.03,
+                          color: AppColors.primary,
                         ),
                       ),
 

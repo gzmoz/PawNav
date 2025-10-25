@@ -16,7 +16,7 @@ class UserRankCard extends StatelessWidget {
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: rankColor.withOpacity(0.3),
         borderRadius: BorderRadius.circular(30),

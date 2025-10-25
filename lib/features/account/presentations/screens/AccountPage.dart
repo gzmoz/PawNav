@@ -32,7 +32,7 @@ class _AccountPageState extends State<AccountPage> {
         ),
         actions: [
           GestureDetector(
-            onTap: (){
+            onTap: () {
               context.push('/menuProfile');
             },
             child: const Padding(
@@ -73,7 +73,7 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                       child: CircleAvatar(
-                        radius: width * 0.17,
+                        radius: width * 0.15,
                         // backgroundImage: const AssetImage('assets/representative/zomzom.png'),
                         // backgroundColor: Colors.transparent,
                       ),
@@ -90,21 +90,147 @@ class _AccountPageState extends State<AccountPage> {
                           "Sara Pawlson",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: width * 0.055),
+                              fontSize: width * 0.05),
                         ),
                         SizedBox(
-                          height: width * 0.02,
+                          height: width * 0.01,
                         ),
                         UserRankCard(
                           rankTitle: "Gold Helper",
                           rankIcon: Icons.workspace_premium,
                           rankColor: Colors.amber.shade700,
                         ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "8",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.038),
+                                ),
+                                Text(
+                                  "Listings",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: width * 0.03),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 15),
+                            Column(
+                              children: [
+                                Text(
+                                  "22",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.038),
+                                ),
+                                Text(
+                                  "Saved",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: width * 0.03),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 15),
+                            Column(
+                              children: [
+                                Text(
+                                  "8",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.038),
+                                ),
+                                Text(
+                                  "Successes",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: width * 0.03),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
+
+              /*Padding(
+                padding: EdgeInsets.only(top: height * 0.03),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: width * 0.2,
+                      decoration: BoxDecoration(
+                        // color: Colors.transparent,
+                        color: AppColors.primary.withOpacity(0.07),
+                        */ /*border: Border.all(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1,
+                        ),*/ /*
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      child: Column(
+                        children: [
+                           Text("8",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
+                           Text("Listings",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      width: width * 0.2,
+                      decoration: BoxDecoration(
+                        // color: Colors.transparent,
+                        // color: AppColors.primary.withOpacity(0.07),
+                        border: Border.all(
+                          color: AppColors.primary,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      child: Column(
+                        children: [
+                          Text("22",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
+                          Text("Saved",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      width: width * 0.23,
+                      decoration: BoxDecoration(
+                        // color: Colors.transparent,
+                        color: AppColors.primary.withOpacity(0.07),
+                        */ /*border: Border.all(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1,
+                        ),*/ /*
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      child: Column(
+                        children: [
+                          Text("8",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
+                          Text("Successes",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),*/
 
               /*//edit button
               Padding(
@@ -140,9 +266,12 @@ class _AccountPageState extends State<AccountPage> {
                           labelColor: AppColors.primary,
                           unselectedLabelColor: Colors.grey,
                           tabs: [
-                            Tab(icon: Icon(Icons.apps)),           // My Listings
-                            Tab(icon: Icon(Icons.bookmark)),// Saved
-                            Tab(icon: Icon(Icons.emoji_events)),   // Success Stories
+                            Tab(icon: Icon(Icons.apps)),
+                            // My Listings
+                            Tab(icon: Icon(Icons.bookmark)),
+                            // Saved
+                            Tab(icon: Icon(Icons.emoji_events)),
+                            // Success Stories
                           ],
                         ),
                       ),
@@ -150,9 +279,13 @@ class _AccountPageState extends State<AccountPage> {
                         height: height * 0.4,
                         child: const TabBarView(
                           children: [
-                            Center(child: Text("Your Listings will appear here.")),
-                            Center(child: Text("Saved posts will appear here.")),
-                            Center(child: Text("Success stories will appear here.")),
+                            Center(
+                                child: Text("Your Listings will appear here.")),
+                            Center(
+                                child: Text("Saved posts will appear here.")),
+                            Center(
+                                child:
+                                    Text("Success stories will appear here.")),
                           ],
                         ),
                       ),
