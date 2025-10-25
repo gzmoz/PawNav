@@ -12,6 +12,11 @@ class AppColors{
 
   static Color cardColor= Color(0xFFF4F4F4);
   static const Color background2= Color(0xFFEAEAEA);
+  static const Color white2= Color(0xFFF5F5F5);
+  static const Color white3= Color(0xFFF2F2F2);
+  // static const Color white4= Color(0xFFF8F8F8);
+  static const Color white4= Color(0xFFFAFAFA);
+
 
   // Error color
  // static const Color error = Color(0xFFB00020);

@@ -4,6 +4,7 @@ import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/home/presentations/widgets/community_tips_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/feature_pet_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/home_screen_up_buttons.dart';
+import 'package:pawnav/features/home/presentations/widgets/recent_activity_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/success_stories_section.dart';
 
 class HomePage extends StatefulWidget {
@@ -303,7 +304,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(
                       left: width * 0.05,
@@ -319,6 +319,54 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                           fontSize: width * 0.05,
                         ),
+                      ),
+
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width * 0.05,
+                      right: width * 0.05,
+                      // top: height * 0.02,
+                      bottom: height * 0.015),
+                  child: Column(
+                    children: [
+                      RecentActivityCard(
+                        imageUrl:
+                        "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400",
+                        title: "Found: Calico Cat",
+                        subtitle: "Near Lake Merritt, 2 hours ago",
+                        onTap: () {},
+                      ),
+                      RecentActivityCard(
+                        imageUrl:
+                        "https://images.unsplash.com/photo-1507149833265-60c372daea22?w=400",
+                        title: "Lost: Brown Dog \"Rocky\"",
+                        subtitle: "Downtown Austin, 5 hours ago",
+                        onTap: () {},
+                      ),
+                      RecentActivityCard(
+                        imageUrl:
+                        "https://images.unsplash.com/photo-1568572933382-74d440642117?w=400",
+                        title: "For Adoption: 2 Kittens",
+                        subtitle: "SPCA Shelter, 1 day ago",
+                        onTap: () {},
+                      ),
+                      RecentActivityCard(
+                        imageUrl:
+                        "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=400",
+                        title: "Found: Golden Retriever",
+                        subtitle: "Near Riverside Park, 1 hour ago",
+                        onTap: () {},
+                      ),
+                      RecentActivityCard(
+                        imageUrl:
+                        "https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=400",
+                        title: "Lost: Black Cat \"Luna\"",
+                        subtitle: "Central Park, 3 hours ago",
+                        onTap: () {},
                       ),
                     ],
                   ),

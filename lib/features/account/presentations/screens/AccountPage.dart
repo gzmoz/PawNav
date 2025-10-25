@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
-import 'package:pawnav/core/widgets/custom_text_form_field.dart';
-import 'package:pawnav/features/Account/presentations/widgets/AccountPageListingComponent.dart';
+import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -18,340 +19,145 @@ class _AccountPageState extends State<AccountPage> {
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
     return Scaffold(
-      backgroundColor: AppColors.background2,
+      extendBodyBehindAppBar: false,
+      // backgroundColor: AppColors.background2,
+      backgroundColor: AppColors.white4,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "sara.p",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: (){
+              context.push('/menuProfile');
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(Icons.menu),
+            ),
+          ),
+        ],
+      ),
       body: ScrollConfiguration(
-        behavior: const ScrollBehavior().copyWith(overscroll: false), //kaydırırken gözüken rengi kapat
+        behavior: const ScrollBehavior().copyWith(overscroll: false),
+        //kaydırırken gözüken rengi kapat
         child: SingleChildScrollView(
           // physics: const ClampingScrollPhysics(),
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 50),
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom + 50),
+          //profile photo-name-badge
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    top: height * 0.06,
-                    bottom: height * 0.02,
-                    left: width * 0.07),
-                child: Text(
-                  "Profile",
-                  style: TextStyle(
-                      fontSize: width * 0.06,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
-                ),
-              ),
-              //charts
-              Center(
-                child: Column(
-                  children: [
-                    //top - profile name username
-                    Container(
-                      width: width * 0.9,
-                      height: height * 0.1,
+              Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: width * 0.09, top: height * 0.02),
+                    child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
+                        shape: BoxShape.circle,
+                        boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 3,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: width * 0.06, right: height * 0.03),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: width * 0.15,
-                              height: height * 0.15,
-                              child: Image.asset(
-                                  "assets/login_screen/profile-picture.png"),
-                            ),
-                            SizedBox(width: width * 0.05),
+                      child: CircleAvatar(
+                        radius: width * 0.17,
+                        // backgroundImage: const AssetImage('assets/representative/zomzom.png'),
+                        // backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  //name- badge
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: width * 0.05, top: height * 0.02),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          "Sara Pawlson",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: width * 0.055),
+                        ),
+                        SizedBox(
+                          height: width * 0.02,
+                        ),
+                        UserRankCard(
+                          rankTitle: "Gold Helper",
+                          rankIcon: Icons.workspace_premium,
+                          rankColor: Colors.amber.shade700,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
 
-                            //name-username
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Name",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: width * 0.05,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: height * 0.005),
-                                Text(
-                                  "UserName",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: width * 0.03,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+              /*//edit button
+              Padding(
+                padding: EdgeInsets.only(top: height * 0.03),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      // backgroundColor: AppColors.primary.withOpacity(0.2),
+                      backgroundColor: AppColors.background,
+                      // backgroundColor: Colors.grey[300],
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                    ),
+                    child: const Text("Edit Profile",
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                ),
+              ),*/
 
-                            const Spacer(),
-
-                            //edit button
-                            Container(
-                              width: width * 0.1,
-                              height: width * 0.1,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.edit),
-                              ),
-                            ),
+              Padding(
+                padding: EdgeInsets.only(top: height * 0.03),
+                child: DefaultTabController(
+                  length: 3,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                        child: const TabBar(
+                          indicatorColor: AppColors.primary,
+                          labelColor: AppColors.primary,
+                          unselectedLabelColor: Colors.grey,
+                          tabs: [
+                            Tab(icon: Icon(Icons.apps)),           // My Listings
+                            Tab(icon: Icon(Icons.bookmark)),// Saved
+                            Tab(icon: Icon(Icons.emoji_events)),   // Success Stories
                           ],
                         ),
                       ),
-                    ),
-
-                    SizedBox(height: height * 0.03),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.001,
-                            bottom: height * 0.02,
-                            left: width * 0.07),
-                        child: Text(
-                          "Account",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: width * 0.04,
-                          ),
+                      SizedBox(
+                        height: height * 0.4,
+                        child: const TabBarView(
+                          children: [
+                            Center(child: Text("Your Listings will appear here.")),
+                            Center(child: Text("Saved posts will appear here.")),
+                            Center(child: Text("Success stories will appear here.")),
+                          ],
                         ),
                       ),
-                    ),
-
-                    Container(
-                      width: width * 0.9,
-                      // height: height * 0.35,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        // kaydırmayı kapatır
-                        shrinkWrap: true,
-                        // container yüksekliğine göre sıkıştırır
-                        children: const [
-                          AccountPageListingComponent(
-                            icon: Icons.person,
-                            title: "My Profile",
-                            subtitle: "Add or update your contact information. ",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.pets,
-                            title: "My Posts",
-                            subtitle:
-                                "See all your lost/found/adoption listings.",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.bookmark,
-                            title: "Saved Pets",
-                            subtitle: "View the posts you bookmarked.",
-                          ),
-
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: height * 0.03),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.001,
-                            bottom: height * 0.02,
-                            left: width * 0.07),
-                        child: Text(
-                          "Security & Privacy",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: width * 0.04,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      width: width * 0.9,
-                      //height: height * 0.35,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        // kaydırmayı kapatır
-                        shrinkWrap: true,
-                        // container yüksekliğine göre sıkıştırır
-                        children: const [
-                          AccountPageListingComponent(
-                            icon: Icons.password,
-                            title: "Login & Security",
-                            subtitle:
-                                "Change your password or manage your sign-in methods.",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.pin_drop,
-                            title: "Location Permissions",
-                            subtitle:
-                                "Allow PawNav to access your location to show nearby pets.",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.notifications,
-                            title: "Notification Settings",
-                            subtitle:
-                                "Choose when to receive alerts, new messages, and more.",
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: height * 0.03),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.001,
-                            bottom: height * 0.02,
-                            left: width * 0.07),
-                        child: Text(
-                          "Community & Growth",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: width * 0.04,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      width: width * 0.9,
-                      // height: height * 0.35,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        // kaydırmayı kapatır
-                        shrinkWrap: true,
-                        // container yüksekliğine göre sıkıştırır
-                        children: const [
-                          AccountPageListingComponent(
-                            icon: Icons.badge,
-                            title: "Badges & Achievements",
-                            subtitle:
-                                "Check your current level and view the badges you’ve earned.",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.people,
-                            title: "Community Guidelines",
-                            subtitle:
-                                "Read the posting and messaging rules to keep PawNav safe for everyone.",
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: height * 0.03),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.001,
-                            bottom: height * 0.02,
-                            left: width * 0.07),
-                        child: Text(
-                          "Help & App Info",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: width * 0.04,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      width: width * 0.9,
-                      // height: height * 0.35,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        // kaydırmayı kapatır
-                        shrinkWrap: true,
-                        // container yüksekliğine göre sıkıştırır
-                        children: const [
-                          AccountPageListingComponent(
-                            icon: Icons.help,
-                            title: "Help & Support",
-                            subtitle:
-                                "Contact us or report an issue with the app.",
-                          ),
-                          AccountPageListingComponent(
-                            icon: Icons.info,
-                            title: "About PawNav",
-                            subtitle:
-                                "Learn more about the app, its mission, and version details.",
-                          ),AccountPageListingComponent(
-                            icon: Icons.exit_to_app,
-                            title: "Log Out",
-                            subtitle:
-                                "Sign out of your account.",
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

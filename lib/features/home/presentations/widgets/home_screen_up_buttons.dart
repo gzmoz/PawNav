@@ -27,10 +27,19 @@ class HomeButtonComponent extends StatelessWidget {
         // height: height * 0.19,
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          // color: AppColors.background,
-          color: AppColors.lightBlue,
+          color: AppColors.white2,
+          // color: Colors.white,
           // color: AppColors.primary.withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: const Offset(0.5,0.5),
+            ),
+
+          ],
         ),
         child: Column(
           children: [

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/sign_up_screen.dart';
@@ -44,6 +45,11 @@ final router = GoRouter(
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+
+      GoRoute(
+        path: '/menuProfile',
+        builder: (context, state) => const MenuProfile(),
       ),
 
 
