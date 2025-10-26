@@ -2,10 +2,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:pawnav/AddPostPage.dart';
 import 'package:pawnav/MessagePage.dart';
-import 'package:pawnav/PostPage.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
+import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

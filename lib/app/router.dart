@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:pawnav/bottom_nav_bar.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/verify_email_screen.dart';
-import 'package:pawnav/features/home/bottom_nav_bar.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/splash_screen.dart';
 

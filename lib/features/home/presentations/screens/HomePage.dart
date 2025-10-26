@@ -37,44 +37,32 @@ class _HomePageState extends State<HomePage> {
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
     return Scaffold(
-      backgroundColor: AppColors.background2,
+      backgroundColor: AppColors.white3,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              // Row sadece içerik kadar yer kaplar
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/app_icon/icon_transparent.png',
-                  height: 28,
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  "PawNav",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const Row(
-              children: [
-                Icon(Icons.notifications_none, color: Colors.black),
-                SizedBox(width: 12),
-                // CircleAvatar(
-                //   radius: 14,
-                //   backgroundImage: AssetImage('assets/profile_pic.png'),
-                // ),
-              ],
-            ),
-          ],
+        leading: Padding(
+          padding: EdgeInsets.all(width * 0.035),
+          child: Image.asset(
+            "assets/app_icon/icon_transparent.png",
+            fit: BoxFit.contain,
+          ),
         ),
+
+        title: const Text(
+          "PawNav",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(Icons.notifications_none),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding:
