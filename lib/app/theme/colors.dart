@@ -16,6 +16,7 @@ class AppColors{
   static const Color white3= Color(0xFFF2F2F2);
   // static const Color white4= Color(0xFFF8F8F8);
   static const Color white4= Color(0xFFFAFAFA);
+  static const Color white5= Color(0xFFF7F7F7);
 
 
   // Error color

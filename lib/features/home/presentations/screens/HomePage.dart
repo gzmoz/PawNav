@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
     return Scaffold(
-      backgroundColor: AppColors.white3,
+      backgroundColor: AppColors.white5,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

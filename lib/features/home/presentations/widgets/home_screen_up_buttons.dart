@@ -34,9 +34,9 @@ class HomeButtonComponent extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 2,
+              spreadRadius: 4,
               blurRadius: 8,
-              offset: const Offset(0.5,0.5),
+              offset: const Offset(2,2),
             ),
 
           ],

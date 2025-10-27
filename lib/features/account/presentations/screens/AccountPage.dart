@@ -20,7 +20,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       extendBodyBehindAppBar: false,
       // backgroundColor: AppColors.background2,
-      backgroundColor: AppColors.white4,
+      backgroundColor: AppColors.white5,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
