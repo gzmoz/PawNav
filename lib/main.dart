@@ -6,8 +6,10 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://wywlinvazwirkcvydlft.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5d2xpbnZhendpcmtjdnlkbGZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MzQ4NTMsImV4cCI6MjA3NTQxMDg1M30.t5wZWRp9gPNCXjvurTLZpUXHvaHZ1rsC6cgQJyRh-YQ',
+    url: 'https://vhiiafjiezojyschiaia.supabase.co',
+    // url: 'https://wywlinvazwirkcvydlft.supabase.co',
+    // anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5d2xpbnZhendpcmtjdnlkbGZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MzQ4NTMsImV4cCI6MjA3NTQxMDg1M30.t5wZWRp9gPNCXjvurTLZpUXHvaHZ1rsC6cgQJyRh-YQ',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoaWlhZmppZXpvanlzY2hpYWlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzA3ODAsImV4cCI6MjA3NzM0Njc4MH0.Z38WDjOG5wdVLOQnkccz1pD0zO2EA8I3tJYwIYwvI7s',
   );
 
 

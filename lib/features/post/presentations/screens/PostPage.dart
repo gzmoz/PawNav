@@ -102,15 +102,12 @@ class _PostPageState extends State<PostPage> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.only(
-              bottom: MediaQuery
-                  .of(context)
-                  .padding
-                  .bottom + 50),
+              bottom: MediaQuery.of(context).padding.bottom + 50),
           child: Column(
             children: [
               Padding(
                 padding:
-                EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
+                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,7 +145,7 @@ class _PostPageState extends State<PostPage> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         //drag indicator
                                         Center(
@@ -158,7 +155,7 @@ class _PostPageState extends State<PostPage> {
                                             decoration: BoxDecoration(
                                               color: Colors.grey.shade400,
                                               borderRadius:
-                                              BorderRadius.circular(12),
+                                                  BorderRadius.circular(12),
                                             ),
                                           ),
                                         ),
@@ -167,7 +164,7 @@ class _PostPageState extends State<PostPage> {
                                         //title
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "Sort by Date",
@@ -195,7 +192,7 @@ class _PostPageState extends State<PostPage> {
                                         Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                             /* border: Border.all(
                                                 color:
                                                     selectedOption == "Newest"
@@ -207,13 +204,13 @@ class _PostPageState extends State<PostPage> {
                                           ),
                                           child: RadioListTile<String>(
                                             title:
-                                            const Text("Newest to Oldest"),
+                                                const Text("Newest to Oldest"),
                                             value: "Newest",
                                             groupValue: selectedOption,
-                                            activeColor: AppColors.primary,
+                                            activeColor: Colors.blueAccent,
                                             onChanged: (value) {
                                               setState(() =>
-                                              selectedOption = value!);
+                                                  selectedOption = value!);
                                             },
                                           ),
                                         ),
@@ -221,7 +218,7 @@ class _PostPageState extends State<PostPage> {
                                         Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                             /* border: Border.all(
                                                 color:
                                                     selectedOption == "Newest"
@@ -233,23 +230,23 @@ class _PostPageState extends State<PostPage> {
                                           ),
                                           child: RadioListTile<String>(
                                             title:
-                                            const Text("Oldest to Newest"),
+                                                const Text("Oldest to Newest"),
                                             value: "Oldest",
                                             groupValue: selectedOption,
-                                            activeColor: AppColors.primary,
+                                            activeColor: Colors.blueAccent,
                                             onChanged: (value) {
                                               setState(() =>
-                                              selectedOption = value!);
+                                                  selectedOption = value!);
                                             },
                                           ),
                                         ),
                                         //close and approve buttons
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(top: 12.0),
+                                              const EdgeInsets.only(top: 12.0),
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               /*TextButton(
                                                 onPressed: () {
@@ -267,13 +264,13 @@ class _PostPageState extends State<PostPage> {
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:
-                                                  AppColors.primary,
+                                                      AppColors.primary,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        15),
+                                                        BorderRadius.circular(
+                                                            30),
                                                   ),
-                                                  minimumSize: Size(width * 0.8,
+                                                  minimumSize: Size(width * 0.4,
                                                       height * 0.05),
                                                 ),
                                                 child: const Text(
@@ -339,7 +336,7 @@ class _PostPageState extends State<PostPage> {
                               String selectedAnimal = "Dog";
                               String selectedBreed = "Any";
                               final TextEditingController locationController =
-                              TextEditingController();
+                                  TextEditingController();
 
                               return StatefulBuilder(
                                 builder: (context, setState) {
@@ -349,7 +346,7 @@ class _PostPageState extends State<PostPage> {
                                     child: SingleChildScrollView(
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           //drag indicator
@@ -360,7 +357,7 @@ class _PostPageState extends State<PostPage> {
                                               decoration: BoxDecoration(
                                                 color: Colors.grey.shade400,
                                                 borderRadius:
-                                                BorderRadius.circular(12),
+                                                    BorderRadius.circular(12),
                                               ),
                                             ),
                                           ),
@@ -368,7 +365,7 @@ class _PostPageState extends State<PostPage> {
 
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Filters",
@@ -412,12 +409,16 @@ class _PostPageState extends State<PostPage> {
 
                                           const SizedBox(height: 12),
 
-
                                           Center(
                                             child: Wrap(
                                               spacing: 10,
-                                              children: ["Lost", "Found", "Adoption"].map((type) {
-                                                final isSelected = selectedPostType == type;
+                                              children: [
+                                                "Lost",
+                                                "Found",
+                                                "Adoption"
+                                              ].map((type) {
+                                                final isSelected =
+                                                    selectedPostType == type;
 
                                                 return GestureDetector(
                                                   onTap: () {
@@ -426,26 +427,43 @@ class _PostPageState extends State<PostPage> {
                                                     });
                                                   },
                                                   child: AnimatedContainer(
-                                                    duration: const Duration(milliseconds: 200),
-                                                    padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+                                                    duration: const Duration(
+                                                        milliseconds: 200),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 22,
+                                                        vertical: 10),
                                                     decoration: BoxDecoration(
-                                                      color: isSelected ? Colors.blueAccent : const Color(0xFFF3F4F6),
-                                                      borderRadius: BorderRadius.circular(30),
+                                                      color: isSelected
+                                                          ? Colors.blueAccent
+                                                          : const Color(
+                                                              0xFFF3F4F6),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
                                                       boxShadow: isSelected
                                                           ? [
-                                                        BoxShadow(
-                                                          color: Colors.blue.withOpacity(0.25),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(0, 2),
-                                                        )
-                                                      ]
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .blue
+                                                                    .withOpacity(
+                                                                        0.25),
+                                                                blurRadius: 6,
+                                                                offset:
+                                                                    const Offset(
+                                                                        0, 2),
+                                                              )
+                                                            ]
                                                           : [],
                                                     ),
                                                     child: Text(
                                                       type,
                                                       style: TextStyle(
-                                                        color: isSelected ? Colors.white : Colors.black87,
-                                                        fontWeight: FontWeight.w600,
+                                                        color: isSelected
+                                                            ? Colors.white
+                                                            : Colors.black87,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                         fontSize: 15,
                                                       ),
                                                     ),
@@ -455,7 +473,7 @@ class _PostPageState extends State<PostPage> {
                                             ),
                                           ),
 
-                                          const SizedBox(height: 15),
+                                          const SizedBox(height: 20),
 
                                           Text(
                                             "Location Filter",
@@ -463,6 +481,223 @@ class _PostPageState extends State<PostPage> {
                                               fontSize: width * 0.042,
                                               fontWeight: FontWeight.w600,
                                             ),
+                                          ),
+
+                                          const SizedBox(height: 8),
+
+                                          TextField(
+                                            controller: locationController,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  "Enter city or postcode",
+                                              prefixIcon:
+                                                  const Icon(Icons.search),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 23),
+                                              filled: true,
+                                              fillColor: Colors.grey.shade100,
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 20),
+
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'Radius: ',
+                                                  style: TextStyle(
+                                                    fontSize: width * 0.042,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: '${radiusValue.toStringAsFixed(0)} km',
+                                                  style: TextStyle(
+                                                    fontSize: width * 0.042,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.blueAccent
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Slider(
+                                            value: radiusValue,
+                                            min: 1,
+                                            max: 100,
+                                            activeColor: Colors.blueAccent,
+                                            onChanged: (val) {
+                                              setState(() {
+                                                radiusValue = val;
+                                              });
+                                            },
+                                          ),
+
+                                          const SizedBox(height: 10),
+
+                                          Text(
+                                            "Animal Details",
+                                            style: TextStyle(
+                                              fontSize: width * 0.042,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 8),
+
+                                          //animal type
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey.shade300),
+                                              borderRadius: BorderRadius.circular(12)
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.pets, color: Colors.grey),
+                                                    const SizedBox(width: 12),
+                                                    Text("Animal Type",
+                                                      style: TextStyle(fontSize: width * 0.035),
+                                                    ),
+                                                  ],
+                                                ),
+                                                GestureDetector(
+                                                  onTap: (){
+
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        selectedAnimal,
+                                                        style: const TextStyle(
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 5),
+                                                      const Icon(Icons.chevron_right,
+                                                      color: Colors.grey),
+                                                    ],
+                                                  ),
+
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 8),
+
+                                          //BREED
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius: BorderRadius.circular(12)
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.science, color: Colors.grey),
+                                                    const SizedBox(width: 12),
+                                                    Text("Breed",
+                                                      style: TextStyle(fontSize: width * 0.035),
+                                                    ),
+                                                  ],
+                                                ),
+                                                GestureDetector(
+                                                  onTap: (){
+
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        selectedBreed,
+                                                        style: const TextStyle(
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 5),
+                                                      const Icon(Icons.chevron_right,
+                                                          color: Colors.grey),
+                                                    ],
+                                                  ),
+
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 25),
+
+                                          Divider(
+                                              color: Colors.grey.shade300,
+                                              height: 1),
+                                          const SizedBox(height: 10),
+
+                                          //bottom buttons
+                                          Row(
+                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              OutlinedButton(
+                                                  onPressed: (){
+                                                    setState((){
+                                                      selectedPostType = "";
+                                                      selectedAnimal = "";
+                                                      selectedBreed = "";
+                                                      locationController.clear();
+                                                      radiusValue = 10;
+                                                    });
+                                                  },
+                                                  style: OutlinedButton.styleFrom(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(30),
+                                                    ),
+                                                    side: const BorderSide(color: AppColors.primary),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 24, vertical: 12
+                                                    ),
+                                                  ),
+                                                  child: const Text(
+                                                    "Reset Filters",
+                                                    style: TextStyle(color: AppColors.primary),
+                                                  ),
+                                              ),
+                                              ElevatedButton(
+                                                  onPressed: (){
+                                                    context.pop({
+                                                      "postType" :selectedPostType,
+                                                      "location": locationController.text,
+                                                      "radius": radiusValue,
+                                                      "animal": selectedAnimal,
+                                                      "breed": selectedBreed,
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: AppColors.primary,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(30),
+                                                    ),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 24, vertical: 12
+                                                    ),
+                                                  ),
+                                                  child: const Text("Apply Filters", style: TextStyle(color: Colors.white),),
+                                              ),
+                                            ],
+
                                           ),
 
 
@@ -496,43 +731,59 @@ class _PostPageState extends State<PostPage> {
               ),
               Padding(
                 padding:
-                EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
+                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
                 child: const Column(
                   children: [
                     PostCardComponent(
                         imageUrl:
-                        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
+                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
                         name: "Buddy",
                         location: "Near Central Park, NYC",
                         description:
-                        "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
+                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
                         status: "Lost",
                         timeAgoText: "Posted 3 hours ago"),
                     PostCardComponent(
                         imageUrl:
-                        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
+                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
                         name: "Buddy",
                         location: "Near Central Park, NYC",
                         description:
-                        "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
+                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
                         status: "Found",
                         timeAgoText: "Posted 3 hours ago"),
                     PostCardComponent(
                         imageUrl:
-                        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
+                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
                         name: "Buddy",
                         location: "Near Central Park, NYC",
                         description:
-                        "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
+                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
                         status: "Adoption",
                         timeAgoText: "Posted 3 hours ago"),
                   ],
                 ),
               ),
+
+
             ],
           ),
         ),
+
       ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: height * 0.09),
+        child: FloatingActionButton(
+          onPressed: (){
+            context.push('/map');
+          },
+          backgroundColor: AppColors.primary,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.map_outlined, color: Colors.white,),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/verify_email_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
+import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/splash_screen.dart';
 
 final router = GoRouter(
@@ -50,6 +51,11 @@ final router = GoRouter(
       GoRoute(
         path: '/menuProfile',
         builder: (context, state) => const MenuProfile(),
+      ),
+
+      GoRoute(
+        path: '/map',
+        builder: (context, state) => const MapScreen(),
       ),
 
 
