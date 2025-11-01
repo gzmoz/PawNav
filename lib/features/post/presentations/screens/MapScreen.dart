@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:pawnav/app/theme/colors.dart';
 
@@ -15,6 +16,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Map"),
@@ -64,11 +68,11 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                
+
                 //filter button
                 GestureDetector(
-                  onTap: (){},
-                  // onTap: () => _showFilters(context),
+                  // onTap: () {},
+                  onTap: () => _showFilters(context),
                   child: Container(
                     width: 50,
                     height: 50,
@@ -76,7 +80,11 @@ class _MapScreenState extends State<MapScreen> {
                       color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.tune_rounded, color: Colors.white, size: 28,),
+                    child: const Icon(
+                      Icons.tune_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
                   ),
                 ),
               ],
@@ -87,14 +95,368 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  /*void _showFilters(BuildContext context) {
+  void _showFilters(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
       ),
-      builder: (context) => const _FilterSheet(),
+      builder: (BuildContext context) {
+        String selectedPostType = "Lost";
+        double radiusValue = 10;
+        String selectedAnimal = "Dog";
+        String selectedBreed = "Any";
+        final TextEditingController locationController =
+            TextEditingController();
 
-    ),
-  }*/
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+            top: 10,
+          ),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      //drag indicator
+                      Center(
+                        child: Container(
+                          width: width * 0.2,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Filters",
+                            style: TextStyle(
+                              fontSize: width * 0.05,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+
+                      Divider(
+                        color: Colors.grey.shade300,
+                        height: 1,
+                      ),
+
+                      const SizedBox(height: 15),
+
+                      Text(
+                        "Post Type",
+                        style: TextStyle(
+                          fontSize: width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        "Select one or more post types.",
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: width * 0.033),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Center(
+                        child: Wrap(
+                          spacing: 10,
+                          children: ["Lost", "Found", "Adoption"].map((type) {
+                            final isSelected = selectedPostType == type;
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedPostType = type;
+                                });
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 22, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? Colors.blueAccent
+                                      : const Color(0xFFF3F4F6),
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color: Colors.blue.withOpacity(0.25),
+                                            blurRadius: 6,
+                                            offset: const Offset(0, 2),
+                                          )
+                                        ]
+                                      : [],
+                                ),
+                                child: Text(
+                                  type,
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Text(
+                        "Location Filter",
+                        style: TextStyle(
+                          fontSize: width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      TextField(
+                        controller: locationController,
+                        decoration: InputDecoration(
+                          hintText: "Enter city or postcode",
+                          prefixIcon: const Icon(Icons.search),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 23),
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Radius: ',
+                              style: TextStyle(
+                                fontSize: width * 0.042,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${radiusValue.toStringAsFixed(0)} km',
+                              style: TextStyle(
+                                  fontSize: width * 0.042,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.blueAccent),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Slider(
+                        value: radiusValue,
+                        min: 1,
+                        max: 100,
+                        activeColor: Colors.blueAccent,
+                        onChanged: (val) {
+                          setState(() {
+                            radiusValue = val;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Text(
+                        "Animal Details",
+                        style: TextStyle(
+                          fontSize: width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      //animal type
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.pets, color: Colors.grey),
+                                const SizedBox(width: 12),
+                                Text(
+                                  "Animal Type",
+                                  style: TextStyle(fontSize: width * 0.035),
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  Text(
+                                    selectedAnimal,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.chevron_right,
+                                      color: Colors.grey),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      //BREED
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.science, color: Colors.grey),
+                                const SizedBox(width: 12),
+                                Text(
+                                  "Breed",
+                                  style: TextStyle(fontSize: width * 0.035),
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  Text(
+                                    selectedBreed,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.chevron_right,
+                                      color: Colors.grey),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      Divider(color: Colors.grey.shade300, height: 1),
+                      const SizedBox(height: 10),
+
+                      //bottom buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedPostType = "";
+                                selectedAnimal = "";
+                                selectedBreed = "";
+                                locationController.clear();
+                                radiusValue = 10;
+                              });
+                            },
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                            child: const Text(
+                              "Reset Filters",
+                              style: TextStyle(color: AppColors.primary),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.pop({
+                                "postType": selectedPostType,
+                                "location": locationController.text,
+                                "radius": radiusValue,
+                                "animal": selectedAnimal,
+                                "breed": selectedBreed,
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                            child: const Text(
+                              "Apply Filters",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 }
