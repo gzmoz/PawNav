@@ -29,7 +29,7 @@ class PostTypeOptionCard extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(40),
           border: Border(left: BorderSide(color: borderColor, width: 4)),
           boxShadow: const [
             BoxShadow(
@@ -42,7 +42,7 @@ class PostTypeOptionCard extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: color.withOpacity(0.2),
+              backgroundColor: color.withOpacity(0.1),
               radius: width * 0.04,
               child: Icon(
                 icon,

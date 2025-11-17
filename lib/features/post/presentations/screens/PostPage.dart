@@ -116,8 +116,8 @@ class _PostPageState extends State<PostPage> {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.01),
-                            blurRadius: 8,
+                            color: AppColors.primary.withOpacity(0.02),
+                            blurRadius: 10,
                             offset: Offset(1, 1),
                           ),
                         ],
@@ -204,15 +204,15 @@ class _PostPageState extends State<PostPage> {
                                                           ? AppColors.primary
                                                           : Colors.grey.shade300),*/
                                               color: selectedOption == "Newest"
-                                                  ? AppColors.background
-                                                  : Colors.white,
+                                                  ? AppColors.background2
+                                                  : Colors.grey.shade100,
                                             ),
                                             child: RadioListTile<String>(
                                               title:
                                                   const Text("Newest to Oldest"),
                                               value: "Newest",
                                               groupValue: selectedOption,
-                                              activeColor: Colors.blueAccent,
+                                              activeColor: Colors.blue.shade800,
                                               onChanged: (value) {
                                                 setState(() =>
                                                     selectedOption = value!);
@@ -230,15 +230,15 @@ class _PostPageState extends State<PostPage> {
                                                           ? AppColors.primary
                                                           : Colors.grey.shade300),*/
                                               color: selectedOption == "Oldest"
-                                                  ? AppColors.background
-                                                  : Colors.white,
+                                                  ? AppColors.background2
+                                                  : Colors.grey.shade100,
                                             ),
                                             child: RadioListTile<String>(
                                               title:
                                                   const Text("Oldest to Newest"),
                                               value: "Oldest",
                                               groupValue: selectedOption,
-                                              activeColor: Colors.blueAccent,
+                                              activeColor: Colors.blue.shade800,
                                               onChanged: (value) {
                                                 setState(() =>
                                                     selectedOption = value!);
@@ -302,10 +302,10 @@ class _PostPageState extends State<PostPage> {
                         ),
                         label: const Text("Sort"),
                         style: ElevatedButton.styleFrom(
-                          // backgroundColor: Colors.grey.shade200,
-                          backgroundColor: AppColors.background,
-                          foregroundColor: Colors.grey.shade700,
-                          // foregroundColor: Colors.grey.shade700,
+                          /*backgroundColor: AppColors.background,
+                          foregroundColor: Colors.grey.shade700,*/
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppColors.primary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -318,8 +318,9 @@ class _PostPageState extends State<PostPage> {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.01),
-                            blurRadius: 8,
+                            // color: Colors.black.withOpacity(0.01),
+                            color: AppColors.primary.withOpacity(0.02),
+                            blurRadius: 10,
                             offset: Offset(1, 1),
                           ),
                         ],
@@ -730,8 +731,8 @@ class _PostPageState extends State<PostPage> {
                         label: const Text("Filters"),
                         style: ElevatedButton.styleFrom(
                           // backgroundColor: Colors.grey.shade200,
-                          backgroundColor: AppColors.background,
-                          foregroundColor: Colors.grey.shade700,
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppColors.primary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -743,7 +744,7 @@ class _PostPageState extends State<PostPage> {
               ),
               Padding(
                 padding:
-                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
+                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 2),
                 child: const Column(
                   children: [
                     PostCardComponent(

@@ -47,6 +47,7 @@ dependencies:
   flutter_map: ^7.0.0
   latlong2: ^0.9.0
   geolocator: ^13.0.1
+  flutter_typeahead: ^5.2.0
 
 
 dev_dependencies:
@@ -91,6 +92,7 @@ flutter:
      - assets/onboarding/
      - assets/bottom_nav_bar_icons/
      - assets/representative/
+     - assets/json/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

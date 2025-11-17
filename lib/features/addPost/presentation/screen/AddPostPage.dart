@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/addPost/presentation/widget/post_type_option_card.dart';
 
@@ -11,19 +12,20 @@ class AddPostPage extends StatefulWidget {
 }
 
 class _AddPostPageState extends State<AddPostPage> {
+  bool _sheetClosed = false;
 
   Future<void> _showAddPostOptions() async {
-    // Bottom sheet'i bekle ki kapandıktan sonra sayfa davranışı kontrol edilebilsin
-    await showModalBottomSheet(
+    await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: false,
-      useRootNavigator: true,
-      isDismissible: true,
       useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      isDismissible: true,
+      enableDrag: true,
+      useRootNavigator: false,
       backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
       builder: (context) {
         return SafeArea(
           child: Padding(
@@ -45,66 +47,60 @@ class _AddPostPageState extends State<AddPostPage> {
                 const SizedBox(height: 16),
                 const Text(
                   "What would you like to post?",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 PostTypeOptionCard(
                   icon: Icons.search,
-                  color: Colors.blue.shade100,
-                  borderColor: Colors.blue,
+                  color: Colors.red.shade400,
+                  borderColor: Colors.red,
                   title: "Lost Post",
                   subtitle: "Report a missing pet",
                   onTap: () {
                     Navigator.pop(context);
-                    context.push('/addPostForm?type=Lost');
+                    this.context.push('/addPostForm?type=Lost');
                   },
                 ),
                 PostTypeOptionCard(
                   icon: Icons.location_on,
-                  color: Colors.green.shade100,
+                  color: Colors.green.shade400,
                   borderColor: Colors.green,
                   title: "Found Post",
                   subtitle: "Share a pet you have found",
                   onTap: () {
                     Navigator.pop(context);
-                    context.push('/addPostForm?type=Found');
+                    this.context.push('/addPostForm?type=Found');
                   },
                 ),
                 PostTypeOptionCard(
                   icon: Icons.favorite,
-                  color: Colors.orange.shade100,
+                  color: Colors.orange.shade400,
                   borderColor: Colors.orange,
                   title: "Adoption Post",
                   subtitle: "Find a new home for a pet",
                   onTap: () {
                     Navigator.pop(context);
-                    context.push('/addPostForm?type=Adoption');
+                    this.context.push('/addPostForm?type=Adoption');
                   },
                 ),
-                const SizedBox(height: 10),
               ],
             ),
           ),
         );
       },
-    );
-
-    // Sheet kapanınca sayfa da kapansın (isteğe bağlı)
-    /*if (mounted) {
-      context.go('/post');
-    }*//*ontext.pop();*/
+    ).whenComplete(() {
+      // Sheet gerçekten kapandıktan sonra tetiklenir
+      if (mounted) {
+        setState(() => _sheetClosed = true);
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    // Bu kısım garantili olarak widget build edildikten sonra çalışır
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Future.delayed ekleyerek Flutter render'ının tamamlanmasını bekletiyoruz
-      Future.delayed(const Duration(milliseconds: 200), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _showAddPostOptions();
       });
     });
@@ -112,15 +108,92 @@ class _AddPostPageState extends State<AddPostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
+
     return Scaffold(
-      backgroundColor: AppColors.background2,
-      appBar: AppBar(
-        title: const Text("Add Post"),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text(""),
+      backgroundColor: const Color(0xFFF9F9FB),
+      body: Center(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          child: _sheetClosed
+              ? Padding(
+            key: const ValueKey('content'),
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: LottieBuilder.asset(
+                    "assets/lottie/world_map.json",
+                    width: width * 1,
+                    height: height * 0.2,
+                    fit: BoxFit.contain,
+                  
+                  ),
+                ),
+                /*Container(
+                  width: width * 0.22,
+                  height: width * 0.22,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.pets,
+                    color: AppColors.primary,
+                    size: width * 0.12,
+                  ),
+                ),*/
+                const SizedBox(height: 24),
+                Text(
+                  "Put another paw on the map",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: width * 0.05,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1D1D1D),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Create a post to report a missing pet, share one you’ve found, or help a furry friend find a new home.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: width * 0.04,
+                    color: const Color(0xFF5A5A5A),
+                    // height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  height: height * 0.05,
+                  child: ElevatedButton(
+                    onPressed: _showAddPostOptions,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 3,
+                    ),
+                    child: const Text(
+                      "Create Post",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+              : const SizedBox.shrink(key: ValueKey('empty')),
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
+import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
@@ -68,6 +69,14 @@ final router = GoRouter(
       GoRoute(
         path: '/addPostBottom',
         builder: (context, state) => const AddPostPage(),
+      ),
+
+      GoRoute(
+        path: '/addPostForm',
+        builder: (context, state){
+          final type = state.uri.queryParameters['type'] ?? "Lost";
+          return AddPostFormPage(type: type);
+        },
       ),
 
 
