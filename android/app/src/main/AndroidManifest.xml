@@ -1,4 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Android 13 ve sonrası için -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- CAMERA permission -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Eski Android sürümleri için -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:label="pawnav"
         android:name="${applicationName}"

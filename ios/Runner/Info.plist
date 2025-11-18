@@ -29,6 +29,12 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+	//PERMISSION
+	<key>NSCameraUsageDescription</key>
+    <string>We need camera access to take photos of animals.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your gallery to choose photos.</string>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
