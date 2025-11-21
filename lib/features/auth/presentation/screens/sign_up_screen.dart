@@ -23,8 +23,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Bu yüzden GlobalKey<FormState> tanımlıyoruz.
   Bu key, Form’un durumuna (validate(), save() gibi fonksiyonlara) dışarıdan erişmemizi sağlar.*/
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -68,192 +66,173 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Stack(
+
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: width * 0.07),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
+              SizedBox(height: height * 0.15),
+
+              // Paw icon
               Container(
-                width: double.infinity,
-                height: height * 0.27,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(190),
-                    bottomRight: Radius.circular(190),
-                  ),
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    )
+                  ],
+                ),
+                child: Image.asset(
+                  'assets/app_icon/icon_transparent.png',
+                  width: 40,
+                  height: 40,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: height * 0.1),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    "Create an account",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: width * 0.07,
+
+              SizedBox(height: 28),
+
+              // Title
+              const Text(
+                "Join the Community",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1C1C1C),
+                ),
+              ),
+
+              SizedBox(height: 8),
+
+              // Subtitle
+              Text(
+                "Help bring pets home safely.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+
+              SizedBox(height: 40),
+
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+
+                    // Gmail Input
+                    CustomTextFormField(
+                      hintText: "your.email@gmail.com",
+                      controller: emailController,
+                      prefixIcon: Image.asset(
+                        "assets/login_screen/emailIcon.png",
+                        scale: 1.5,
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'E-mail cannot be empty';
+                        }
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value.trim())) {
+                          return 'Enter a valid e-mail';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
+
+                    SizedBox(height: 22),
+
+                    // Password Input
+                    CustomTextFormField(
+                      hintText: "Enter your password",
+                      controller: passwordController,
+                      obscureText: isObscure,
+                      prefixIcon: Image.asset(
+                        "assets/login_screen/passwordIcon.png",
+                        scale: 1.5,
+                      ),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isObscure = !isObscure;
+                            });
+                          },
+                          icon: Icon(
+                            isObscure
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          )),
+
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        if (value.length < 6) {
+                          return 'Minimum 6 characters required';
+                        }
+                        if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                          return 'Password must contain at least one uppercase letter';
+                        }
+                        if (!RegExp(r'[0-9]').hasMatch(value)) {
+                          return 'Password must contain at least one number';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 35),
+
+                    // Continue Button
+                    ButtonComponent(
+                      "Continue",
+                      Colors.white,
+                      AppColors.primary,
+                          () async {
+                        if (_formKey.currentState!.validate()) {
+                          await _signUpUser();
+                        }
+                      },
+                    ),
+
+                    SizedBox(height: 25),
+
+                    // Log In text
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Already have an account?",
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                        GestureDetector(
+                          onTap: () => context.go('/login'),
+                          child: const Text(
+                            " Log In",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 40),
+                  ],
                 ),
               ),
             ],
           ),
-
-          //inputfield
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      /*Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.05,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "Name",
-                          controller: nameController,
-                          obscureText: false,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/nameIcon.png',
-                          ),
-                          keyboardType: TextInputType.name,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Name cannot be empty';
-                            }
-                            if (value.trim().length < 2) {
-                              return 'Name must be at least 2 characters long';
-                            }
-                            if (!RegExp(r"^[a-zA-Z\s]+$")
-                                .hasMatch(value.trim())) {
-                              return 'Name can only contain letters';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),*/
-                      /*Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.025,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "Username",
-                          controller: userNameController,
-                          obscureText: false,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/usernameIcon.png',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Username cannot be empty';
-                            }
-                            if (value.trim().length < 4) {
-                              return 'Username must be at least 4 characters long';
-                            }
-                            if (!RegExp(r"^[a-zA-Z0-9_]+$")
-                                .hasMatch(value.trim())) {
-                              return 'Username can only contain letters, numbers, or underscores';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),*/
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.025,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "E-mail",
-                          controller: emailController,
-                          obscureText: false,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/emailIcon.png',
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'E-mail cannot be empty';
-                            }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                .hasMatch(value.trim())) {
-                              return 'Enter a valid e-mail address';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.025,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "Password",
-                          controller: passwordController,
-                          obscureText: isObscure,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/passwordIcon.png',
-                          ),
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isObscure = !isObscure;
-                                });
-                              },
-                              icon: Icon(
-                                isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              )),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password cannot be empty';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters long';
-                            }
-                            if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                              return 'Password must contain at least one uppercase letter';
-                            }
-                            if (!RegExp(r'[a-z]').hasMatch(value)) {
-                              return 'Password must contain at least one lowercase letter';
-                            }
-                            if (!RegExp(r'[0-9]').hasMatch(value)) {
-                              return 'Password must contain at least one number';
-                            }
-                            if (!RegExp(r'[!@#\$&*~]').hasMatch(value)) {
-                              return 'Password should contain at least one special character (!@#\$&*~)';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.05,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: ButtonComponent(
-                            "Next", Colors.white, AppColors.primary, () async {
-                          if (_formKey.currentState!.validate()) {
-                            await _signUpUser();
-
-                          }
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

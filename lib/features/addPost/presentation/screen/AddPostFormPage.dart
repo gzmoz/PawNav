@@ -882,7 +882,64 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
     }
   }
 
-  // source = camera or gallery?
+  Future<void> _pickImages() async {
+    final List<XFile> images = await _picker.pickMultiImage(
+      imageQuality: 70,
+    );
+
+    if (images.isEmpty) return;
+
+    int available = 5 - selectedImages.length;
+
+    // Kullanıcı 5'ten fazla seçmişse → tamamen iptal
+    if (images.length > available) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("You can select maximum $available more photo${available > 1 ? 's' : ''}."),
+        ),
+      );
+      return; // HİÇ EKLEME!
+    }
+
+    // Limit içinde ise ekle
+    selectedImages.addAll(images);
+
+    setState(() {});
+  }
+
+
+  /*// source = camera or gallery?
+  Future<void> _pickImages() async {
+    final List<XFile> images = await _picker.pickMultiImage(
+      //pickImage() metodu çalıştırılır ve kullanıcıdan fotoğraf seçmesi beklenir.
+      //source: source,
+      imageQuality: 70,
+    );
+
+    if (images.isNotEmpty) {
+      //max 5 kontrolu
+      if(selectedImages.length + images.length >5){
+        int available = 5 - selectedImages.length;
+
+        if(available <= 0){
+          //kullanici 5 foto zaten ekledi
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("You can upload max 5 photos")),
+          );
+          return;
+        }
+        // Kullanıcının seçtiği fotoğrafları kısıtla
+        selectedImages.addAll(images.take(available));
+      }else{
+        selectedImages.addAll(images);
+      }
+      setState(() {
+
+      });
+    }
+  }*/
+
+  /*// source = camera or gallery?
   Future<void> _pickMultipleImages() async {
     final List<XFile> images = await _picker.pickMultiImage(
       //pickImage() metodu çalıştırılır ve kullanıcıdan fotoğraf seçmesi beklenir.
@@ -911,7 +968,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
 
       });
     }
-  }
+  }*/
 
   void _showPhotoSourceSelector() {
     showModalBottomSheet(
@@ -945,17 +1002,18 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                 title: Text("Pick from Gallery"),
                 onTap: () {
                   Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
+                  _pickImages();
+                  // _pickImage(ImageSource.gallery);
                 },
               ),
-              ListTile(
+              /*ListTile(
                 leading: Icon(Icons.add_photo_alternate),
                 title: Text("Pick Multiple Photos"),
                 onTap: () {
                   Navigator.pop(context);
                   _pickMultipleImages();
                 },
-              ),
+              ),*/
 
               ListTile(
                 leading: Icon(Icons.camera_alt),
