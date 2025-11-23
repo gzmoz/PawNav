@@ -14,9 +14,12 @@ class ProfileInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      height: 56,
+      height: height *0.06,
       decoration: BoxDecoration(
         color: const Color(0xFFF9FAFB),
         borderRadius: BorderRadius.circular(14),
@@ -34,7 +37,7 @@ class ProfileInputField extends StatelessWidget {
             border: InputBorder.none,
             hintStyle: TextStyle(
               color: Colors.grey.shade500,
-              fontSize: 15,
+              fontSize: height *0.015,
               fontWeight: FontWeight.w500,
             ),
           ),

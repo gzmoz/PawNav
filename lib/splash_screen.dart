@@ -17,7 +17,11 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 3400), () {
       context.go('/login');
     });
+
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

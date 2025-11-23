@@ -1,12 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/widgets/button_component.dart';
 import 'package:pawnav/core/widgets/password_text_field_component.dart';
 import 'package:pawnav/core/widgets/text_field_component.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
+
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +27,64 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+
+  // State değişkeni - kedi animasyonu
+  Offset catOffset = const Offset(0, 1.0);
+  /*x = 0 → sağa/sola hareket yok
+    y = 1.0 → kedi şu an bulunduğu yerden 1 ekran yüksekliği aşağıda
+    Yani kedi başlangıçta ekranın dışındadır.*/
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      setState(() {
+        catOffset = const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
+      });
+    });
+  }
+
+  Future<void> _nativeGoogleSignIn() async {
+    /// TODO: update the Web client ID with your own.
+    ///
+    /// Web Client ID that you registered with Google Cloud.
+    const webClientId = '1050477886670-gpv0mroeodtcpu4josbe0douev1lsgve.apps.googleusercontent.com';
+    /// TODO: update the iOS client ID with your own.
+    ///
+    /// iOS Client ID that you registered with Google Cloud.
+    const iosClientId = '1050477886670-l62is9luvptpfk2ce0ruj911vbbcmjde.apps.googleusercontent.com';
+    final scopes = ['email', 'profile'];
+    final googleSignIn = GoogleSignIn.instance;
+    await googleSignIn.initialize(
+      serverClientId: webClientId,
+      clientId: iosClientId,
+    );
+    final googleUser = await googleSignIn.attemptLightweightAuthentication();
+    // or await googleSignIn.authenticate(); which will return a GoogleSignInAccount or throw an exception
+    if (googleUser == null) {
+      throw AuthException('Failed to sign in with Google.');
+    }
+    /// Authorization is required to obtain the access token with the appropriate scopes for Supabase authentication,
+    /// while also granting permission to access user information.
+    final authorization =
+        await googleUser.authorizationClient.authorizationForScopes(scopes) ??
+            await googleUser.authorizationClient.authorizeScopes(scopes);
+    final idToken = googleUser.authentication.idToken;
+    if (idToken == null) {
+      throw AuthException('No ID Token found.');
+    }
+    await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: authorization.accessToken,
+    );
+  }
+
+
+
+
 
   Future<void> _loginUser() async{
     try{
@@ -72,6 +137,9 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text('Error: $e')),
       );
     }
+
+
+
   }
 
 
@@ -84,7 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      // backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF7F8FB),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -92,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
               clipBehavior: Clip.none,
               //to show the overflow of the cat image (Taşan kısmı kırpma, bırak görünsün)
               children: [
-                Container(
+
+                /*Container(
                   width: width * 1.0,
                   height: height * 0.8,
                   decoration: const BoxDecoration(
@@ -110,6 +181,35 @@ class _LoginScreenState extends State<LoginScreen> {
                         "assets/login_screen/logcat.png",
                         height: height * 0.18,
                         fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  ),
+                ),*/
+
+                Container(
+                  width: width * 1.0,
+                  height: height * 0.8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AnimatedSlide( //offset değerindeki değişimleri animasyonlu şekilde uygular
+                      offset: catOffset,
+                      duration: const Duration(milliseconds: 1100), //süre
+                      curve: Curves.easeInOutBack, //hareket şekli
+                      // curve: Curves.decelerate,
+                      child: Transform.translate(
+                        offset: Offset(0, height * 0.03),
+                        child: Image.asset(
+                          "assets/login_screen/logcat.png",
+                          height: height * 0.18,
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
                     ),
                   ),
@@ -162,25 +262,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    /*TextFieldComponent(
-                      hintText: "",
-                      textInputType: TextInputType.visiblePassword,
-                      obscureText: true,
-                      controller: passwordController,
-                    ),*/
+
                     PasswordTextFieldComponent("", passwordController),
                     Padding(
-                      padding: EdgeInsets.only(
-                          top: width * 0.09, bottom: width * 0.02),
-                      /*child: ButtonComponent(
-                          "Login", Colors.black, Colors.white, () {}),*/
+                      padding: EdgeInsets.only(left: width *0.1, right: width * 0.1, top: height * 0.04, bottom: height * 0.015),
                       child: Container(
-                        width: width * 0.6,
-                        height: height * 0.049,
+                        width: width * 0.9,
+                        height: height * 0.05,
                         decoration: BoxDecoration(
                           // color: Colors.white,
                           color: AppColors.background,
-                          borderRadius: BorderRadius.circular(80),
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
@@ -211,29 +303,50 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Text(
-                      " - or - ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: width * 0.03,
-                      ),
-                    ),
+
+                    const SizedBox(height: 15),
+                    buildOrDivider(),
+                    const SizedBox(height: 15),
+
                     SizedBox(
                       child: Padding(
                           padding: EdgeInsets.only(top: width * 0.02),
+
                           child: GestureDetector(
+                            onTap: () async {
+                              try {
+                                // _googleSignIn();
+                                final response = await supabase.auth.signInWithOAuth(
+                                  OAuthProvider.google,
+                                  redirectTo: 'io.supabase.flutter://login-callback',
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Google login failed: $e")),
+                                );
+                              }
+                            },
+                            child: Image.asset(
+                              'assets/login_screen/google_button_2x.png',
+                              width: width * 0.39,
+                            ),
+                          ),
+
+                        /*child: GestureDetector(
                             onTap: () {},
                             child: Image.asset(
                                 'assets/login_screen/google_button_2x.png',
                                 width: width * 0.39),
-                          )),
+                          ),*/
+
+                      ),
                     )
                   ],
                 ),
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(top: height * 0.05),
+              padding: EdgeInsets.only(top: height * 0.035),
               child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
@@ -258,11 +371,46 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       )
                     ],
-                  )),
+                  )
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget buildOrDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Divider(
+              color: Colors.white.withOpacity(0.6),
+              thickness: 1,
+              endIndent: 10,
+            ),
+          ),
+          const Text(
+            " or ",
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Expanded(
+            child: Divider(
+              color: Colors.white.withOpacity(0.6),
+              thickness: 1,
+              indent: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 }

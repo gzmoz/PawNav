@@ -65,7 +65,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final double width = screenInfo.size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      // backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background2,
 
       body: SingleChildScrollView(
         child: Padding(
@@ -191,7 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     SizedBox(height: 35),
 
-                    // Continue Button
+                    /*// Continue Button
                     ButtonComponent(
                       "Continue",
                       Colors.white,
@@ -201,6 +202,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           await _signUpUser();
                         }
                       },
+                    ),*/
+
+                    GestureDetector(
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          await _signUpUser();
+                        }
+                      },
+                      child: Container(
+                        width: width * 0.88,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.035,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
 
                     SizedBox(height: 25),
@@ -215,11 +245,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: () => context.go('/login'),
-                          child: const Text(
+                          child: Text(
                             " Log In",
                             style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
                               color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
+                              fontSize: width * 0.04,
                             ),
                           ),
                         ),

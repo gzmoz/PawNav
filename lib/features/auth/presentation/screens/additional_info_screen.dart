@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/widgets/button_component.dart';
@@ -20,6 +21,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
   TextEditingController locationController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
+  double imageOpacity = 1.0;
 
   File? selectedImage;
 
@@ -34,26 +36,70 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
   Future<void> pickImage() async {
     try {
-      /*if (Platform.isAndroid) {
-      await requestPermission();
-      }*/
       final ImagePicker picker = ImagePicker();
-      //kullanıcıdan galerinden bir fotoğraf seçmesini bekle
       final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+      if (photo == null) return;
 
-      if (photo != null) {
-        setState(() {
-          // Seçilen fotoğrafın path değerini kullanarak bir File nesnesi oluşturuyoruz.
-          // Bu File nesnesini selectedImage değişkenine atıyoruz.
-          // Böylece UI (arayüz) bunu kullanarak resmi gösterebilir.
-          selectedImage = File(photo.path);
-        });
-      }
+      final cropped = await ImageCropper().cropImage(
+        sourcePath: photo.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 95,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Photo',
+            toolbarColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
+            lockAspectRatio: true,
+            cropStyle: CropStyle.circle,
+
+          ),
+          IOSUiSettings(
+            title: 'Crop Photo',
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      if (cropped == null) return;
+
+      setState(() {
+        selectedImage = File(cropped.path);
+      });
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking image: $e')),
       );
     }
+  }
+
+
+  Future<bool> showDeleteDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: false, // dışarı tıklayınca kapanmasın
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Delete Photo"),
+              content:
+                  const Text("Are you sure you want to delete this photo?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   Future<String?> uploadPhoto(String userId) async {
@@ -168,343 +214,281 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
     return Scaffold(
       // backgroundColor: const Color(0xFFF7F8FB),
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 50),
+      backgroundColor: AppColors.background2,
+      body: ScrollConfiguration(
+        behavior: const ScrollBehavior().copyWith(overscroll: false),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom + 50,
+              top: width * 0.055,
+              right: width * 0.055,
+              left: width * 0.055),
+          child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: height * 0.05),
 
-              // Paw Icon
-              Icon(Icons.pets, color: AppColors.primary, size: 36),
+                // Paw Icon
+                Icon(Icons.pets, color: AppColors.primary, size: 36),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Title
-              const Text(
-                "Complete Your Profile",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF324067),
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              Text(
-                "Tell us a bit about yourself.",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-
-              const SizedBox(height: 35),
-
-              // Profile Photo
-              GestureDetector(
-                onTap: pickImage,
-                child: Stack(
-                  children: [
-                    // Outer circle
-                    Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.white,
-                            Colors.grey.shade200,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 65,
-                        backgroundColor: Colors.grey.shade300,
-                        backgroundImage: selectedImage != null
-                            ? FileImage(selectedImage!)
-                            : null,
-                        child: selectedImage == null
-                            ? Icon(
-                                Icons.camera_alt,
-                                size: 40,
-                                color: Colors.grey.shade700,
-                              )
-                            : null,
-                      ),
-                    ),
-
-                    // + Icon
-                    Positioned(
-                      bottom: 4,
-                      right: 4,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF324067),
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(7),
-                        child:
-                            const Icon(Icons.add, color: Colors.white, size: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              const Text(
-                "Profile Photo",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF324067),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                "(Optional)",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade500,
-                ),
-              ),
-
-              const SizedBox(height: 35),
-
-              // White Card Input Container
-              Container(
-                width: width * 0.88,
-                padding: const EdgeInsets.all(22),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    // FULL NAME
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "FULL NAME *",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ProfileInputField(
-                      hintText: "John Doe",
-                      controller: nameController,
-                      //obscureText: false,
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    // USERNAME
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "USERNAME *",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ProfileInputField(
-                      hintText: "johndoe_pets",
-                      controller: userNameController,
-                      // obscureText: false,
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    // LOCATION
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "LOCATION (OPTIONAL)",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    ProfileInputField(
-                      hintText: "San Francisco, CA",
-                      controller: locationController,
-                      // obscureText: false,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              // Continue Button (Full width gradient)
-              GestureDetector(
-                onTap: _saveProfile,
-                child: Container(
-                  width: width * 0.88,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    "Continue",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
+                // Title
+                Text(
+                  "Complete Your Profile",
+                  style: TextStyle(
+                    fontSize: width * 0.06,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF324067),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 50),
-            ],
-          ),
-        ),
-      ),
-      /*backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: double.infinity,
-                height: height * 0.2,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(250),
-                    bottomRight: Radius.circular(250),
+                const SizedBox(height: 6),
+
+                Text(
+                  "Tell us a bit about yourself.",
+                  style: TextStyle(
+                    fontSize: width * 0.04,
+                    color: Colors.grey.shade600,
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: height * 0.1),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    'Complete Your Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: width * 0.05,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+
+                SizedBox(height: height * 0.025),
+
+                // Profile Photo
+                GestureDetector(
+                  onTap: pickImage,
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.01,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "Name",
-                          controller: nameController,
-                          obscureText: false,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/nameIcon.png',
+                      // Outer circle
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.grey.shade200,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                          keyboardType: TextInputType.name,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Name cannot be empty';
-                            }
-                            if (value.trim().length < 2) {
-                              return 'Name must be at least 2 characters long';
-                            }
-                            if (!RegExp(r"^[a-zA-Z\s]+$")
-                                .hasMatch(value.trim())) {
-                              return 'Name can only contain letters';
-                            }
-                            return null;
-                          },
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: height * 0.01,
-                            left: width * 0.08,
-                            right: width * 0.08),
-                        child: CustomTextFormField(
-                          hintText: "Username",
-                          controller: userNameController,
-                          obscureText: false,
-                          prefixIcon: Image.asset(
-                            'assets/login_screen/usernameIcon.png',
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Username cannot be empty';
-                            }
-                            if (value.trim().length < 4) {
-                              return 'Username must be at least 4 characters long';
-                            }
-                            if (!RegExp(r"^[a-zA-Z0-9_]+$")
-                                .hasMatch(value.trim())) {
-                              return 'Username can only contain letters, numbers, or underscores';
-                            }
-                            return null;
-                          },
+                        child: CircleAvatar(
+                          radius: 65,
+                          backgroundColor: Colors.grey.shade300,
+                          backgroundImage: selectedImage != null
+                              ? FileImage(selectedImage!)
+                              : null,
+                          child: selectedImage == null
+                              ? Icon(
+                                  Icons.camera_alt,
+                                  size: 40,
+                                  color: Colors.grey.shade700,
+                                )
+                              : null,
                         ),
                       ),
 
-                      //bottom buttons
-                      Padding(
-                        padding: EdgeInsets.only(top: width * 0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ButtonComponent("Finish", Colors.white,
-                                AppColors.primary, () async {
-                                  await _saveProfile();
-                                }),
-                            //ButtonComponent("Skip for now", Colors.white, AppColors.primary, (){}),
-                          ],
+                      // + Icon
+                      Positioned(
+                        bottom: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (selectedImage == null) {
+                              pickImage();
+                            } else {
+                              final shouldDelete = await showDeleteDialog();
+
+                              if (shouldDelete) {
+                                // burada fade-out animasyonu ile sileceğiz (3. adım)
+                                startFadeOut();
+                              }
+                              /*setState(() {
+                                selectedImage = null;
+                              });*/
+                            }
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(7),
+                            child: Icon(
+                              selectedImage == null ? Icons.add : Icons.delete,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
+
+                SizedBox(height: height * 0.02),
+
+                const Text(
+                  "Profile Photo",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF324067),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  "(Optional)",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // White Card Input Container
+                Container(
+                  width: width * 0.88,
+                  padding: const EdgeInsets.all(22),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // FULL NAME
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "FULL NAME",
+                          style: TextStyle(
+                            fontSize: width * 0.03,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ProfileInputField(
+                        hintText: "John Doe",
+                        controller: nameController,
+                        //obscureText: false,
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // USERNAME
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "USERNAME",
+                          style: TextStyle(
+                            fontSize: width * 0.03,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ProfileInputField(
+                        hintText: "johndoe_pets",
+                        controller: userNameController,
+                        // obscureText: false,
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // LOCATION
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "LOCATION (OPTIONAL)",
+                          style: TextStyle(
+                            fontSize: width * 0.03,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ProfileInputField(
+                        hintText: "San Francisco, CA",
+                        controller: locationController,
+                        // obscureText: false,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Continue Button (Full width gradient)
+                GestureDetector(
+                  onTap: _saveProfile,
+                  child: Container(
+                    width: width * 0.88,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Continue",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: width * 0.035,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 50),
+              ],
             ),
           ),
-        ],
-      ),*/
+        ),
+      ),
     );
+  }
+
+  void startFadeOut() {
+    setState(() {
+      imageOpacity = 1.0;
+    });
+
+    // animasyonu çalıştırıyoruz
+    Future.delayed(const Duration(milliseconds: 60), () {
+      setState(() {
+        imageOpacity = 0.0; // opacity düşüyor
+      });
+
+      // animasyon bittikten sonra fotoğrafı siliyoruz
+      Future.delayed(const Duration(milliseconds: 300), () {
+        setState(() {
+          selectedImage = null;
+          imageOpacity = 1.0; // reset for next time
+        });
+      });
+    });
   }
 }
