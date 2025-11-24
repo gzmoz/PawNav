@@ -23,6 +23,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
 
+
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);

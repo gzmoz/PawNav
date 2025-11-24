@@ -12,9 +12,6 @@ import 'package:pawnav/core/widgets/text_field_component.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase/supabase.dart';
 
-
-
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -28,9 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
   // State değişkeni - kedi animasyonu
   Offset catOffset = const Offset(0, 1.0);
+
   /*x = 0 → sağa/sola hareket yok
     y = 1.0 → kedi şu an bulunduğu yerden 1 ekran yüksekliği aşağıda
     Yani kedi başlangıçta ekranın dışındadır.*/
@@ -41,7 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
-        catOffset = const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
+        catOffset =
+            const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
       });
     });
   }
@@ -50,11 +48,14 @@ class _LoginScreenState extends State<LoginScreen> {
     /// TODO: update the Web client ID with your own.
     ///
     /// Web Client ID that you registered with Google Cloud.
-    const webClientId = '1050477886670-gpv0mroeodtcpu4josbe0douev1lsgve.apps.googleusercontent.com';
+    const webClientId =
+        '1050477886670-gpv0mroeodtcpu4josbe0douev1lsgve.apps.googleusercontent.com';
+
     /// TODO: update the iOS client ID with your own.
     ///
     /// iOS Client ID that you registered with Google Cloud.
-    const iosClientId = '1050477886670-l62is9luvptpfk2ce0ruj911vbbcmjde.apps.googleusercontent.com';
+    const iosClientId =
+        '1050477886670-l62is9luvptpfk2ce0ruj911vbbcmjde.apps.googleusercontent.com';
     final scopes = ['email', 'profile'];
     final googleSignIn = GoogleSignIn.instance;
     await googleSignIn.initialize(
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (googleUser == null) {
       throw AuthException('Failed to sign in with Google.');
     }
+
     /// Authorization is required to obtain the access token with the appropriate scopes for Supabase authentication,
     /// while also granting permission to access user information.
     final authorization =
@@ -82,74 +84,67 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
-
-
-
-  Future<void> _loginUser() async{
-    try{
+  Future<void> _loginUser() async {
+    try {
       final response = await supabase.auth.signInWithPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
       final user = response.user;
 
-      if(user == null){ //kullanıcı bulunamadı
+      if (user == null) {
+        //kullanıcı bulunamadı
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login failed. Check your credentials.")),
+          const SnackBar(
+              content: Text("Login failed. Check your credentials.")),
         );
         return;
       }
 
       //check whether the email is confirmed or not
-      if(user.emailConfirmedAt == null){
+      if (user.emailConfirmedAt == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please verify your email before logging in'),),
+          const SnackBar(
+            content: Text('Please verify your email before logging in'),
+          ),
         );
         return;
       }
 
       final profile = await supabase
-        .from('profiles')
-        .select('name,username')
-        .eq('id', user.id)
-        .maybeSingle();
+          .from('profiles')
+          .select('name,username')
+          .eq('id', user.id)
+          .maybeSingle();
 
-      if(profile == null ||
+      if (profile == null ||
           profile['name'] == null ||
           profile['username'] == null ||
           (profile['name'] as String).isEmpty ||
-          (profile['username'] as String).isEmpty){
-
+          (profile['username'] as String).isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Welcome! Please complete your profile")),
+          const SnackBar(
+              content: Text("Welcome! Please complete your profile")),
         );
         context.go('/additional_info_screen');
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login successful")),);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login successful")),
+        );
         context.go('/home');
       }
-
-
-
-    }catch(e){
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
     }
-
-
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
-
 
     return Scaffold(
       // backgroundColor: AppColors.background,
@@ -162,7 +157,6 @@ class _LoginScreenState extends State<LoginScreen> {
               clipBehavior: Clip.none,
               //to show the overflow of the cat image (Taşan kısmı kırpma, bırak görünsün)
               children: [
-
                 /*Container(
                   width: width * 1.0,
                   height: height * 0.8,
@@ -198,7 +192,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: AnimatedSlide( //offset değerindeki değişimleri animasyonlu şekilde uygular
+                    child: AnimatedSlide(
+                      //offset değerindeki değişimleri animasyonlu şekilde uygular
                       offset: catOffset,
                       duration: const Duration(milliseconds: 1100), //süre
                       curve: Curves.easeInOutBack, //hareket şekli
@@ -262,10 +257,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     PasswordTextFieldComponent("", passwordController),
                     Padding(
-                      padding: EdgeInsets.only(left: width *0.1, right: width * 0.1, top: height * 0.04, bottom: height * 0.015),
+                      padding: EdgeInsets.only(
+                          left: width * 0.1,
+                          right: width * 0.1,
+                          top: height * 0.04,
+                          bottom: height * 0.015),
                       child: Container(
                         width: width * 0.9,
                         height: height * 0.05,
@@ -303,41 +301,36 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 15),
                     buildOrDivider(),
                     const SizedBox(height: 15),
-
                     SizedBox(
                       child: Padding(
-                          padding: EdgeInsets.only(top: width * 0.02),
-
-                          child: GestureDetector(
-                            onTap: () async {
-                              try {
-                                // _googleSignIn();
-                                final response = await supabase.auth.signInWithOAuth(
+                        padding: EdgeInsets.only(top: width * 0.02),
+                        child: GestureDetector(
+                          onTap: () async {
+                            try {
+                              // _nativeGoogleSignIn();
+                              /*final response = await supabase.auth.signInWithOAuth(
                                   OAuthProvider.google,
                                   redirectTo: 'io.supabase.flutter://login-callback',
-                                );
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Google login failed: $e")),
-                                );
-                              }
-                            },
-                            child: Image.asset(
-                              'assets/login_screen/google_button_2x.png',
-                              width: width * 0.39,
-                            ),
-                          ),
+                                );*/
+                              await _nativeGoogleSignIn();
 
-                        /*child: GestureDetector(
-                            onTap: () {},
-                            child: Image.asset(
-                                'assets/login_screen/google_button_2x.png',
-                                width: width * 0.39),
-                          ),*/
+                              await _handleGoogleProfile();
+
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text("Google login failed: $e")),
+                              );
+                            }
+                          },
+                          child: Image.asset(
+                            'assets/login_screen/google_button_2x.png',
+                            width: width * 0.39,
+                          ),
+                        ),
 
                       ),
                     )
@@ -371,14 +364,65 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       )
                     ],
-                  )
-              ),
+                  )),
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<void> _handleGoogleProfile() async {
+    final session = supabase.auth.currentSession;
+
+    if (session == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login failed: no session")),
+      );
+      return;
+    }
+
+    final user = session.user;
+
+    // 1) Bu email daha önce profiles'a eklenmiş mi?
+    final existingProfile = await supabase
+        .from('profiles')
+        .select()
+        .eq('id',user.id)
+        .maybeSingle();
+
+    // 2) Yoksa otomatik oluştur
+    if (existingProfile == null) {
+      await supabase.from('profiles').insert({
+        'id': user.id,
+        'email': user.email,
+        'name': '',
+        'username': '',
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    }
+
+    // 3) Tekrar oku
+    final profile = await supabase
+        .from('profiles')
+        .select('name, username')
+        .eq('id',user.id)
+        .maybeSingle();
+
+    // 4) Profil eksikse Additional Info Screen'e gönder
+    if (profile == null ||
+        profile['name'] == '' ||
+        profile['username'] == '' ||
+        profile['name'].toString().isEmpty ||
+        profile['username'].toString().isEmpty) {
+      context.go('/additional_info_screen');
+      return;
+    }
+
+    // 5) Profil tamamsa Home
+    context.go('/home');
+  }
+
 
   Widget buildOrDivider() {
     return Padding(
@@ -411,6 +455,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-
 }
