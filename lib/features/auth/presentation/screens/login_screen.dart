@@ -372,7 +372,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _handleGoogleProfile() async {
+  /*Future<void> _handleGoogleProfile() async {
     final session = supabase.auth.currentSession;
 
     if (session == null) {
@@ -396,8 +396,8 @@ class _LoginScreenState extends State<LoginScreen> {
       await supabase.from('profiles').insert({
         'id': user.id,
         'email': user.email,
-        'name': '',
-        'username': '',
+        'name': 'null',
+        'username': 'null',
         'created_at': DateTime.now().toIso8601String(),
       });
     }
@@ -411,8 +411,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // 4) Profil eksikse Additional Info Screen'e gönder
     if (profile == null ||
-        profile['name'] == '' ||
-        profile['username'] == '' ||
+        profile['name'] == 'null' ||
+        profile['username'] == 'null' ||
         profile['name'].toString().isEmpty ||
         profile['username'].toString().isEmpty) {
       context.go('/additional_info_screen');
@@ -421,7 +421,110 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // 5) Profil tamamsa Home
     context.go('/home');
+  }*/
+
+  Future<void> _handleGoogleProfile() async {
+    final session = supabase.auth.currentSession;
+
+    if (session == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login failed: no session")),
+      );
+      return;
+    }
+
+    final user = session.user;
+
+    // ----------------------------
+    // 1) Google display name al
+    // ----------------------------
+    String? googleName = user.userMetadata?['full_name'];
+
+    // Eğer Google adı yoksa email'in '@' öncesini al
+    googleName ??= user.email?.split('@')[0] ?? "New User";
+
+    // ----------------------------
+    // 2) Unique username üret
+    // ----------------------------
+    String baseUsername = googleName
+        .toLowerCase()
+        .replaceAll(" ", "_")
+        .replaceAll(RegExp(r'[^a-z0-9_]'), ''); //Bu karakterlerin dışında (^) kalan her şeyi bul ve '' ile sil.
+
+    // Username sonuna random sayı ekleyelim
+    String generatedUsername = "$baseUsername${DateTime.now().millisecondsSinceEpoch % 10000}";
+
+    // Unique olana kadar kontrol et
+    bool isUnique = false;
+
+    while (!isUnique) {
+      final check = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("username", generatedUsername)
+          .maybeSingle();
+
+      if (check == null) {
+        isUnique = true;
+      } else {
+        generatedUsername =
+        "$baseUsername${(DateTime.now().millisecondsSinceEpoch ~/ 2) % 10000}";
+      }
+    }
+
+    // ----------------------------
+    // 3) Bu kullanıcı zaten kayıtlı mı?
+    // ----------------------------
+    final existingProfile = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', user.id)
+        .maybeSingle();
+
+    // ----------------------------
+    // 4) Profil yoksa otomatik oluştur
+    // ----------------------------
+    if (existingProfile == null) {
+      await supabase.from('profiles').insert({
+        'id': user.id,
+        'email': user.email,
+        'name': googleName,
+        'username': generatedUsername,
+        'photo_url': user.userMetadata?['avatar_url'],
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+    }
+
+    // ----------------------------
+    // 5) Artık direkt Home ekranına git
+    // ----------------------------
+    context.go('/home');
   }
+
+
+/*
+  Future<String> generateUniqueUsername(String name) async {
+    final base = name.toLowerCase().replaceAll(' ', '');
+    String username = base;
+    int counter = 1;
+
+    final supabase = Supabase.instance.client;
+
+    while (true) {
+      final exists = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .maybeSingle();
+
+      if (exists == null) break; // böyle bir username yok → kullanabiliriz
+
+      username = "$base$counter";
+      counter++;
+    }
+    return username;
+  }*/
 
 
   Widget buildOrDivider() {

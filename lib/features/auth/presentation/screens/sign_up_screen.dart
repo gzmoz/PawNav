@@ -29,6 +29,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isObscure = true;
 
   Future<void> _signUpUser() async {
+    final supabase = Supabase.instance.client;
+
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    try {
+      // 1) Bu email profiles tablosunda var mı?
+      final existing = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
+      if (existing != null) {
+        // Email zaten kayıtlı
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("This email is already registered.")),
+        );
+        return;
+      }
+
+      // 2) Yeni kullanıcı → auth.signUp()
+      final response = await supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      // 3) Supabase doğrulama gönderdi
+      if (response.user != null && response.session == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registration successful! Please verify your email.'),
+          ),
+        );
+
+        context.go('/verify_email_screen');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
+
+
+
+  /*Future<void> _signUpUser() async {
     try {
       //acess the Supabase client
       final supabase = Supabase.instance.client;
@@ -56,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SnackBar(content: Text('Error: $e')),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

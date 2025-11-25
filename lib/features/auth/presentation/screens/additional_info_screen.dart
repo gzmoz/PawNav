@@ -135,6 +135,91 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
         return;
       }
 
+      // ---- 1) Validate fields ----
+      final name = nameController.text.trim();
+      final username = userNameController.text.trim();
+      final location = locationController.text.trim();
+
+      if (name.isEmpty || username.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Name and username are required')),
+        );
+        return;
+      }
+
+      // ---- 2) Username already taken? ----
+      final existingUsername = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .neq('id', user.id)
+          .maybeSingle();
+
+      if (existingUsername != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('This username is already taken')),
+        );
+        return;
+      }
+
+      // ---- 3) Photo upload ----
+      final photoUrl = await uploadPhoto(user.id);
+
+      // ---- 4) Bu kullanıcı için kayıt var mı? ----
+      final existingProfile = await supabase
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      // ---- 5) Insert or Update ----
+      if (existingProfile == null) {
+        // First-time Google Login user
+        await supabase.from('profiles').insert({
+          'id': user.id,
+          'email': user.email,
+          'name': name,
+          'username': username,
+          'location': location,
+          'photo_url': photoUrl,
+        });
+
+        if (mounted) context.go('/onboarding');
+      } else {
+        // Updating existing profile
+        await supabase.from('profiles').update({
+          'name': name,
+          'username': username,
+          'location': location,
+          'photo_url': photoUrl,
+        }).eq('id', user.id);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile saved successfully!')),
+        );
+
+        if (mounted) context.go('/home');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('ERROR: $e')),
+      );
+    }
+  }
+
+
+  /*Future<void> _saveProfile() async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      final user = supabase.auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No user logged in.')),
+        );
+        return;
+      }
+
       //check if there is userName is taken
       final existingUsername = await supabase
           .from('profiles')
@@ -204,7 +289,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
         SnackBar(content: Text('Error: $e')),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +299,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
     return Scaffold(
       // backgroundColor: const Color(0xFFF7F8FB),
-      backgroundColor: AppColors.background2,
+      backgroundColor: AppColors.white2,
       body: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(
@@ -278,6 +363,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                         child: CircleAvatar(
                           radius: 65,
                           backgroundColor: Colors.grey.shade300,
+                          // backgroundColor: AppColors.background,
                           backgroundImage: selectedImage != null
                               ? FileImage(selectedImage!)
                               : null,
@@ -285,7 +371,9 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                               ? Icon(
                                   Icons.camera_alt,
                                   size: 40,
-                                  color: Colors.grey.shade700,
+                                  color: Colors.grey[600],
+
+                                  // color: AppColors.primary,
                                 )
                               : null,
                         ),
