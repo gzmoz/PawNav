@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/errors/error_messages.dart';
+import 'package:pawnav/core/errors/supabase_exceptions.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/widgets/button_component.dart';
 import 'package:pawnav/core/widgets/custom_text_form_field.dart';
 import 'package:pawnav/features/auth/presentation/widgets/profile_input_field.dart';
@@ -67,9 +70,10 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
       });
 
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking image: $e')),
-      );
+      );*/
+      AppSnackbar.error(context, "Error picking image. Please try again.");
     }
   }
 
@@ -118,7 +122,9 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
       return publicUrl;
     } catch (e) {
-      print("Upload error: $e");
+      // print("Upload error: $e");
+      final failure = SupabaseErrorHandler.handle(e);
+      AppSnackbar.error(context, failure.message);
       return null;
     }
   }
@@ -129,9 +135,10 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
     try {
       final user = supabase.auth.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No user logged in.')),
-        );
+        );*/
+        AppSnackbar.error(context, ErrorMessages.noSession);
         return;
       }
 
@@ -141,9 +148,10 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
       final location = locationController.text.trim();
 
       if (name.isEmpty || username.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        AppSnackbar.info(context, "Name and username are required.");
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Name and username are required')),
-        );
+        );*/
         return;
       }
 
@@ -156,9 +164,10 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
           .maybeSingle();
 
       if (existingUsername != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('This username is already taken')),
-        );
+        );*/
+        AppSnackbar.error(context, ErrorMessages.usernameTaken);
         return;
       }
 
@@ -180,7 +189,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
           'email': user.email,
           'name': name,
           'username': username,
-          'location': location,
+          // 'location': location,
           'photo_url': photoUrl,
         });
 
@@ -190,21 +199,42 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
         await supabase.from('profiles').update({
           'name': name,
           'username': username,
-          'location': location,
+          // 'location': location,
           'photo_url': photoUrl,
         }).eq('id', user.id);
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile saved successfully!')),
-        );
+        );*/
+
+        AppSnackbar.success(context, "Profile saved successfully!");
 
         if (mounted) context.go('/home');
       }
     } catch (e) {
+      final errorMessage = e.toString();
+
+      if (errorMessage.contains('duplicate key value violates unique constraint')) {
+        /*ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This username is already taken'),
+          ),
+        );*/
+        AppSnackbar.error(context, "This username is already taken");
+
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('ERROR: $e')),
       );
     }
+
+    /*catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('ERROR: $e')),
+      );
+    }*/
   }
 
 
@@ -501,7 +531,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                       const SizedBox(height: 18),
 
                       // LOCATION
-                      Align(
+                      /*Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "LOCATION (OPTIONAL)",
@@ -517,7 +547,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                         hintText: "San Francisco, CA",
                         controller: locationController,
                         // obscureText: false,
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

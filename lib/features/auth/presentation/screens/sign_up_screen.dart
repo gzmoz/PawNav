@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/errors/error_messages.dart';
+import 'package:pawnav/core/errors/failure.dart';
+import 'package:pawnav/core/errors/supabase_exceptions.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/widgets/button_component.dart';
 import 'package:pawnav/core/widgets/button_component.dart';
 import 'package:pawnav/core/widgets/custom_text_form_field.dart';
@@ -44,9 +48,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (existing != null) {
         // Email zaten kayıtlı
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("This email is already registered.")),
-        );
+        );*/
+        AppSnackbar.error(context, ErrorMessages.emailAlreadyExists);
         return;
       }
 
@@ -56,55 +61,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
       );
 
+      /*
+      * response.session
+      * Kullanıcı kayıt olur → user oluşturulur
+        Ama giriş yapılmış bir session verilmez
+        Çünkü kullanıcı önce e-mailindeki confirm linkine tıklamak zorundadır
+      *
+      * */
+
       // 3) Supabase doğrulama gönderdi
       if (response.user != null && response.session == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Registration successful! Please verify your email.'),
           ),
-        );
+        );*/
+        AppSnackbar.info(
+            context, ErrorMessages.verifyEmailToContinue);
 
         context.go('/verify_email_screen');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e")),
-      );
+      );*/
+      Failure failure = SupabaseErrorHandler.handle(e);
+      AppSnackbar.error(context, failure.message);
     }
   }
 
-
-
-
-  /*Future<void> _signUpUser() async {
-    try {
-      //acess the Supabase client
-      final supabase = Supabase.instance.client;
-
-      final response = await supabase.auth.signUp(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      //to confirm e mail
-      if (response.user != null && response.session == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful! Please verify your email.'),
-          ),
-        );
-
-        if (mounted) {
-          context.go('/verify_email_screen');
-        }
-
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -253,6 +238,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),*/
 
                     GestureDetector(
+                      /*Form içindeki tüm validator’ları çalıştırır
+                      Eğer hiç hata yoksa true, hata varsa false döner*/
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
                           await _signUpUser();

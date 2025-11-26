@@ -81,7 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _currentIndex == _pages.length - 1
               ? const SizedBox.shrink()
               : Positioned(
-                  bottom: height * 0.04,
+                  bottom: height * 0.11,
                   left: width * 0.07,
                   child: TextButton(
                     onPressed: () {
@@ -98,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
           Positioned(
-            bottom: height * 0.04,
+            bottom: height * 0.11,
             right: width * 0.07,
             child: TextButton(
               onPressed: () {
@@ -117,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: width * 0.045,
+            bottom: height * 0.1,
             child: Center(
               child: SmoothPageIndicator(
                   controller: _pageController,

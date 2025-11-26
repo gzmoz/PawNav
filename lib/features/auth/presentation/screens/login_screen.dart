@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
-import 'package:pawnav/core/widgets/button_component.dart';
+import 'package:pawnav/core/errors/error_messages.dart';
+import 'package:pawnav/core/errors/failure.dart';
+import 'package:pawnav/core/errors/supabase_exceptions.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/widgets/password_text_field_component.dart';
 import 'package:pawnav/core/widgets/text_field_component.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -94,20 +95,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (user == null) {
         //kullanıcı bulunamadı
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text("Login failed. Check your credentials.")),
-        );
+        );*/
+        AppSnackbar.error(context, ErrorMessages.invalidCredentials);
+
         return;
       }
 
       //check whether the email is confirmed or not
       if (user.emailConfirmedAt == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please verify your email before logging in'),
           ),
-        );
+        );*/
+        AppSnackbar.info(context, ErrorMessages.emailNotVerified);
+
         return;
       }
 
@@ -122,21 +127,29 @@ class _LoginScreenState extends State<LoginScreen> {
           profile['username'] == null ||
           (profile['name'] as String).isEmpty ||
           (profile['username'] as String).isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text("Welcome! Please complete your profile")),
-        );
+        );*/
+
+        AppSnackbar.info(context, "Welcome! Please complete your profile.");
+
         context.go('/additional_info_screen');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login successful")),
-        );
+        );*/
+        AppSnackbar.success(context, "Login successful!");
+
         context.go('/home');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
-      );
+      );*/
+      // AppSnackbar.error(context, "Error: $e");
+      Failure failure = SupabaseErrorHandler.handle(e);
+      AppSnackbar.error(context, failure.message);
     }
   }
 
@@ -157,29 +170,6 @@ class _LoginScreenState extends State<LoginScreen> {
               clipBehavior: Clip.none,
               //to show the overflow of the cat image (Taşan kısmı kırpma, bırak görünsün)
               children: [
-                /*Container(
-                  width: width * 1.0,
-                  height: height * 0.8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Transform.translate(
-                      offset: Offset(0, height * 0.03),
-                      child: Image.asset(
-                        "assets/login_screen/logcat.png",
-                        height: height * 0.18,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ),
-                ),*/
-
                 Container(
                   width: width * 1.0,
                   height: height * 0.8,
@@ -197,8 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       offset: catOffset,
                       duration: const Duration(milliseconds: 1100), //süre
                       curve: Curves.easeInOutBack, //hareket şekli
-                      // curve: Curves.decelerate,
-                      child: Transform.translate(
+                      child: Transform.translate( //widget’ı x ve y eksenlerinde kaydırmak (taşımak) için kullanılan bir widget
                         offset: Offset(0, height * 0.03),
                         child: Image.asset(
                           "assets/login_screen/logcat.png",
@@ -320,10 +309,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               await _handleGoogleProfile();
 
                             } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              /*ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text("Google login failed: $e")),
-                              );
+                              );*/
+                              AppSnackbar.error(context, "Google login failed: $e");
                             }
                           },
                           child: Image.asset(
@@ -372,64 +362,17 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  /*Future<void> _handleGoogleProfile() async {
-    final session = supabase.auth.currentSession;
-
-    if (session == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login failed: no session")),
-      );
-      return;
-    }
-
-    final user = session.user;
-
-    // 1) Bu email daha önce profiles'a eklenmiş mi?
-    final existingProfile = await supabase
-        .from('profiles')
-        .select()
-        .eq('id',user.id)
-        .maybeSingle();
-
-    // 2) Yoksa otomatik oluştur
-    if (existingProfile == null) {
-      await supabase.from('profiles').insert({
-        'id': user.id,
-        'email': user.email,
-        'name': 'null',
-        'username': 'null',
-        'created_at': DateTime.now().toIso8601String(),
-      });
-    }
-
-    // 3) Tekrar oku
-    final profile = await supabase
-        .from('profiles')
-        .select('name, username')
-        .eq('id',user.id)
-        .maybeSingle();
-
-    // 4) Profil eksikse Additional Info Screen'e gönder
-    if (profile == null ||
-        profile['name'] == 'null' ||
-        profile['username'] == 'null' ||
-        profile['name'].toString().isEmpty ||
-        profile['username'].toString().isEmpty) {
-      context.go('/additional_info_screen');
-      return;
-    }
-
-    // 5) Profil tamamsa Home
-    context.go('/home');
-  }*/
-
   Future<void> _handleGoogleProfile() async {
     final session = supabase.auth.currentSession;
 
     if (session == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Login failed: no session")),
-      );
+      );*/
+      // AppSnackbar.error(context, "Login failed: no session.");
+
+      AppSnackbar.error(context, ErrorMessages.noSession);
+
       return;
     }
 
@@ -501,31 +444,6 @@ class _LoginScreenState extends State<LoginScreen> {
     // ----------------------------
     context.go('/home');
   }
-
-
-/*
-  Future<String> generateUniqueUsername(String name) async {
-    final base = name.toLowerCase().replaceAll(' ', '');
-    String username = base;
-    int counter = 1;
-
-    final supabase = Supabase.instance.client;
-
-    while (true) {
-      final exists = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', username)
-          .maybeSingle();
-
-      if (exists == null) break; // böyle bir username yok → kullanabiliriz
-
-      username = "$base$counter";
-      counter++;
-    }
-    return username;
-  }*/
-
 
   Widget buildOrDivider() {
     return Padding(
