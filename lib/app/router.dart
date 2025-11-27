@@ -4,16 +4,19 @@ import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
+import 'package:pawnav/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
+import 'package:pawnav/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/verify_email_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
+import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 
 final router = GoRouter(
-    initialLocation: '/splash',
+  initialLocation: '/splash',
     routes: [
 
       GoRoute(
@@ -77,6 +80,15 @@ final router = GoRouter(
           final type = state.uri.queryParameters['type'] ?? "Lost";
           return AddPostFormPage(type: type);
         },
+      ),
+
+      GoRoute(
+        path: '/forgot_password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/reset_password',
+        builder: (context, state) => const ResetPasswordScreen(),
       ),
 
 

@@ -3,6 +3,7 @@ import 'failure.dart';
 import 'error_messages.dart';
 
 class SupabaseErrorHandler {
+  // Bu fonksiyon, her hatayı yakalar ve Failure NESNESİ döner.
   static Failure handle(dynamic error) {
     // AUTH hataları
     if (error is AuthException) {

@@ -59,7 +59,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
+        emailRedirectTo: 'io.supabase.flutter://email-confirm',
+
       );
+
 
       /*
       * response.session
@@ -79,7 +82,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         AppSnackbar.info(
             context, ErrorMessages.verifyEmailToContinue);
 
-        context.go('/verify_email_screen');
+        if (!mounted) return;
+        router.go('/verify_email_screen');
+
+        // context.go('/verify_email_screen');
       }
     } catch (e) {
       /*ScaffoldMessenger.of(context).showSnackBar(
@@ -244,6 +250,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (_formKey.currentState!.validate()) {
                           await _signUpUser();
                         }
+                        context.go('/verify_email_screen');
+
                       },
                       child: Container(
                         width: width * 0.88,

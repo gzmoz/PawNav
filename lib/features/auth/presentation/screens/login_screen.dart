@@ -247,11 +247,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     PasswordTextFieldComponent("", passwordController),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: EdgeInsets.only(right: width * 0.12, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap:(){
+                            context.push('/forgot_password');
+                          },
+                          child: Text(
+                            "Forgot Password",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontStyle: FontStyle.italic,
+                              fontSize: width * 0.03,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.white,
+                              decorationThickness: 1.8
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.1,
                           right: width * 0.1,
-                          top: height * 0.04,
+                          top: height * 0.02,
                           bottom: height * 0.015),
                       child: Container(
                         width: width * 0.9,
