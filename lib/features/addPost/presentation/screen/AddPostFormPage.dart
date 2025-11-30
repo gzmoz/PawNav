@@ -607,6 +607,37 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                 ),
               ),
 
+              SizedBox(height: height*0.03,),
+              GestureDetector(
+                onTap: () async {
+                  // await _sendResetLink();
+                },
+
+                child: Container(
+                  width: width * 0.88,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Add post",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: width * 0.035,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+
+
             ],
           ),
         ),
@@ -849,6 +880,8 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                     }).toList(),
                   ),
                 ),
+
+
               ],
             ),
           );

@@ -28,8 +28,8 @@ class CustomRoundedInput extends StatelessWidget {
       child: Row(
         children: [
           if (leftIcon != null)
-            // Icon(leftIcon, color: Colors.grey[400], size: 22),
-            Icon(leftIcon, color: AppColors.primary.withOpacity(0.9), size: 22),
+            Icon(leftIcon, color: Colors.grey[500], size: 22),
+            // Icon(leftIcon, color: AppColors.primary.withOpacity(0.9), size: 22),
 
           if (leftIcon != null) const SizedBox(width: 10),
 
