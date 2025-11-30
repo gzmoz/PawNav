@@ -5,6 +5,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/image_picker_service.dart';
+import 'package:pawnav/core/services/permission_service.dart';
 import 'package:pawnav/features/addPost/data/datasources/state_service_typeahead.dart';
 import 'package:pawnav/features/addPost/presentation/widget/custom_rounded_input.dart';
 
@@ -32,6 +34,10 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController descCtrl = TextEditingController();
   final TextEditingController locationCtrl = TextEditingController();
+
+  final permissionService = PermissionService();
+  final imagePickerService = ImagePickerService();
+
 
   final Map<String, List<String>> breedMap = {
     "Dog": [
@@ -916,6 +922,34 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
   }
 
   Future<void> _pickImages() async {
+    final allowed = await permissionService.requestGalleryPermission();
+    if (!allowed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Gallery permission is required.")),
+      );
+      return;
+    }
+
+    final images = await imagePickerService.pickMultiple();
+    if (images.isEmpty) return;
+
+    int available = 5 - selectedImages.length;
+
+    if (images.length > available) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("You can select maximum $available more photo${available > 1 ? 's' : ''}."),
+        ),
+      );
+      return;
+    }
+
+    selectedImages.addAll(images);
+    setState(() {});
+  }
+
+
+  /*Future<void> _pickImages() async {
     final List<XFile> images = await _picker.pickMultiImage(
       imageQuality: 70,
     );
@@ -938,70 +972,8 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
     selectedImages.addAll(images);
 
     setState(() {});
-  }
-
-
-  /*// source = camera or gallery?
-  Future<void> _pickImages() async {
-    final List<XFile> images = await _picker.pickMultiImage(
-      //pickImage() metodu çalıştırılır ve kullanıcıdan fotoğraf seçmesi beklenir.
-      //source: source,
-      imageQuality: 70,
-    );
-
-    if (images.isNotEmpty) {
-      //max 5 kontrolu
-      if(selectedImages.length + images.length >5){
-        int available = 5 - selectedImages.length;
-
-        if(available <= 0){
-          //kullanici 5 foto zaten ekledi
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("You can upload max 5 photos")),
-          );
-          return;
-        }
-        // Kullanıcının seçtiği fotoğrafları kısıtla
-        selectedImages.addAll(images.take(available));
-      }else{
-        selectedImages.addAll(images);
-      }
-      setState(() {
-
-      });
-    }
   }*/
 
-  /*// source = camera or gallery?
-  Future<void> _pickMultipleImages() async {
-    final List<XFile> images = await _picker.pickMultiImage(
-      //pickImage() metodu çalıştırılır ve kullanıcıdan fotoğraf seçmesi beklenir.
-      //source: source,
-      imageQuality: 70,
-    );
-
-    if (images.isNotEmpty) {
-      //max 5 kontrolu
-      if(selectedImages.length + images.length >5){
-        int available = 5 - selectedImages.length;
-
-        if(available <= 0){
-          //kullanici 5 foto zaten ekledi
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("You can upload max 5 photos")),
-          );
-          return;
-        }
-        // Kullanıcının seçtiği fotoğrafları kısıtla
-        selectedImages.addAll(images.take(available));
-      }else{
-        selectedImages.addAll(images);
-      }
-      setState(() {
-
-      });
-    }
-  }*/
 
   void _showPhotoSourceSelector() {
     showModalBottomSheet(
@@ -1069,12 +1041,38 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
     });
   }
 
-  Future <void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source) async {
+    if (source == ImageSource.camera) {
+      final allowed = await permissionService.requestCameraPermission();
+      if (!allowed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Camera permission denied.")),
+        );
+        return;
+      }
+    }
+
+    final image = await imagePickerService.pickSingle(source);
+    if (image != null) {
+      if (selectedImages.length >= 5) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("You can upload max 5 photos")),
+        );
+        return;
+      }
+
+      selectedImages.add(image);
+      setState(() {});
+    }
+  }
+
+
+/*Future <void> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(
       source: source, imageQuality: 70,
     );
     if (image != null) { setState(() { selectedImages.add(image); }); }
-  }
+  }*/
 }
 
 // STYLED SECTION TITLE

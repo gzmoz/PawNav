@@ -8,10 +8,11 @@ import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/errors/error_messages.dart';
 import 'package:pawnav/core/errors/supabase_exceptions.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
-import 'package:pawnav/core/widgets/button_component.dart';
-import 'package:pawnav/core/widgets/custom_text_form_field.dart';
 import 'package:pawnav/features/auth/presentation/widgets/profile_input_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pawnav/core/services/permission_service.dart';
+import 'package:pawnav/core/services/image_picker_service.dart';
+
 
 class AdditionalInfoScreen extends StatefulWidget {
   const AdditionalInfoScreen({super.key});
@@ -28,16 +29,81 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
   File? selectedImage;
 
-  /*Future<void> requestPermission() async {
-    if (Platform.isAndroid) {
-      if (await Permission.photos.isDenied ||
-          await Permission.photos.isPermanentlyDenied) {
-        await Permission.photos.request();
-      }
+  final permissionService = PermissionService();
+  final imagePickerService = ImagePickerService();
+
+  Future<void> pickCameraImage() async {
+    final allowed = await permissionService.requestCameraPermission();
+    if (!allowed) {
+      AppSnackbar.error(context, "Camera permission is required.");
+      return;
     }
-  }*/
+
+    final XFile? photo = await imagePickerService.pickSingle(ImageSource.camera);
+    if (photo == null) return;
+
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: photo.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      compressQuality: 95,
+    );
+
+    if (cropped == null) return;
+
+    setState(() {
+      selectedImage = File(cropped.path);
+    });
+  }
+
 
   Future<void> pickImage() async {
+    try {
+      // ---- 1) Gallery izni kontrolü ----
+      final allowed = await permissionService.requestGalleryPermission();
+      if (!allowed) {
+        AppSnackbar.error(context, "Gallery permission is required.");
+        return;
+      }
+
+      // ---- 2) Fotoğraf seçme işlemi ----
+      final XFile? photo = await imagePickerService.pickSingle(ImageSource.gallery);
+      if (photo == null) return;
+
+      // ---- 3) Fotoğrafı kırpma ----
+      final cropped = await ImageCropper().cropImage(
+        sourcePath: photo.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 95,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Photo',
+            toolbarColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
+            lockAspectRatio: true,
+            cropStyle: CropStyle.circle,
+          ),
+          IOSUiSettings(
+            title: 'Crop Photo',
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      if (cropped == null) return;
+
+      // ---- 4) State güncelleme ----
+      setState(() {
+        selectedImage = File(cropped.path);
+      });
+
+    } catch (e) {
+      AppSnackbar.error(context, "Error picking image. Please try again.");
+    }
+  }
+
+
+
+  /*Future<void> pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
@@ -70,12 +136,10 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
       });
 
     } catch (e) {
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking image: $e')),
-      );*/
+
       AppSnackbar.error(context, "Error picking image. Please try again.");
     }
-  }
+  }*/
 
 
   Future<bool> showDeleteDialog() async {
@@ -135,9 +199,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
     try {
       final user = supabase.auth.currentUser;
       if (user == null) {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No user logged in.')),
-        );*/
+
         AppSnackbar.error(context, ErrorMessages.noSession);
         return;
       }
@@ -145,13 +207,11 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
       // ---- 1) Validate fields ----
       final name = nameController.text.trim();
       final username = userNameController.text.trim();
-      final location = locationController.text.trim();
+      // final location = locationController.text.trim();
 
       if (name.isEmpty || username.isEmpty) {
         AppSnackbar.info(context, "Name and username are required.");
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name and username are required')),
-        );*/
+
         return;
       }
 
@@ -164,9 +224,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
           .maybeSingle();
 
       if (existingUsername != null) {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This username is already taken')),
-        );*/
+
         AppSnackbar.error(context, ErrorMessages.usernameTaken);
         return;
       }
@@ -203,10 +261,6 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
           'photo_url': photoUrl,
         }).eq('id', user.id);
 
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved successfully!')),
-        );*/
-
         AppSnackbar.success(context, "Profile saved successfully!");
 
         if (mounted) context.go('/home');
@@ -215,11 +269,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
       final errorMessage = e.toString();
 
       if (errorMessage.contains('duplicate key value violates unique constraint')) {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('This username is already taken'),
-          ),
-        );*/
+
         AppSnackbar.error(context, "This username is already taken");
 
         return;
@@ -237,89 +287,63 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
     }*/
   }
 
+  void _showPhotoSourceSelector() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.only(bottom: 70, left: 20, right: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 10),
 
-  /*Future<void> _saveProfile() async {
-    final supabase = Supabase.instance.client;
+              const Text(
+                "Select Photo Source",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 10),
 
-    try {
-      final user = supabase.auth.currentUser;
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No user logged in.')),
+              // ---- From Gallery ----
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text("Pick from Gallery"),
+                onTap: () {
+                  Navigator.pop(context);
+                  pickImage(); // 🔵 UPDATED → senin gallery fonksiyonun
+                },
+              ),
+
+              // ---- From Camera ----
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Take a Photo"),
+                onTap: () {
+                  Navigator.pop(context);
+                  pickCameraImage();
+                },
+              ),
+            ],
+          ),
         );
-        return;
-      }
+      },
+    );
+  }
 
-      //check if there is userName is taken
-      final existingUsername = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', userNameController.text.trim())
-          .neq('id', user.id)
-          .maybeSingle(); //kayıt yoksa hata vermesin, sadece null dönsün diye kullanılır.
 
-      if (existingUsername != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This username is already taken')),
-        );
-        return;
-      }
-
-      if (nameController.text.trim().isEmpty ||
-          userNameController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name and username are required')),
-        );
-        return;
-      }
-
-      final existingProfile = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', user.id)
-          .maybeSingle(); //ya tek bir sonuç döner ya da hiç sonuç yoksa null döner.
-
-      final String? photoUrl = await uploadPhoto(user.id);
-
-      if (existingProfile == null) {
-        //new user -> insert
-        await supabase.from('profiles').insert({
-          'id': user.id,
-          'email': user.email,
-          'name': nameController.text.trim(),
-          'username': userNameController.text.trim(),
-          'location': locationController.text.trim(),
-          'photo_url': photoUrl,
-        });
-
-        if (mounted) {
-          context.go('/onboarding');
-        }
-      } else {
-        //already have an account -> update
-        await supabase.from('profiles').update({
-          'email': user.email,
-          'name': nameController.text.trim(),
-          'username': userNameController.text.trim(),
-          'location': locationController.text.trim(),
-          'photo_url': photoUrl,
-        }).eq('id', user.id);
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved successfully!')),
-      );
-
-      //kullanıcı kayıtlıysa ana ekrana yönlendir
-      if (existingProfile != null && mounted) {
-        context.go('/home');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -373,7 +397,8 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
 
                 // Profile Photo
                 GestureDetector(
-                  onTap: pickImage,
+                  // onTap: pickImage,
+                  onTap: _showPhotoSourceSelector,
                   child: Stack(
                     children: [
                       // Outer circle
