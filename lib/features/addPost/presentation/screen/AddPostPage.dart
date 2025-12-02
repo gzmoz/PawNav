@@ -57,8 +57,9 @@ class _AddPostPageState extends State<AddPostPage> {
                   title: "Lost Post",
                   subtitle: "Report a missing pet",
                   onTap: () {
-                    Navigator.pop(context);
                     this.context.push('/addPostForm?type=Lost');
+                    /*Navigator.pop(context);
+                    this.context.push('/addPostForm?type=Lost');*/
                   },
                 ),
                 PostTypeOptionCard(
@@ -68,8 +69,9 @@ class _AddPostPageState extends State<AddPostPage> {
                   title: "Found Post",
                   subtitle: "Share a pet you have found",
                   onTap: () {
-                    Navigator.pop(context);
                     this.context.push('/addPostForm?type=Found');
+                    /*Navigator.pop(context);
+                    this.context.push('/addPostForm?type=Found');*/
                   },
                 ),
                 PostTypeOptionCard(
@@ -79,7 +81,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   title: "Adoption Post",
                   subtitle: "Find a new home for a pet",
                   onTap: () {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                     this.context.push('/addPostForm?type=Adoption');
                   },
                 ),

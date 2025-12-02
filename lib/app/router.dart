@@ -1,6 +1,11 @@
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
+import 'package:pawnav/features/addPost/data/datasources/post_remote_datasource.dart' show PostRemoteDataSource;
+import 'package:pawnav/features/addPost/data/repositories/post_repository_impl.dart';
+import 'package:pawnav/features/addPost/domain/usecases/create_post_usecase.dart';
+import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
@@ -14,6 +19,7 @@ import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
   initialLocation: '/splash',
@@ -74,13 +80,36 @@ final router = GoRouter(
         builder: (context, state) => const AddPostPage(),
       ),
 
-      GoRoute(
+      /*GoRoute(
         path: '/addPostForm',
         builder: (context, state){
           final type = state.uri.queryParameters['type'] ?? "Lost";
           return AddPostFormPage(type: type);
         },
+      ),*/
+
+      GoRoute(
+        path: "/addPostForm",
+        builder: (context, state) {
+          final type = state.uri.queryParameters['type'] ?? "Lost";
+
+          return BlocProvider(
+            create: (context) => AddPostCubit(
+              AddPost(
+                repository: PostRepositoryImpl(
+                  remoteDataSource: PostRemoteDataSource(
+                    Supabase.instance.client,
+                  ),
+                ),
+              ),
+            ),
+            child: AddPostFormPage(type: type),
+          );
+        },
       ),
+
+
+
 
       GoRoute(
         path: '/forgot_password',

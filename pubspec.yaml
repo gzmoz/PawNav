@@ -52,6 +52,7 @@ dependencies:
   image_cropper: ^11.0.0
   google_sign_in: ^7.2.0
   permission_handler: ^12.0.1
+  flutter_bloc: ^9.1.1
 
 
 dev_dependencies:

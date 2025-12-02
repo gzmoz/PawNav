@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +9,10 @@ import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/services/image_picker_service.dart';
 import 'package:pawnav/core/services/permission_service.dart';
 import 'package:pawnav/features/addPost/data/datasources/state_service_typeahead.dart';
+import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
+import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
 import 'package:pawnav/features/addPost/presentation/widget/custom_rounded_input.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const List<String> animalTypeList = <String>["Dog", "Cat", "Bird", "Other"];
 
@@ -30,6 +34,8 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
   DateTime? eventDate;
   List<String> breedList = [];
   List<XFile> selectedImages = [];
+  List<String> uploadedUrls = [];
+
 
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController descCtrl = TextEditingController();
@@ -616,8 +622,35 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
               SizedBox(height: height*0.03,),
               GestureDetector(
                 onTap: () async {
-                  // await _sendResetLink();
+                  if (selectedImages.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Please upload at least one photo.")),
+                    );
+                    return;
+                  }
+
+                  // 1) Storage Upload
+                  uploadedUrls = await uploadImages(selectedImages);
+
+                  final userId = Supabase.instance.client.auth.currentUser!.id;
+
+                  final post = Post(
+                    id: "",
+                    userId: userId,
+                    species: selectedSpecies!,
+                    breed: selectedBreed!,
+                    color: selectedColor!,
+                    gender: gender!,
+                    name: nameCtrl.text,
+                    description: descCtrl.text,
+                    location: selectedLocation!,
+                    eventDate: eventDate!,
+                    images: uploadedUrls,
+                  );
+
+                  context.read<AddPostCubit>().submitPost(post);
                 },
+
 
                 child: Container(
                   width: width * 0.88,
@@ -650,6 +683,39 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
       ),
     );
   }
+
+  Future<List<String>> uploadImages(List<XFile> images) async {
+    final supabase = Supabase.instance.client;
+    List<String> urls = [];
+
+    for (final img in images) {
+      try {
+        final fileExt = img.path.split('.').last;
+        final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+        final filePath = 'posts/$fileName';
+
+        final response = await supabase.storage
+            .from('post_images')
+            .upload(filePath, File(img.path));
+
+        print("UPLOAD RESPONSE: $response");
+
+        final url = supabase.storage
+            .from('post_images')
+            .getPublicUrl(filePath);
+
+        urls.add(url);
+
+      } catch (e) {
+        print("UPLOAD ERROR → $e");
+        rethrow;
+      }
+    }
+
+    return urls;
+  }
+
+
 
   void _openBreedSelector(BuildContext context) {
     showModalBottomSheet(
