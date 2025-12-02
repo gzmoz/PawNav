@@ -646,6 +646,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                     location: selectedLocation!,
                     eventDate: eventDate!,
                     images: uploadedUrls,
+                    postType: widget.type,
                   );
 
                   context.read<AddPostCubit>().submitPost(post);

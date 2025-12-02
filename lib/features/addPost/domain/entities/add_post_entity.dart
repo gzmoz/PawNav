@@ -13,6 +13,7 @@ class Post{
   final String location;
   final DateTime eventDate;
   final List<String> images;
+  final String postType;
 
   Post({
     required this.id,
@@ -25,6 +26,7 @@ class Post{
     required this.description,
     required this.location,
     required this.eventDate,
-    required this.images
+    required this.images,
+    required this.postType,
   });
 }

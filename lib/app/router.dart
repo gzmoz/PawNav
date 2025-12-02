@@ -109,6 +109,27 @@ final router = GoRouter(
       ),
 
 
+      /*GoRoute(
+        path: "/addPostForm",
+        builder: (context, state) {
+          final type = state.uri.queryParameters['type'] ?? "Lost";
+
+          return BlocProvider(
+            create: (context) => AddPostCubit(
+              AddPost(
+                repository: PostRepositoryImpl(
+                  remoteDataSource: PostRemoteDataSource(
+                    Supabase.instance.client,
+                  ),
+                ),
+              ),
+            ),
+            child: AddPostFormPage(type: type),
+          );
+        },
+      ),*/
+
+
 
 
       GoRoute(

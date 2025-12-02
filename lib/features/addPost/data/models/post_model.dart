@@ -13,7 +13,8 @@ class PostModel extends Post{
     required super.description,
     required super.location,
     required super.eventDate,
-    required super.images
+    required super.images,
+    required super.postType
   });
 
   //bir nesneyi JSON formatına dönüştürmek için kullanılır.
@@ -30,6 +31,7 @@ class PostModel extends Post{
       "location": location,
       "event_date": eventDate.toIso8601String(), //ISO string, tarih–saat bilgisinin dünyada standart kabul edilen tek bir metin (String) formatında yazılmasıdır.
       "images": images,
+      "post_type": postType,
     };
   }
 }
