@@ -15,15 +15,15 @@ class AddPostCubit extends Cubit<AddPostState>{
 
   Future<void> submitPost(Post post) async {
     try {
-      print("🔵 ADD POST START");
+      print("ADD POST START");
       emit(AddPostLoading());
 
       await addPostUseCase(post);
 
-      print("🟢 ADD POST SUCCESS");
+      print("ADD POST SUCCESS");
       emit(AddPostSuccess());
     } catch (e) {
-      print("🔴 ADD POST ERROR: $e");
+      print("ADD POST ERROR: $e");
       emit(AddPostError(e.toString()));
     }
   }
