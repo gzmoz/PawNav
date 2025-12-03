@@ -8,6 +8,7 @@ import 'package:pawnav/features/addPost/domain/usecases/create_post_usecase.dart
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
+import 'package:pawnav/features/addPost/presentation/screen/select_location_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/login_screen.dart';
@@ -108,29 +109,10 @@ final router = GoRouter(
         },
       ),
 
-
-      /*GoRoute(
-        path: "/addPostForm",
-        builder: (context, state) {
-          final type = state.uri.queryParameters['type'] ?? "Lost";
-
-          return BlocProvider(
-            create: (context) => AddPostCubit(
-              AddPost(
-                repository: PostRepositoryImpl(
-                  remoteDataSource: PostRemoteDataSource(
-                    Supabase.instance.client,
-                  ),
-                ),
-              ),
-            ),
-            child: AddPostFormPage(type: type),
-          );
-        },
-      ),*/
-
-
-
+      GoRoute(
+        path: "/select-location",
+        builder: (context, state) => const SelectLocationScreen(),
+      ),
 
       GoRoute(
         path: '/forgot_password',

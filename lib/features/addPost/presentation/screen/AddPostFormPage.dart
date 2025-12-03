@@ -365,8 +365,20 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                 CustomRoundedInput(
                   leftIcon: Icons.location_on_outlined,
                   rightWidget: GestureDetector(
-                    onTap: () {
-                      //context.push("/map"); //MAP ICON DIRECTION
+                    onTap: () async {
+                      final result = await context.push("/select-location");
+                      /*Sayfa kapatılana kadar bekler.
+                      * Dönen değeri result değişkenine atar.*/
+
+                      if(result != null && result is Map ){
+                        /*Flutter’a “durum değişti, ekran yeniden çizilsin” diyoruz.
+                        Dönen verinin içinden "address" bilgisini alıp
+                        selectedLocation değişkenine set ediyoruz.*/
+                        setState(() {
+                          selectedLocation = result["address"];
+                        });
+                        locationCtrl.text = result["address"];
+                      }
                     },
                     child: Container(
                       padding:
