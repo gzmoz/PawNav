@@ -827,86 +827,80 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
       useSafeArea: true,
       backgroundColor: Colors.transparent, // dışını tamamen kaldırıyor
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 50,
-            top: 10,
+        return Container(
+          height: 300,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
           ),
-          child: Container(
-            height: 300,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                // drag handle
-                Container(
-                  width: 40,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              // drag handle
+              Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10),
                 ),
+              ),
 
-                const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-                // LİSTE
-                Expanded(
-                  child: ListView(
-                    children: animalTypeList.map((item) {
-                      bool isSelected = item == selectedSpecies;
+              // LİSTE
+              Expanded(
+                child: ListView(
+                  children: animalTypeList.map((item) {
+                    bool isSelected = item == selectedSpecies;
 
-                      return GestureDetector(
-                        onTap: () {
-                          //setState(() => selectedSpecies = item);
-                          setState(() {
-                            selectedSpecies = item;
-                            breedList = breedMap[item]!;
-                            selectedBreed = null;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 6),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? Colors.blue.shade50
-                                : Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                item,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color:
-                                      isSelected ? Colors.blue : Colors.black87,
-                                ),
-                              ),
-                              if (isSelected)
-                                const Icon(Icons.check, color: Colors.blue)
-                            ],
-                          ),
+                    return GestureDetector(
+                      onTap: () {
+                        //setState(() => selectedSpecies = item);
+                        setState(() {
+                          selectedSpecies = item;
+                          breedList = breedMap[item]!;
+                          selectedBreed = null;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.blue.shade50
+                              : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                      );
-                    }).toList(),
-                  ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color:
+                                    isSelected ? Colors.blue : Colors.black87,
+                              ),
+                            ),
+                            if (isSelected)
+                              const Icon(Icons.check, color: Colors.blue)
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
+              ),
 
-                const SizedBox(height: 15),
-              ],
-            ),
+              const SizedBox(height: 15),
+            ],
           ),
         );
       },
@@ -983,6 +977,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                   ),
                 ),
 
+                const SizedBox(height: 15),
 
               ],
             ),

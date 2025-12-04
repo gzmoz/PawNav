@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pawnav/core/services/permission_service.dart';
+import 'package:pawnav/features/addPost/presentation/widget/location_bottom_card.dart';
 
 class SelectLocationScreen extends StatefulWidget {
   const SelectLocationScreen({super.key});
@@ -11,6 +15,24 @@ class SelectLocationScreen extends StatefulWidget {
 }
 
 class _SelectLocationScreenState extends State<SelectLocationScreen> {
+
+  final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY']!;
+
+
+  final PermissionService permissionService = PermissionService();
+  GoogleMapController? _mapController;
+
+  final LatLng _initialCenter = const LatLng(39.9208, 32.8541);
+  LatLng? _cameraTarget; // kamera ortası
+  LatLng? selectedPoint; // seçilen nokta
+  String? selectedTitle;
+  String? selectedAddress;
+
+  bool showBottomCard = false;
+
+  final TextEditingController searchCtrl = TextEditingController();
+  Set<Marker> markers = {};
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -41,7 +63,52 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
       ),
       body: Stack(
         children: [
-          FlutterMap(
+          SizedBox.expand(
+            child: GoogleMap(
+              markers: markers,
+              onTap: (latLng) async {
+                setState(() {
+                  selectedPoint = latLng;
+
+                  markers.clear(); // tek marker
+                  markers.add(
+                    Marker(
+                      markerId: const MarkerId('selected'),
+                      position: latLng,
+                    ),
+                  );
+                  showBottomCard = true;
+                });
+
+                final address = await _getAddressFromLatLng(latLng.latitude, latLng.longitude);
+
+                setState(() {
+                  selectedAddress = address;
+                  selectedTitle = "Selected Location";
+                });
+              },
+              padding: const EdgeInsets.only(bottom: 100, right: 10, left: 10),
+              initialCameraPosition: CameraPosition(
+                target: _initialCenter,
+                zoom: 12,
+              ),
+              onMapCreated: (controller) {
+                _mapController = controller;
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              onCameraMove: (position) {
+                _cameraTarget = position.target;
+              },
+              onCameraIdle: () {
+                // Kullanıcı haritayı oynatmayı bıraktığında tetiklenir
+                selectedPoint = _cameraTarget;
+                // Burada otomatik bottom card açmıyoruz, sen öyle istemiyorsun.
+              },
+            ),
+          ),
+
+          /*FlutterMap(
             options: const MapOptions(
               initialCenter: LatLng(39.9208, 32.8541),
               initialZoom: 12,
@@ -54,7 +121,9 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                     'com.ozgzm.pawnav.pawnav', //  OSM için kibar olmak adına uygulama bilgisini iletiyoruz.
               ),
             ],
-          ),
+          ),*/
+
+          /*----------SEARCH BAR-------------*/
           Positioned(
             top: 15,
             left: 10,
@@ -79,18 +148,113 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             ),
           ),
 
+          /*----------CURRENT LOCATION BUTTON-------------*/
           Positioned(
-            bottom: 160,
-            right: 20,
+            bottom: 200,
+            right: 15,
             child: FloatingActionButton(
               backgroundColor: Colors.white,
               mini: true,
-              onPressed: () {  },
+              onPressed: () {
+                _requestInitialLocationPermission();
+              },
               child: const Icon(Icons.my_location, color: Colors.black),
             ),
           ),
+
+          /*----------BOTTOM CARD-------------*/
+          if (showBottomCard)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: BottomLocationCard(
+                title: selectedTitle ?? "",
+                address: selectedAddress ?? "",
+                onConfirm: () {
+                  /*Kullanıcı onay butonuna bastığında:
+                        Mevcut sayfayı kapatır
+                        Önceki ekrana aşağıdaki verileri döner*/
+                  Navigator.pop(context, {
+                    "address": selectedAddress,
+                    "lat": selectedPoint!.latitude,
+                    "lon": selectedPoint!.longitude,
+                  });
+                },
+              ),
+            ),
         ],
       ),
     );
   }
+
+  Future<void> _requestInitialLocationPermission() async {
+    final allowed = await permissionService.requestLocationPermission();
+
+    if (!allowed) {
+      return;
+    }
+
+    // Location çek
+    final pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    final LatLng current = LatLng(pos.latitude, pos.longitude);
+
+    // Kamerayı hareket ettir
+    if (_mapController != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(current, 15),
+      );
+    }
+
+    // Marker + bottom card aç
+    setState(() async {
+      selectedPoint = current;
+
+      final address = await _getAddressFromLatLng(current.latitude, current.longitude);
+
+      markers.clear();
+      markers.add(
+        Marker(
+          markerId: const MarkerId('selected'),
+          position: current,
+        ),
+      );
+      showBottomCard = true;
+      setState(() {
+        selectedAddress = address;
+        selectedTitle = "Current Location";
+      });
+    });
+  }
+
+  Future<String> _getAddressFromLatLng(double lat, double lng) async{
+    try{
+      final placemarks = await placemarkFromCoordinates(lat, lng);
+      /*[
+        Placemark(
+            street: "Atatürk Cd",
+            subLocality: "Kadıköy",
+            locality: "İstanbul",
+            administrativeArea: "İstanbul"
+        )
+      ]*/
+
+      if(placemarks.isEmpty){
+        return "$lat, $lng";
+      }
+
+      //Listeden ilk adresi alıyorsun
+      final p = placemarks.first;
+
+      return "${p.thoroughfare}, ${p.subLocality}, ${p.locality}, ${p.administrativeArea}";
+
+    }catch(e){
+      print("Geocoding error: $e");
+      return "$lat, $lng";
+    }
+  }
+
 }

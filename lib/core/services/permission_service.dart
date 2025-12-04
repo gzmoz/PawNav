@@ -33,5 +33,19 @@ class PermissionService{
     return false;
   }
 
+  Future<bool> requestLocationPermission()async{
+    var status  = await Permission.location.status;
+
+    if(status.isGranted) return true;
+
+    var result = await Permission.location.request();
+
+    if(result.isGranted) return true;
+
+    if(result.isPermanentlyDenied){
+      await openAppSettings();
+    }
+    return false;
+  }
 
 }

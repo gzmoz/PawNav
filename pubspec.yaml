@@ -53,6 +53,11 @@ dependencies:
   google_sign_in: ^7.2.0
   permission_handler: ^12.0.1
   flutter_bloc: ^9.1.1
+  google_maps_flutter: ^2.14.0
+  geocoding: ^4.0.0
+  google_places_flutter: ^2.1.1
+  http: ^1.6.0
+  flutter_dotenv: ^6.0.0
 
 
 dev_dependencies:
@@ -98,6 +103,7 @@ flutter:
      - assets/bottom_nav_bar_icons/
      - assets/representative/
      - assets/json/
+     - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
