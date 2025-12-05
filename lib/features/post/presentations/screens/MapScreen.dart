@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/location_service.dart';
+import 'package:pawnav/core/services/permission_service.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,6 +16,21 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY']!;
+  Set<Marker> markers = {};
+
+  final PermissionService permissionService = PermissionService();
+
+
+  GoogleMapController? _mapController;
+
+  final LatLng _initialCenter = const LatLng(39.9208, 32.8541);
+  LatLng? _cameraTarget; // kamera ortası
+  LatLng? selectedPoint; // seçilen nokta
+  String? selectedTitle;
+  String? selectedAddress;
+
+  List<dynamic> placeResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +45,52 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: Stack(
         children: [
-          FlutterMap(
+          SizedBox.expand(
+            child: GoogleMap(
+              markers: markers,
+              onTap: (latLng) async {
+                setState(() {
+                  selectedPoint = latLng;
+
+                  markers.clear(); // tek marker
+                  markers.add(
+                    Marker(
+                      markerId: const MarkerId('selected'),
+                      position: latLng,
+                    ),
+                  );
+                  // showBottomCard = true;
+                });
+
+                final address = await LocationService.getAddressFromLatLng(
+                    latLng.latitude, latLng.longitude);
+
+                setState(() {
+                  selectedAddress = address;
+                  selectedTitle = "Selected Location";
+                });
+              },
+              padding: const EdgeInsets.only(bottom: 100, right: 10, left: 10),
+              initialCameraPosition: CameraPosition(
+                target: _initialCenter,
+                zoom: 12,
+              ),
+              onMapCreated: (controller) {
+                _mapController = controller;
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              onCameraMove: (position) {
+                _cameraTarget = position.target;
+              },
+              onCameraIdle: () {
+                // Kullanıcı haritayı oynatmayı bıraktığında tetiklenir
+                selectedPoint = _cameraTarget;
+                // Burada otomatik bottom card açmıyoruz, sen öyle istemiyorsun.
+              },
+            ),
+          ),
+          /*FlutterMap(
             options: const MapOptions(
               initialCenter: LatLng(39.9208, 32.8541),
               initialZoom: 12,
@@ -40,7 +103,7 @@ class _MapScreenState extends State<MapScreen> {
                     'com.ozgzm.pawnav.pawnav', //  OSM için kibar olmak adına uygulama bilgisini iletiyoruz.
               ),
             ],
-          ),
+          ),*/
           Positioned(
             top: 20,
             left: 16,
@@ -49,6 +112,10 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 Expanded(
                   child: TextField(
+                    onChanged: (value) async {
+                      final results = await LocationService.placeAutoComplete(value);
+                      setState(() => placeResults = results);
+                    },
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: "Search by address or city",
@@ -68,6 +135,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
+
 
                 //filter button
                 GestureDetector(
@@ -90,10 +158,92 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
+
+          if (placeResults.isNotEmpty)
+            Positioned(
+              top: 80,
+              left: 20,
+              right: 20,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.35,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ListView.builder(
+                  itemCount: placeResults.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final item = placeResults[index];
+
+                    return ListTile(
+                      leading: const Icon(Icons.location_on, color: Colors.grey),
+                      title: Text(item["description"]),
+                      onTap: () async {
+                        // KLAVYEYİ KAPAT
+                        FocusScope.of(context).unfocus();
+
+                        final coords = await LocationService
+                            .placeDetailsToLatLng(item["place_id"]);
+
+                        if (coords == null) return;
+
+                        // HARİTAYA GİT
+                        _mapController?.animateCamera(
+                          CameraUpdate.newLatLngZoom(coords, 15),
+                        );
+
+                        // MARKER KOY
+                        setState(() {
+                          markers.clear();
+                          markers.add(Marker(
+                            markerId: MarkerId("selectedPlace"),
+                            position: coords,
+                          ));
+
+                          selectedPoint = coords;
+                          selectedAddress = item["description"];
+                          selectedTitle =
+                              item["structured_formatting"]?["main_text"] ?? "";
+                          _searchController.text = selectedAddress!;
+
+                          placeResults = []; // listeyi kapat
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+
+
+          /*----------CURRENT LOCATION BUTTON-------------*/
+          Positioned(
+            bottom: 200,
+            right: 15,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              mini: true,
+              onPressed: () {
+                _requestInitialLocationPermission();
+              },
+              child: const Icon(Icons.my_location, color: Colors.black),
+            ),
+          ),
         ],
       ),
     );
   }
+
 
   void _showFilters(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -459,4 +609,28 @@ class _MapScreenState extends State<MapScreen> {
       },
     );
   }
+
+  Future<void> _requestInitialLocationPermission() async {
+    final allowed = await permissionService.requestLocationPermission();
+
+    if (!allowed) {
+      return;
+    }
+
+    // Location çek
+    final pos = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    final LatLng current = LatLng(pos.latitude, pos.longitude);
+
+    // Kamerayı hareket ettir
+    if (_mapController != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(current, 15),
+      );
+    }
+  }
+
+
 }

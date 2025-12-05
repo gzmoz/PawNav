@@ -1075,7 +1075,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
       ),
       builder: (context) {
         return Container(
-          padding: EdgeInsets.only(bottom: 70, left:20, right:20),
+          padding: EdgeInsets.only(bottom: 25, left:20, right:20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

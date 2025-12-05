@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:pawnav/core/services/location_service.dart';
 import 'package:pawnav/core/services/permission_service.dart';
 import 'package:pawnav/features/addPost/presentation/widget/location_bottom_card.dart';
 
@@ -15,9 +18,7 @@ class SelectLocationScreen extends StatefulWidget {
 }
 
 class _SelectLocationScreenState extends State<SelectLocationScreen> {
-
   final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY']!;
-
 
   final PermissionService permissionService = PermissionService();
   GoogleMapController? _mapController;
@@ -32,6 +33,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
 
   final TextEditingController searchCtrl = TextEditingController();
   Set<Marker> markers = {};
+  List<dynamic> placeResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,8 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
     final double width = screenInfo.size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, //klavye ekranı itmesin
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -80,7 +84,11 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                   showBottomCard = true;
                 });
 
-                final address = await _getAddressFromLatLng(latLng.latitude, latLng.longitude);
+              /*  final address = await _getAddressFromLatLng(
+                    latLng.latitude, latLng.longitude);*/
+
+                final address = await LocationService.getAddressFromLatLng(
+                    latLng.latitude, latLng.longitude);
 
                 setState(() {
                   selectedAddress = address;
@@ -124,28 +132,93 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
           ),*/
 
           /*----------SEARCH BAR-------------*/
-          Positioned(
-            top: 15,
-            left: 10,
-            right: 10,
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(30),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search for a place, address, or area...",
-                  hintStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15, right: 15, left: 15),
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(30),
+                  child: TextField(
+                    controller: searchCtrl,
+                    decoration: InputDecoration(
+                      hintText: "Search for a place, address, or area...",
+                      hintStyle: TextStyle(color: Colors.grey.shade600),
+                      prefixIcon: const Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      placeAutoComplete(value);
+                    },
                   ),
                 ),
               ),
-            ),
+              if (placeResults.isNotEmpty)
+                Container(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.35,
+                  ),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: placeResults.length,
+                    itemBuilder: (context, index) {
+                      final item = placeResults[index];
+
+                      return ListTile(
+                        leading: const Icon(Icons.location_on),
+                        title: Text(item["description"]),
+                        onTap: () async {
+                          FocusScope.of(context).unfocus(); // ← KLAVYEYİ KAPAT
+                          final placeId = item["place_id"];
+                          final LatLng? coords = await getPlaceLatLng(placeId);
+
+                          if (coords == null) return;
+
+                          _mapController?.animateCamera(
+                            CameraUpdate.newLatLngZoom(coords, 16),
+                          );
+
+                          setState(() {
+                            selectedPoint = coords;
+                            markers.clear();
+                            markers.add(Marker(
+                              markerId: MarkerId("autocomplete"),
+                              position: coords,
+                            ));
+
+                            selectedTitle =
+                                item["structured_formatting"]["main_text"];
+                            selectedAddress = item["description"];
+                            searchCtrl.text =
+                                selectedAddress!; // search bar’a yaz
+                            showBottomCard = true;
+
+                            placeResults = []; // listeyi kapat
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+            ],
           ),
 
           /*----------CURRENT LOCATION BUTTON-------------*/
@@ -213,7 +286,8 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
     setState(() async {
       selectedPoint = current;
 
-      final address = await _getAddressFromLatLng(current.latitude, current.longitude);
+      final address =
+          await LocationService.getAddressFromLatLng(current.latitude, current.longitude);
 
       markers.clear();
       markers.add(
@@ -230,19 +304,19 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
     });
   }
 
-  Future<String> _getAddressFromLatLng(double lat, double lng) async{
-    try{
+  /*Future<String> _getAddressFromLatLng(double lat, double lng) async {
+    try {
       final placemarks = await placemarkFromCoordinates(lat, lng);
-      /*[
+      *//*[
         Placemark(
             street: "Atatürk Cd",
             subLocality: "Kadıköy",
             locality: "İstanbul",
             administrativeArea: "İstanbul"
         )
-      ]*/
+      ]*//*
 
-      if(placemarks.isEmpty){
+      if (placemarks.isEmpty) {
         return "$lat, $lng";
       }
 
@@ -250,11 +324,61 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
       final p = placemarks.first;
 
       return "${p.thoroughfare}, ${p.subLocality}, ${p.locality}, ${p.administrativeArea}";
-
-    }catch(e){
+    } catch (e) {
       print("Geocoding error: $e");
       return "$lat, $lng";
     }
+  }*/
+
+  //kullanıcı her searchbara yazdıgında bu fonksiyon calısacak
+  Future<void> placeAutoComplete(String query) async {
+    if (query.isEmpty) {
+      //Kullanıcı input’u silerse → öneri listesini temizle.
+      setState(() {
+        placeResults = [];
+      });
+    }
+
+    final url = Uri.https(
+      "maps.googleapis.com",
+      "maps/api/place/autocomplete/json",
+      {
+        "input": query, //kullanıcınnın yazdıgı
+        "key": apiKey,
+      },
+    );
+
+    //http get request
+    final response = await http.get(url);
+
+    //Google’ın gönderdiği JSON cevabını Dart nesnesine çeviriyoruz.
+    final data = jsonDecode(response.body);
+
+    setState(() {
+      placeResults = data["predictions"];
+    });
   }
 
+  //Autocomplete sonucundan gelen place_id ile koordinat almak için.
+  Future<LatLng?> getPlaceLatLng(String placeId) async {
+    final url = Uri.https(
+      "maps.googleapis.com",
+      "maps/api/place/details/json",
+      {
+        "place_id": placeId,
+        "key": apiKey,
+        "fields": "geometry",
+      },
+    );
+
+    final resp = await http.get(url);
+    final json = jsonDecode(resp.body);
+
+    //Latitude ve longitude değerlerini JSON’dan çekiyoruz.
+    final location = json["result"]["geometry"]["location"];
+    final lat = location["lat"];
+    final lng = location["lng"];
+
+    return LatLng(lat, lng);
+  }
 }
