@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
+import 'package:pawnav/features/account/presentations/cubit/profile_state.dart';
 import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
 
 class AccountPage extends StatefulWidget {
@@ -12,6 +15,11 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileCubit>().loadProfile();
+  }
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -25,10 +33,23 @@ class _AccountPageState extends State<AccountPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          "sara.p",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        title: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (BuildContext context, ProfileState state) {
+            if (state is ProfileLoaded){
+              return Text(
+                state.profile.username,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w600),
+              );
+            }
+            return const Text(
+              "",
+              style: TextStyle(color: Colors.black),
+            );
+          },
         ),
+
+
         actions: [
           GestureDetector(
             onTap: () {
@@ -41,260 +62,190 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ],
       ),
-      body: ScrollConfiguration(
-        behavior: const ScrollBehavior().copyWith(overscroll: false),
-        //kaydırırken gözüken rengi kapat
-        child: SingleChildScrollView(
-          // physics: const ClampingScrollPhysics(),
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom + 50),
-          //profile photo-name-badge
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (BuildContext context, ProfileState state) {
+          if(state is ProfileLoading){
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if(state is ProfileError){
+            return Center(child: Text(state.message));
+          }
+
+          if(state is! ProfileLoaded){
+            return const SizedBox.shrink();
+          }
+          final user = state.profile;
+
+          return ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(overscroll: false),
+            //kaydırırken gözüken rengi kapat
+            child: SingleChildScrollView(
+              // physics: const ClampingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 50),
+              //profile photo-name-badge
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: width * 0.09, top: height * 0.02),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 3,
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: CircleAvatar(
-                        radius: width * 0.15,
-                        // backgroundImage: const AssetImage('assets/representative/zomzom.png'),
-                        // backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                  //name- badge
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: width * 0.05, top: height * 0.02),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "Sara Pawlson",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: width * 0.05),
-                        ),
-                        SizedBox(
-                          height: width * 0.01,
-                        ),
-                        UserRankCard(
-                          rankTitle: "Gold Helper",
-                          rankIcon: Icons.workspace_premium,
-                          rankColor: Colors.amber.shade700,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "8",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: width * 0.038),
-                                ),
-                                Text(
-                                  "Listings",
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: width * 0.03),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 15),
-                            Column(
-                              children: [
-                                Text(
-                                  "22",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: width * 0.038),
-                                ),
-                                Text(
-                                  "Saved",
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: width * 0.03),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 15),
-                            Column(
-                              children: [
-                                Text(
-                                  "8",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: width * 0.038),
-                                ),
-                                Text(
-                                  "Successes",
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: width * 0.03),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              /*Padding(
-                padding: EdgeInsets.only(top: height * 0.03),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: width * 0.2,
-                      decoration: BoxDecoration(
-                        // color: Colors.transparent,
-                        color: AppColors.primary.withOpacity(0.07),
-                        */ /*border: Border.all(
-                          color: Colors.grey.withOpacity(0.3),
-                          width: 1,
-                        ),*/ /*
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      child: Column(
-                        children: [
-                           Text("8",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
-                           Text("Listings",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
-                        ],
-                      ),
-                    ),
-
-                    Container(
-                      width: width * 0.2,
-                      decoration: BoxDecoration(
-                        // color: Colors.transparent,
-                        // color: AppColors.primary.withOpacity(0.07),
-                        border: Border.all(
-                          color: AppColors.primary,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      child: Column(
-                        children: [
-                          Text("22",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
-                          Text("Saved",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
-                        ],
-                      ),
-                    ),
-
-                    Container(
-                      width: width * 0.23,
-                      decoration: BoxDecoration(
-                        // color: Colors.transparent,
-                        color: AppColors.primary.withOpacity(0.07),
-                        */ /*border: Border.all(
-                          color: Colors.grey.withOpacity(0.3),
-                          width: 1,
-                        ),*/ /*
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      child: Column(
-                        children: [
-                          Text("8",style: TextStyle(color: Colors.black, fontSize: width * 0.04),),
-                          Text("Successes",style: TextStyle(color: Colors.grey, fontSize: width * 0.03),),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),*/
-
-              /*//edit button
-              Padding(
-                padding: EdgeInsets.only(top: height * 0.03),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      // backgroundColor: AppColors.primary.withOpacity(0.2),
-                      backgroundColor: AppColors.background,
-                      // backgroundColor: Colors.grey[300],
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                    ),
-                    child: const Text("Edit Profile",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                ),
-              ),*/
-
-              Padding(
-                padding: EdgeInsets.only(top: height * 0.03),
-                child: DefaultTabController(
-                  length: 3,
-                  child: Column(
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: const TabBar(
-                          indicatorColor: AppColors.primary,
-                          labelColor: AppColors.primary,
-                          unselectedLabelColor: Colors.grey,
-                          tabs: [
-                            Tab(icon: Icon(Icons.apps)),
-                            // My Listings
-                            Tab(icon: Icon(Icons.bookmark)),
-                            // Saved
-                            Tab(icon: Icon(Icons.emoji_events)),
-                            // Success Stories
-                          ],
+                        padding:
+                        EdgeInsets.only(left: width * 0.09, top: height * 0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 3,
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: width * 0.15,
+                            backgroundImage: user.photoUrl.isNotEmpty ? NetworkImage(user.photoUrl): null,
+                            backgroundColor: Colors.grey.shade200,
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: height * 0.4,
-                        child: const TabBarView(
+                      //name- badge
+                      Padding(
+                        padding:
+                        EdgeInsets.only(left: width * 0.05, top: height * 0.02),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Center(
-                                child: Text("Your Listings will appear here.")),
-                            Center(
-                                child: Text("Saved posts will appear here.")),
-                            Center(
-                                child:
-                                    Text("Success stories will appear here.")),
+                            Text(
+                              user.name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.05),
+                            ),
+                            SizedBox(
+                              height: width * 0.01,
+                            ),
+                            UserRankCard(
+                              rankTitle: "Gold Helper",
+                              rankIcon: Icons.workspace_premium,
+                              rankColor: Colors.amber.shade700,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      "8",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: width * 0.038),
+                                    ),
+                                    Text(
+                                      "Listings",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: width * 0.03),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 15),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "22",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: width * 0.038),
+                                    ),
+                                    Text(
+                                      "Saved",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: width * 0.03),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 15),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "8",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: width * 0.038),
+                                    ),
+                                    Text(
+                                      "Successes",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: width * 0.03),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
+
+
+                  Padding(
+                    padding: EdgeInsets.only(top: height * 0.03),
+                    child: DefaultTabController(
+                      length: 3,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                            child: const TabBar(
+                              indicatorColor: AppColors.primary,
+                              labelColor: AppColors.primary,
+                              unselectedLabelColor: Colors.grey,
+                              tabs: [
+                                Tab(icon: Icon(Icons.apps)),
+                                // My Listings
+                                Tab(icon: Icon(Icons.bookmark)),
+                                // Saved
+                                Tab(icon: Icon(Icons.emoji_events)),
+                                // Success Stories
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: height * 0.4,
+                            child: const TabBarView(
+                              children: [
+                                Center(
+                                    child: Text("Your Listings will appear here.")),
+                                Center(
+                                    child: Text("Saved posts will appear here.")),
+                                Center(
+                                    child:
+                                    Text("Success stories will appear here.")),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
+
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
+import 'package:pawnav/features/account/domain/usecases/get_current_profile.dart';
+import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
+import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/addPost/data/datasources/post_remote_datasource.dart' show PostRemoteDataSource;
 import 'package:pawnav/features/addPost/data/repositories/post_repository_impl.dart';
@@ -108,6 +111,8 @@ final router = GoRouter(
           );
         },
       ),
+
+
 
       GoRoute(
         path: "/select-location",
