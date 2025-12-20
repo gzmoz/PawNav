@@ -21,6 +21,7 @@ import 'package:pawnav/features/auth/presentation/screens/verify_email_screen.da
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
+import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -127,6 +128,19 @@ final router = GoRouter(
         path: '/reset_password',
         builder: (context, state) => const ResetPasswordScreen(),
       ),
+
+      /*
+      * :postId → dinamik parametre
+      URL’den veri almanı sağlar
+      **/
+      GoRoute(
+        path: '/my-post/:postId',
+        builder: (context, state) {
+          final postId = state.pathParameters['postId']!;
+          return MyPostDetailPage(postId: postId); // sayfanın constructor'ında al
+        },
+      ),
+
 
 
 

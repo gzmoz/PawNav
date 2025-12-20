@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
@@ -68,37 +69,45 @@ class MyPostsGrid extends StatelessWidget {
 
             return ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: img == null
-                        ? Container(color: Colors.grey.shade200)
-                        : Image.network(img, fit: BoxFit.cover),
-                  ),
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: statusBgColor,
-                        borderRadius: BorderRadius.circular(12),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    context.push('/my-post/${post.id}');
+                  },
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: img == null
+                            ? Container(color: Colors.grey.shade200)
+                            : Image.network(img, fit: BoxFit.cover),
                       ),
-                      child: Text(
-                        post.postType ?? '',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: statusBgColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            post.postType ?? '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            /*style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                            ),*/
+                          ),
                         ),
-                        /*style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                        ),*/
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           },
@@ -107,3 +116,5 @@ class MyPostsGrid extends StatelessWidget {
     );
   }
 }
+
+

@@ -75,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
           extendBody: true,
           body: screens[index],
           bottomNavigationBar: CurvedNavigationBar(
-            height: height * 0.08,
+            // height: height * 0.08,
+            height: (height * 0.08).clamp(0.0, 75.0),
             backgroundColor: Colors.transparent,
             buttonBackgroundColor: AppColors.primary,
             items: [

@@ -154,7 +154,7 @@ class _AccountPageState extends State<AccountPage> {
                 ];
               },
 
-              // 🔥 SCROLL EDEN ASIL İÇERİK
+              //  SCROLL EDEN ASIL İÇERİK
               body: const TabBarView(
                 children: [
                   MyPostsGrid(),
@@ -195,3 +195,7 @@ class _StatItem extends StatelessWidget {
     );
   }
 }
+
+
+
+
