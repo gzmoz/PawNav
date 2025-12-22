@@ -14,7 +14,7 @@ class PostModel extends Post{
     required super.location,
     required super.eventDate,
     required super.images,
-    required super.postType
+    required super.postType,
   });
 
   //bir nesneyi JSON formatına dönüştürmek için kullanılır.

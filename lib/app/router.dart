@@ -19,6 +19,12 @@ import 'package:pawnav/features/auth/presentation/screens/reset_password_screen.
 import 'package:pawnav/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/verify_email_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
+import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
+import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
+import 'package:pawnav/features/post/domain/repositories/post_detail_repository.dart';
+import 'package:pawnav/features/post/domain/usecases/delete_post.dart';
+import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.dart';
@@ -94,13 +100,34 @@ final router = GoRouter(
       ),*/
 
       GoRoute(
+        path: '/my-post/:postId',
+        builder: (context, state) {
+          final postId = state.pathParameters['postId']!;
+
+          final remote = PostDetailRemoteDataSource(
+            Supabase.instance.client,
+          );
+
+          final repository = PostDetailRepositoryImpl(remote);
+
+          return BlocProvider(
+            create: (_) => PostDetailCubit(
+              GetPostById(repository),
+              DeletePost(repository),
+            ),
+            child: MyPostDetailPage(postId: postId),
+          );
+        },
+      ),
+
+      GoRoute(
         path: "/addPostForm",
         builder: (context, state) {
           final type = state.uri.queryParameters['type'] ?? "Lost";
 
           return BlocProvider(
             create: (context) => AddPostCubit(
-              AddPost(
+              addPostUseCase: AddPost(
                 repository: PostRepositoryImpl(
                   remoteDataSource: PostRemoteDataSource(
                     Supabase.instance.client,
@@ -112,6 +139,8 @@ final router = GoRouter(
           );
         },
       ),
+
+
 
 
 
@@ -128,20 +157,6 @@ final router = GoRouter(
         path: '/reset_password',
         builder: (context, state) => const ResetPasswordScreen(),
       ),
-
-      /*
-      * :postId → dinamik parametre
-      URL’den veri almanı sağlar
-      **/
-      GoRoute(
-        path: '/my-post/:postId',
-        builder: (context, state) {
-          final postId = state.pathParameters['postId']!;
-          return MyPostDetailPage(postId: postId); // sayfanın constructor'ında al
-        },
-      ),
-
-
 
 
     ],

@@ -1,3 +1,5 @@
+import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
+
 abstract class AddPostState{}
 
 class AddPostInitial extends AddPostState{} //Ekran ilk açıldığında, hiçbir işlem yok
@@ -7,3 +9,5 @@ class AddPostError extends AddPostState{ //Bir exception fırladı
   final String message;
   AddPostError(this.message);
 }
+
+

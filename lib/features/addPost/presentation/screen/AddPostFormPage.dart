@@ -284,14 +284,14 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                           duration: Duration(milliseconds: 200),
                           margin: EdgeInsets.symmetric(horizontal: 6),
                           padding:
-                              EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                           decoration: BoxDecoration(
                             color:
-                                isSelected ? Colors.blue.shade50 : Colors.white,
+                            isSelected ? Colors.blue.shade50 : Colors.white,
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
                               color:
-                                  isSelected ? Colors.blue : Colors.grey.shade300,
+                              isSelected ? Colors.blue : Colors.grey.shade300,
                               width: isSelected ? 2 : 1,
                             ),
                           ),
@@ -382,7 +382,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                     },
                     child: Container(
                       padding:
-                          const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(16),
@@ -532,7 +532,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                   ),
 
                   padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
 
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -803,7 +803,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                                       ? FontWeight.bold
                                       : FontWeight.normal,
                                   color:
-                                      isSelected ? Colors.blue : Colors.black87,
+                                  isSelected ? Colors.blue : Colors.black87,
                                 ),
                               ),
                               if (isSelected)
@@ -886,7 +886,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                                 color:
-                                    isSelected ? Colors.blue : Colors.black87,
+                                isSelected ? Colors.blue : Colors.black87,
                               ),
                             ),
                             if (isSelected)
@@ -964,7 +964,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                                       ? FontWeight.bold
                                       : FontWeight.normal,
                                   color:
-                                      isSelected ? Colors.blue : Colors.black87,
+                                  isSelected ? Colors.blue : Colors.black87,
                                 ),
                               ),
                               if (isSelected)

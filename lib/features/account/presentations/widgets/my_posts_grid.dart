@@ -72,9 +72,26 @@ class MyPostsGrid extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () {
-                    context.push('/my-post/${post.id}');
+                  onTap: () async {
+                    final deleted = await context.push<bool>(
+                      '/my-post/${post.id}',
+                    );
+
+                    if (deleted == true) {
+                      context.read<MyPostsCubit>().loadMyPosts();
+                    }
+
+                    /*AccountPage → DetailPage’e gider
+                      Bekler (await)
+                      DetailPage kapanınca geri dönen sonucu alır
+                      Eğer true ise:
+                      “Liste artık geçersiz”
+                      Yeniden fetch et*/
                   },
+
+                  /*onTap: () {
+                    context.push('/my-post/${post.id}');
+                  },*/
                   child: Stack(
                     children: [
                       Positioned.fill(

@@ -17,6 +17,9 @@ class InfoMiniCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -48,10 +51,10 @@ class InfoMiniCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.w800,
-                    fontSize: 12,
+                    fontSize: width * 0.033,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -59,9 +62,9 @@ class InfoMiniCard extends StatelessWidget {
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                    fontSize: width * 0.031,
                   ),
                 ),
               ],

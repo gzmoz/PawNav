@@ -15,6 +15,9 @@ class TopInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -36,8 +39,8 @@ class TopInfoCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   name,
-                  style: const TextStyle(
-                    fontSize: 30,
+                  style: TextStyle(
+                    fontSize: width * 0.065,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -53,15 +56,17 @@ class TopInfoCard extends StatelessWidget {
                   children: [
                     const Icon(
                       Icons.remove_red_eye_outlined,
-                      size: 18,
+                      size: 15,
                       color: Colors.black54,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       views.toString(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: Colors.black54,
+                        fontSize: width * 0.028,
+
                       ),
                     ),
                   ],
@@ -72,9 +77,9 @@ class TopInfoCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             breed,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black54,
-              fontSize: 16,
+              fontSize: width * 0.04,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -87,7 +92,10 @@ class TopInfoCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 postedAgo,
-                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
+                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600,
+                  fontSize: width * 0.03,
+
+                ),
               ),
             ],
           ),

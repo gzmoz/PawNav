@@ -53,7 +53,7 @@ class _AddPostPageState extends State<AddPostPage> {
                 PostTypeOptionCard(
                   icon: Icons.search,
                   color: Colors.red.shade400,
-                  borderColor: Colors.red,
+                  borderColor: Colors.red.shade700,
                   title: "Lost Post",
                   subtitle: "Report a missing pet",
                   onTap: () {
@@ -64,8 +64,8 @@ class _AddPostPageState extends State<AddPostPage> {
                 ),
                 PostTypeOptionCard(
                   icon: Icons.location_on,
-                  color: Colors.green.shade400,
-                  borderColor: Colors.green,
+                  color: Colors.blueAccent.shade400,
+                  borderColor: Colors.blueAccent.shade700,
                   title: "Found Post",
                   subtitle: "Share a pet you have found",
                   onTap: () {
@@ -76,8 +76,8 @@ class _AddPostPageState extends State<AddPostPage> {
                 ),
                 PostTypeOptionCard(
                   icon: Icons.favorite,
-                  color: Colors.orange.shade400,
-                  borderColor: Colors.orange,
+                  color: Colors.green.shade400,
+                  borderColor: Colors.green.shade700,
                   title: "Adoption Post",
                   subtitle: "Find a new home for a pet",
                   onTap: () {
@@ -169,7 +169,7 @@ class _AddPostPageState extends State<AddPostPage> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                SizedBox(
+                /*SizedBox(
                   width: double.infinity,
                   height: height * 0.05,
                   child: ElevatedButton(
@@ -190,7 +190,37 @@ class _AddPostPageState extends State<AddPostPage> {
                       ),
                     ),
                   ),
+                ),*/
+
+                GestureDetector(
+                  onTap: () async {
+                    _showAddPostOptions();
+                  },
+
+
+                  child: Container(
+                    width: width * 0.88,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Create post",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: width * 0.035,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
+
               ],
             ),
           )

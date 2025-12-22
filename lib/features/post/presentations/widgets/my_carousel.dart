@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/widgets/full_screen_image_page.dart';
 
 class MyCarousel extends StatefulWidget {
   final List<String> images;
@@ -41,11 +42,37 @@ class _MyCarouselState extends State<MyCarousel> {
               /*
                 * _ kullanmak Dart’ta şu anlama gelir:
                 “Bu parametre geliyor ama umurumda değil”*/
-              itemBuilder: (_, i) => Image.network(
+              /*itemBuilder: (_, i) => Image.network(
                 widget.images[i],
                 fit: BoxFit.cover,
                 width: double.infinity,
-              ),
+              ),*/
+              itemBuilder: (context, i) {
+                final image = widget.images[i];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => FullScreenImagePage(
+                          images: widget.images,
+                          initialIndex: i,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Hero(
+                    tag: image,
+                    child: Image.network(
+                      image,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                );
+              },
+
             ),
           ),
 

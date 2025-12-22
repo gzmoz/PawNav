@@ -1,7 +1,11 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/utils/post_status.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/info_mini_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/location_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
@@ -10,6 +14,7 @@ import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
 
 class MyPostDetailPage extends StatefulWidget {
   final String postId;
+
   const MyPostDetailPage({super.key, required this.postId});
 
   @override
@@ -18,262 +23,339 @@ class MyPostDetailPage extends StatefulWidget {
 
 class _MyPostDetailPageState extends State<MyPostDetailPage> {
   @override
+  void initState() {
+    super.initState();
+    context.read<PostDetailCubit>().loadPost(widget.postId);
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-
-
-    //dummy data
-    const postType = "Lost";
-    const petName = "Buddy";
-    const breed = "Golden Retriever";
-    const views = 1204;
-    const postedAgo = "Posted 2 days ago";
-    const species = "Dog";
-    const gender = "unknown";
-    const color = "Golden";
-    const lastSeen = "Oct 24, 2023";
-
-    final genderUI = getGenderUI(gender);
-
-
-    const about =
-        "Buddy went missing near Central Park on Tuesday afternoon. He is very friendly but might be scared. He was wearing a blue collar with a tag, but it might have fallen off. He loves treats and responds to his name. Please help us bring him home!";
-
-    const locationText = "5th Ave & 72nd St, New York, NY";
-
-    final images = [
-      "https://images.unsplash.com/photo-1552053831-71594a27632d?w=1600",
-      "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=1600",
-      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1600",
-    ];
-
-    final statusColor = PostStatusStyle.color(postType);
-    final statusBg = PostStatusStyle.background(postType);
-
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Scaffold(
       backgroundColor: AppColors.white5,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            centerTitle: true,
-            title: const Text(
-              "Post Detail",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-            ),
-            actions: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.share,
+      body: BlocBuilder<PostDetailCubit, PostDetailState>(
+        builder: (context, state) {
+          if (state is PostDeleted) {
+            Navigator.pop(context, true);
+            // listeye dön
+            /*“Ben kapanıyorum ama sana şunu söylüyorum:
+            Burada bir değişiklik oldu”*/
+          }
+          if (state is PostDetailLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is PostDetailError) {
+            return Center(child: Text(state.message));
+          }
+
+          if (state is! PostDetailLoaded) {
+            return const SizedBox.shrink();
+          }
+
+          final post = state.post;
+
+          final statusColor = PostStatusStyle.color(post.postType);
+          final statusBg = PostStatusStyle.background(post.postType);
+          final genderUI = getGenderUI(post.gender);
+
+          return CustomScrollView(
+            slivers: [
+              /// APP BAR
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                centerTitle: true,
+                title: Text(
+                  "Post Detail",
+                  style: TextStyle(
                     color: Colors.black,
-                  )),
-            ],
-          ),
-
-          //carousel
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-              child: MyCarousel(
-                images: images,
-                statusText: postType.toUpperCase(),
-                statusColor: statusColor,
-                statusBg: statusBg,
-              ),
-            ),
-          ),
-
-          //content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
-              child: Column(
-                children: [
-                  //top info card (name +views+ posted)
-                  const TopInfoCard(
-                    name: petName,
-                    breed: breed,
-                    views: views,
-                    postedAgo: postedAgo,
+                    fontWeight: FontWeight.w700,
+                    fontSize: width* 0.05,
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // 2x2 info cards
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: InfoMiniCard(
-                          title: "SPECIES",
-                          value: species,
-                          icon: Icons.pets,
-                          iconBg: Color(0xFFE9EDFF),
-                          iconColor: Color(0xFF3B5BDB),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: InfoMiniCard(
-                          title: "GENDER",
-                          value: gender,
-                          icon: genderUI.icon,
-                          iconBg: genderUI.bgColor,
-                          iconColor: genderUI.iconColor,
-                        ),
-                      ),
-
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: InfoMiniCard(
-                          title: "COLOR",
-                          value: color,
-                          icon: Icons.palette,
-                          iconBg: Color(0xFFFFF1E6),
-                          iconColor: Color(0xFFFF7A00),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: InfoMiniCard(
-                          title: "LAST SEEN",
-                          value: lastSeen,
-                          icon: Icons.calendar_month,
-                          iconBg: Color(0xFFFFE9E9),
-                          iconColor: Color(0xFFE03131),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // About card
-                  const SectionCard(
-                    title: "About $petName",
-                    icon: Icons.description_outlined,
-                    child: Text(
-                      about,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 15,
-                        height: 1.35,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-
-                  // Location card (map placeholder)
-                  const LocationCard(
-                    title: "Last Seen Location",
-                    address: locationText,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // OWNER ACTIONS
-                  const Text(
-                    "OWNER ACTIONS",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-
-
-                  // Mark as reunited
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.celebration_outlined),
-                      label: const Text("Mark as Reunited!"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF18B394),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  //edit+delete row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 52,
-                          child: OutlinedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.edit_outlined),
-                            label: const Text("Edit Post"),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.black87,
-                              side: BorderSide(color: Colors.grey.shade300),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: SizedBox(
-                          height: 52,
-                          child: OutlinedButton.icon(
-                            onPressed: () {},
-                            label: const Text("Delete Post"),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.red,
-                              side: BorderSide(color: Colors.red.shade200),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    ],
+                ),
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.share, color: Colors.black),
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
+
+              /// CAROUSEL
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: MyCarousel(
+                    images: post.images,
+                    statusText: post.postType.toUpperCase(),
+                    statusColor: statusColor,
+                    statusBg: statusBg,
+                  ),
+                ),
+              ),
+
+              /// CONTENT
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
+                  child: Column(
+                    children: [
+                      /// TOP INFO
+                      TopInfoCard(
+                        name: post.name ?? '',
+                        breed: post.breed,
+                        views: post.views,
+                        postedAgo: post.eventDate.toString(),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// INFO CARDS
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InfoMiniCard(
+                              title: "SPECIES",
+                              value: post.species,
+                              icon: Icons.pets,
+                              iconBg: const Color(0xFFE9EDFF),
+                              iconColor: const Color(0xFF3B5BDB),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: InfoMiniCard(
+                              title: "GENDER",
+                              value: post.gender,
+                              icon: genderUI.icon,
+                              iconBg: genderUI.bgColor,
+                              iconColor: genderUI.iconColor,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InfoMiniCard(
+                              title: "COLOR",
+                              value: post.color,
+                              icon: Icons.palette,
+                              iconBg: const Color(0xFFFFF1E6),
+                              iconColor: const Color(0xFFFF7A00),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: InfoMiniCard(
+                              title: "LAST SEEN",
+                              value: post.eventDate.toString(),
+                              icon: Icons.calendar_month,
+                              iconBg: const Color(0xFFFFE9E9),
+                              iconColor: const Color(0xFFE03131),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      /// ABOUT
+                      SectionCard(
+                        title: "About ${post.name ?? ''}",
+                        icon: Icons.description_outlined,
+                        child: Text(
+                          post.description,
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: width * 0.035,
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      /// LOCATION
+                      LocationCard(
+                        title: "Last Seen Location",
+                        address: post.location,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// OWNER ACTIONS
+                      const Text(
+                        "OWNER ACTIONS",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+
+                      /// MARK AS REUNITED
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.celebration_outlined),
+                          label: const Text("Mark as Reunited!"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF18B394),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// EDIT + DELETE
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final updated = await context.push<bool>(
+                                    '/addPostForm?mode=edit&postId=${post.id}',
+                                  );
+
+                                  if (updated == true) {
+                                    context.read<PostDetailCubit>().loadPost(post.id);
+                                    AppSnackbar.success(context, "Post updated successfully");
+                                  }
+                                },
+                                icon: const Icon(Icons.edit_outlined),
+                                label: const Text("Edit Post"),
+                              ),
+
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                /*onPressed: () {
+                                  context.read<PostDetailCubit>().delete(widget.postId);
+                                },*/
+                                onPressed: () => _showDeleteDialog(context),
+
+                                icon: const Icon(Icons.delete_outline),
+                                label: const Text("Delete Post"),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                  side: BorderSide(color: Colors.red.shade200),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            "Delete post?",
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          content: const Text(
+            "Are you sure you want to permanently delete this post? "
+                "This action cannot be undone.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // dialog kapat
+                _deletePost(context);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deletePost(BuildContext context) async {
+    final cubit = context.read<PostDetailCubit>();
+
+    try {
+      await cubit.deletePost(widget.postId); // postId içeride tutuluyor varsayımı
+
+      // SUCCESS SNACK
+      AppSnackbar.success(
+        context,
+        "Post deleted successfully",
+      );
+
+      // AccountPage’e sinyal gönder
+      Navigator.pop(context, true);
+    } catch (e) {
+      AppSnackbar.error(
+        context,
+        "Failed to delete post. Please try again.",
+      );
+    }
+  }
+
+
 }
+
+/// ---------------- GENDER UI ----------------
 
 class GenderUIData {
   final IconData icon;
@@ -295,15 +377,13 @@ GenderUIData getGenderUI(String? gender) {
         bgColor: Color(0xFFFFE4EC),
         iconColor: Color(0xFFE91E63),
       );
-
     case "male":
       return const GenderUIData(
         icon: Icons.male,
         bgColor: Color(0xFFE9EDFF),
         iconColor: Color(0xFF3B5BDB),
       );
-
-    default: // unknown
+    default:
       return const GenderUIData(
         icon: Icons.help_outline,
         bgColor: Color(0xFFF1F3F5),

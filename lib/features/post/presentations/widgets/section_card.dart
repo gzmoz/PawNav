@@ -13,6 +13,9 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -36,8 +39,8 @@ class SectionCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: width * 0.043,
                   fontWeight: FontWeight.w800,
                 ),
               ),

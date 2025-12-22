@@ -12,6 +12,9 @@ class LocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -37,8 +40,8 @@ class LocationCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: width * 0.043,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -50,8 +53,12 @@ class LocationCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
             child: Text(
               address,
-              style: const TextStyle(
-                  color: Colors.black54, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: Colors.black54, fontWeight: FontWeight.w600,
+                fontSize: width * 0.03,
+
+
+              ),
             ),
           ),
 
