@@ -3,7 +3,7 @@ import 'package:pawnav/features/addPost/domain/repositories/add_post_repository.
 
 //“Usecase” = gerçek hayattaki bir iş / işlem:
 class AddPost{
-  final PostRepository repository;
+  final AddPostRepository repository;
 
   AddPost({required this.repository});
 

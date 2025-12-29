@@ -7,7 +7,7 @@ import 'package:pawnav/features/addPost/domain/repositories/add_post_repository.
 //Domain’deki PostRepository interface’ini gerçekleyen sınıf.
 //katmanlar arasındaki kopru, “Domain ile data kaynağı arasında tercümanlık yapan adam.”
 
-class PostRepositoryImpl implements PostRepository{
+class PostRepositoryImpl implements AddPostRepository{
   final PostRemoteDataSource remoteDataSource;
 
   PostRepositoryImpl({required this.remoteDataSource});

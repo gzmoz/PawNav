@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/home/presentations/widgets/community_tips_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/feature_pet_card.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                         subtitle:
                             "Post details to help others find your missing friend.",
                         onTap: () {
-                          // Navigator.push(...)
+                          this.context.push('/addPostForm?type=Lost');
                         },
                       ),
                       SizedBox(width: width * 0.01),
@@ -97,15 +98,21 @@ class _HomePageState extends State<HomePage> {
                         title: "Found a Pet",
                         subtitle:
                             "Share a post to reunite the pet with its owner.",
-                        onTap: () {},
+                        onTap: () {
+                          this.context.push('/addPostForm?type=Found');
+
+                        },
                       ),
                       SizedBox(width: width * 0.01),
                       HomeButtonComponent(
                         icon: Icons.home_outlined,
-                        title: "Adopt a Pet",
+                        title: "Rehome a Pet",
                         subtitle:
-                            "Browse adoption posts and give a pet a new home.",
-                        onTap: () {},
+                            "Post an adoption ad and connect with adopters.",
+                        onTap: () {
+                          this.context.push('/addPostForm?type=Adoption');
+
+                        },
                       ),
                     ],
                   ),
