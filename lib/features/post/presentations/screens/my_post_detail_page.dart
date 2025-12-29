@@ -239,7 +239,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                               child: OutlinedButton.icon(
                                 onPressed: () async {
                                   final updated = await context.push<bool>(
-                                    '/addPostForm?mode=edit&postId=${post.id}',
+                                    '/edit-post/${post.id}',
                                   );
 
                                   if (updated == true) {
