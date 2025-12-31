@@ -261,7 +261,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                 /*onPressed: () {
                                   context.read<PostDetailCubit>().delete(widget.postId);
                                 },*/
-                                onPressed: () => _showDeleteDialog(context),
+                                onPressed: () => showDeleteDialog(context),
 
                                 icon: const Icon(Icons.delete_outline),
                                 label: const Text("Delete Post"),
@@ -288,7 +288,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     );
   }
 
-  void _showDeleteDialog(BuildContext context) {
+  void showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -320,7 +320,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
               ),
               onPressed: () {
                 Navigator.pop(context); // dialog kapat
-                _deletePost(context);
+                deletePost(context);
               },
               child: const Text("Delete"),
             ),
@@ -330,7 +330,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     );
   }
 
-  void _deletePost(BuildContext context) async {
+  void deletePost(BuildContext context) async {
     final cubit = context.read<PostDetailCubit>();
 
     try {

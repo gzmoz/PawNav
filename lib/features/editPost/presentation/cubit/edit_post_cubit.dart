@@ -32,4 +32,5 @@ class EditPostCubit extends Cubit<EditPostState> {
       emit(EditPostError(e.toString()));
     }
   }
+
 }

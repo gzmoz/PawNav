@@ -1,23 +1,9 @@
 {
-  "Dog": [
-    "Black",
-    "White",
-    "Brown",
-    "Golden / Cream",
-    "Gray",
-    "Mixed"
-  ],
-  "Cat": [
-    "Black",
-    "White",
-    "Orange",
-    "Gray",
-    "Calico",
-    "Tabby",
-    "Mixed"
-  ],
-  "Other": [
-    "Unknown",
-    "Mixed"
-  ]
+  "Dog": ["Black","White","Brown","Golden / Cream","Gray","Mixed"],
+  "Cat": ["Black","White","Orange","Gray","Calico","Tabby","Mixed"],
+  "Bird": ["Black","White","Brown","Gray","Mixed","Unknown"],
+  "Rabbit": ["Black","White","Brown","Gray","Mixed","Unknown"],
+  "Rodent": ["Black","White","Brown","Gray","Mixed","Unknown"],
+  "Reptile": ["Black","White","Brown","Gray","Mixed","Unknown"],
+  "Other": ["Unknown","Mixed"]
 }

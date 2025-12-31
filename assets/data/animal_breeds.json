@@ -29,7 +29,7 @@
     "Siberian Husky",
     "Weimaraner",
     "Whippet",
-    "Yorkshire Terrier"
+    "Yorkshire Terrier",
     "Other"
   ],
 
@@ -56,7 +56,7 @@
     "Siamese",
     "Sphynx",
     "Turkish Angora",
-    "Turkish Van"
+    "Turkish Van",
     "Other"
   ],
 
@@ -73,12 +73,11 @@
     "Hawk",
     "Lovebird",
     "Macaw",
-    "Other",
     "Owl",
     "Parakeet",
     "Parrot",
     "Pigeon",
-    "Quaker Parrot"
+    "Quaker Parrot",
     "Other"
   ],
 
@@ -96,7 +95,6 @@
     "New Zealand",
     "Rex",
     "Other"
-
   ],
 
   "Rodent": [
@@ -108,10 +106,8 @@
     "Hamster",
     "Hedgehog",
     "Mouse",
-    "Other",
     "Rat",
     "Other"
-
   ],
 
   "Reptile": [
@@ -123,12 +119,10 @@
     "Iguana",
     "King Snake",
     "Leopard Gecko",
-    "Other",
     "Skink",
     "Tortoise",
     "Turtle",
     "Other"
-
   ],
 
   "Other": [

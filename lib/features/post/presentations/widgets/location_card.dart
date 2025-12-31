@@ -54,7 +54,7 @@ class LocationCard extends StatelessWidget {
             child: Text(
               address,
               style: TextStyle(
-                  color: Colors.black54, fontWeight: FontWeight.w600,
+                color: Colors.black54, fontWeight: FontWeight.w600,
                 fontSize: width * 0.03,
 
 

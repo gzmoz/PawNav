@@ -91,7 +91,7 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
                     child: Text(
                       widget.value ?? widget.placeholder,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
@@ -114,6 +114,7 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
   void _openBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
@@ -151,7 +152,7 @@ class _BottomSheetList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height *  0.45,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(
