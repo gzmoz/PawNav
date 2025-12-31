@@ -1,0 +1,23 @@
+{
+  "Dog": [
+    "Black",
+    "White",
+    "Brown",
+    "Golden / Cream",
+    "Gray",
+    "Mixed"
+  ],
+  "Cat": [
+    "Black",
+    "White",
+    "Orange",
+    "Gray",
+    "Calico",
+    "Tabby",
+    "Mixed"
+  ],
+  "Other": [
+    "Unknown",
+    "Mixed"
+  ]
+}

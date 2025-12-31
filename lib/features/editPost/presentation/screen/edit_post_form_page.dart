@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/json_service.dart';
+import 'package:pawnav/core/widgets/custom_bottomsheet_select.dart';
+import 'package:pawnav/core/widgets/custom_dropdown.dart';
+import 'package:pawnav/core/widgets/date_picker_select.dart';
 
 class EditPostFormPage extends StatefulWidget {
   final String postId;
@@ -11,13 +15,28 @@ class EditPostFormPage extends StatefulWidget {
 }
 
 class _EditPostFormPageState extends State<EditPostFormPage> {
+  String? selectedSpecies;
+  String? selectedBreed;
+  String? selectedColor;
+  DateTime? selectedDate;
+
+  Map<String, List<String>> breedMap = {};
+  Map<String, List<String>> colorMap = {};
 
   final TextEditingController animalNameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
+
 
     return Scaffold(
       backgroundColor: AppColors.white5,
@@ -120,10 +139,9 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  titleText("Animal's Detail"),
                   Container(
                     padding: EdgeInsets.all(10),
-                    decoration:BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -132,10 +150,110 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
                       children: [
                         subTitleText("Animal Name"),
                         inputArea(animalNameController),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: BottomSheetSelect(
+                                  title: "Species",
+                                  placeholder: "Select species",
+                                  value: selectedSpecies,
+                                  items: breedMap.keys.toList(),
+                                  onSelected: (val) {
+                                    setState(() {
+                                      selectedSpecies = val;
+                                      selectedBreed = null;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: BottomSheetSelect(
+                                  title: "Breed",
+                                  placeholder: "Select breed",
+                                  value: selectedBreed,
+                                  items: selectedSpecies == null
+                                      ? []
+                                      : breedMap[selectedSpecies] ?? [],
+                                  onSelected: (val) {
+                                    setState(() {
+                                      selectedBreed = val;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: BottomSheetSelect(
+                                  title: "Color",
+                                  placeholder: "Select color",
+                                  value: selectedColor,
+                                  items: selectedSpecies == null
+                                      ? []
+                                      : colorMap[selectedSpecies] ?? [],
+                                  onSelected: (val) {
+                                    setState(() {
+                                      selectedColor = val;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                          child: DatePickerSelect(
+                            title: "Lost / Found Date",
+                            placeholder: "Select date",
+                            value: selectedDate,
+                            onSelected: (date) {
+                              setState(() {
+                                selectedDate = date;
+                              });
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
 
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -144,7 +262,8 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
       ),
     );
   }
-  Widget titleText(String title){
+
+  Widget titleText(String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 8, 16, 8),
       child: Text(
@@ -156,7 +275,8 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
       ),
     );
   }
-  Widget subTitleText(String title){
+
+  Widget subTitleText(String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 8, 16, 4),
       child: Text(
@@ -168,7 +288,8 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
       ),
     );
   }
-  Widget inputArea(TextEditingController controller){
+
+  Widget inputArea(TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 8, 16, 4),
       child: TextFormField(
@@ -177,12 +298,10 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
           hintText: "Buddy",
           filled: true,
           fillColor: Colors.white,
-
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 14,
           ),
-
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(
@@ -190,7 +309,6 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
               width: 1,
             ),
           ),
-
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(
@@ -201,6 +319,17 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
         ),
       ),
     );
+  }
 
+  Future<void> loadData() async {
+    breedMap = await JsonService.load(
+      'assets/data/animal_breeds.json',
+    );
+
+    colorMap = await JsonService.load(
+      'assets/data/animal_colors.json',
+    );
+
+    setState(() {});
   }
 }

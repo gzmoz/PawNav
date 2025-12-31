@@ -102,7 +102,7 @@ flutter:
      - assets/onboarding/
      - assets/bottom_nav_bar_icons/
      - assets/representative/
-     - assets/json/
+     - assets/data/
      - .env
   #   - images/a_dot_ham.jpeg
 

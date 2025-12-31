@@ -30,6 +30,7 @@
     "Weimaraner",
     "Whippet",
     "Yorkshire Terrier"
+    "Other"
   ],
 
   "Cat": [
@@ -56,6 +57,7 @@
     "Sphynx",
     "Turkish Angora",
     "Turkish Van"
+    "Other"
   ],
 
   "Bird": [
@@ -77,6 +79,7 @@
     "Parrot",
     "Pigeon",
     "Quaker Parrot"
+    "Other"
   ],
 
   "Rabbit": [
@@ -91,7 +94,9 @@
     "Mixed",
     "Netherland Dwarf",
     "New Zealand",
-    "Rex"
+    "Rex",
+    "Other"
+
   ],
 
   "Rodent": [
@@ -104,7 +109,9 @@
     "Hedgehog",
     "Mouse",
     "Other",
-    "Rat"
+    "Rat",
+    "Other"
+
   ],
 
   "Reptile": [
@@ -119,7 +126,9 @@
     "Other",
     "Skink",
     "Tortoise",
-    "Turtle"
+    "Turtle",
+    "Other"
+
   ],
 
   "Other": [
