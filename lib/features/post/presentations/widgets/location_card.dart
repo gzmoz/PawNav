@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LocationCard extends StatelessWidget {
   final String title;
@@ -15,6 +17,17 @@ class LocationCard extends StatelessWidget {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
+
+    final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'];
+
+    final staticMapUrl =
+        "https://maps.googleapis.com/maps/api/staticmap"
+        "?center=${Uri.encodeComponent(address)}"
+        "&zoom=14"
+        "&size=600x300"
+        "&markers=color:red|${Uri.encodeComponent(address)}"
+        "&key=$apiKey";
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -63,7 +76,7 @@ class LocationCard extends StatelessWidget {
           ),
 
           // Map placeholder (şimdilik resim/boş container)
-          ClipRRect(
+          /*ClipRRect(
             borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(18)),
             child: Container(
@@ -72,10 +85,54 @@ class LocationCard extends StatelessWidget {
               alignment: Alignment.center,
               child: const Text("MAP PREVIEW"),
             ),
+          ),*/
+          /// STATIC MAP PREVIEW
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(18),
+            ),
+            child: Image.network(
+              staticMapUrl,
+              height: 180,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+                return Container(
+                  height: 180,
+                  color: Colors.grey.shade200,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(strokeWidth: 2),
+                );
+              },
+              errorBuilder: (_, __, ___) => Container(
+                height: 180,
+                color: Colors.grey.shade300,
+                alignment: Alignment.center,
+                child: const Text("Map unavailable"),
+              ),
+            ),
           ),
 
+
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () async {
+              final uri = Uri.parse(
+                "https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(address)}",
+              );
+
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Could not open Maps")),
+                );
+              }
+            },
+
             icon: const Icon(Icons.map_outlined),
             label: const Text("Open in Maps"),
             style: TextButton.styleFrom(

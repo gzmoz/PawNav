@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
+import 'package:pawnav/core/utils/date_formatter.dart';
+import 'package:pawnav/core/utils/pet_color_mapper.dart';
 import 'package:pawnav/core/utils/post_status.dart';
+import 'package:pawnav/core/utils/time_ago.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/info_mini_card.dart';
@@ -11,6 +14,7 @@ import 'package:pawnav/features/post/presentations/widgets/location_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
 import 'package:pawnav/features/post/presentations/widgets/section_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MyPostDetailPage extends StatefulWidget {
   final String postId;
@@ -28,11 +32,33 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     context.read<PostDetailCubit>().loadPost(widget.postId);
   }
 
+  String getDescription(String? description) {
+    if (description == null || description.trim().isEmpty) {
+      return "No description provided for this post.";
+    }
+    return description;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
+
+    String buildShareText(post) {
+      return '''
+      🐾 ${post.name ?? 'Pet'} - ${post.breed}
+      
+      📍 Last seen: ${post.location}
+      🗓️ ${formatDate(post.eventDate)} (${timeAgo(post.eventDate)})
+      
+      ℹ️ ${post.description}
+      
+      🔗 PawNav App
+      Help us reunite!
+      ''';
+    }
+
     return Scaffold(
       backgroundColor: AppColors.white5,
       body: BlocBuilder<PostDetailCubit, PostDetailState>(
@@ -74,19 +100,26 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w700,
-                    fontSize: width* 0.05,
+                    fontSize: width * 0.05,
                   ),
                 ),
                 leading: IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                  icon:
+                      const Icon(Icons.arrow_back_ios_new, color: Colors.black),
                 ),
-                actions: [
+                //SHARE BUTTON
+                /*actions: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Share.share(
+                        buildShareText(post),
+                        subject: 'Lost Pet Alert',
+                      );
+                    },
                     icon: const Icon(Icons.share, color: Colors.black),
                   ),
-                ],
+                ],*/
               ),
 
               /// CAROUSEL
@@ -113,7 +146,8 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                         name: post.name ?? '',
                         breed: post.breed,
                         views: post.views,
-                        postedAgo: post.eventDate.toString(),
+                        postDate: formatDate(post.eventDate),
+                        postedAgo: timeAgo(post.eventDate),
                       ),
 
                       const SizedBox(height: 12),
@@ -152,15 +186,15 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                               title: "COLOR",
                               value: post.color,
                               icon: Icons.palette,
-                              iconBg: const Color(0xFFFFF1E6),
-                              iconColor: const Color(0xFFFF7A00),
+                              iconBg: getPetColorBg(post.color),
+                              iconColor: getPetColor(post.color),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: InfoMiniCard(
                               title: "LAST SEEN",
-                              value: post.eventDate.toString(),
+                              value: formatDate(post.eventDate),
                               icon: Icons.calendar_month,
                               iconBg: const Color(0xFFFFE9E9),
                               iconColor: const Color(0xFFE03131),
@@ -176,7 +210,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                         title: "About ${post.name ?? ''}",
                         icon: Icons.description_outlined,
                         child: Text(
-                          post.description,
+                          getDescription(post.description),
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: width * 0.035,
@@ -243,14 +277,16 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                   );
 
                                   if (updated == true) {
-                                    context.read<PostDetailCubit>().loadPost(post.id);
-                                    AppSnackbar.success(context, "Post updated successfully");
+                                    context
+                                        .read<PostDetailCubit>()
+                                        .loadPost(post.id);
+                                    AppSnackbar.success(
+                                        context, "Post updated successfully");
                                   }
                                 },
                                 icon: const Icon(Icons.edit_outlined),
                                 label: const Text("Edit Post"),
                               ),
-
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -262,7 +298,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                   context.read<PostDetailCubit>().delete(widget.postId);
                                 },*/
                                 onPressed: () => showDeleteDialog(context),
-
                                 icon: const Icon(Icons.delete_outline),
                                 label: const Text("Delete Post"),
                                 style: OutlinedButton.styleFrom(
@@ -303,7 +338,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
           ),
           content: const Text(
             "Are you sure you want to permanently delete this post? "
-                "This action cannot be undone.",
+            "This action cannot be undone.",
           ),
           actions: [
             TextButton(
@@ -334,7 +369,8 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     final cubit = context.read<PostDetailCubit>();
 
     try {
-      await cubit.deletePost(widget.postId); // postId içeride tutuluyor varsayımı
+      await cubit
+          .deletePost(widget.postId); // postId içeride tutuluyor varsayımı
 
       // SUCCESS SNACK
       AppSnackbar.success(
@@ -351,8 +387,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
       );
     }
   }
-
-
 }
 
 /// ---------------- GENDER UI ----------------

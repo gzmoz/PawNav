@@ -4,6 +4,7 @@ class TopInfoCard extends StatelessWidget {
   final String name;
   final String breed;
   final int views;
+  final String postDate;
   final String postedAgo;
 
   const TopInfoCard(
@@ -11,7 +12,7 @@ class TopInfoCard extends StatelessWidget {
       required this.name,
       required this.breed,
       required this.views,
-      required this.postedAgo});
+      required this.postedAgo, required this.postDate});
 
   @override
   Widget build(BuildContext context) {
@@ -85,18 +86,41 @@ class TopInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(
-                Icons.calendar_today_outlined, size: 16, color: Colors.grey,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                postedAgo,
-                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600,
-                  fontSize: width * 0.03,
+              Row(
+                children: [
+                  const Icon(
+                    Icons.calendar_today_outlined, size: 16, color: Colors.grey,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    postDate,
+                    style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600,
+                      fontSize: width * 0.03,
 
-                ),
+                    ),
+                  ),
+                ],
               ),
+
+              Row(
+                children: [
+                  const Icon(
+                    Icons.access_time, size: 16, color: Colors.grey,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    postedAgo,
+                    style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600,
+                      fontSize: width * 0.03,
+
+                    ),
+                  ),
+                ],
+              ),
+
+
             ],
           ),
         ],
