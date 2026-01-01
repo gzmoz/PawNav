@@ -65,13 +65,11 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
     return Scaffold(
       backgroundColor: AppColors.white5,
       body: BlocBuilder<EditPostCubit,EditPostState>(
-        buildWhen: (prev, curr) => curr is EditPostLoaded,
-
         builder: (BuildContext context, EditPostState state) {
 
-          /*if (state is EditPostLoading) {
+          if (state is EditPostLoading) {
             return const Center(child: CircularProgressIndicator());
-          }*/
+          }
 
           if (state is EditPostError) {
             return Center(child: Text(state.message));
@@ -82,87 +80,207 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
           }
 
           final post = state.post;
-        return  CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Colors.white,
-              centerTitle: true,
-              elevation: 10,
-              title: Text(
-                "Edit Post",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700,
-                  fontSize: width * 0.05,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(
-                        color: Colors.blueGrey, fontWeight: FontWeight.w700),
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: Colors.white,
+                centerTitle: true,
+                elevation: 10,
+                title: Text(
+                  "Edit Post",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: width * 0.05,
                   ),
                 ),
-              ],
-            ),
-
-            //InfoBox
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF), // açık mavi
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFD6E8FF),
-                      width: 1,
+                actions: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(
+                          color: Colors.blueGrey, fontWeight: FontWeight.w700),
                     ),
                   ),
-                  child: Row(
+                ],
+              ),
+
+              //InfoBox
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF), // açık mavi
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFFD6E8FF),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Sol ikon
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF2563EB), // mavi
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.info_outline,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // Sağ metinler
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Editing Existing Post",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "You are making changes to a published post visible to the community.",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF475569),
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              //Animal Details
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Sol ikon
                       Container(
-                        width: 32,
-                        height: 32,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF2563EB), // mavi
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.info_outline,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          size: 20,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ),
-
-                      const SizedBox(width: 12),
-
-                      // Sağ metinler
-                      const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Editing Existing Post",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                                color: Colors.black,
+                            subTitleText("Animal Name"),
+                            inputArea(animalNameController),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: BottomSheetSelect(
+                                      title: "Species",
+                                      placeholder: "Select species",
+                                      value: selectedSpecies,
+                                      items: breedMap.keys.toList(),
+                                      onSelected: (val) {
+                                        setState(() {
+                                          selectedSpecies = val;
+                                          selectedBreed = null;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: BottomSheetSelect(
+                                      title: "Breed",
+                                      placeholder: "Select breed",
+                                      value: selectedBreed,
+                                      items: selectedSpecies == null
+                                          ? []
+                                          : breedMap[selectedSpecies] ?? [],
+                                      onSelected: (val) {
+                                        setState(() {
+                                          selectedBreed = val;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              "You are making changes to a published post visible to the community.",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF475569),
-                                height: 1.4,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: BottomSheetSelect(
+                                      title: "Color",
+                                      placeholder: "Select color",
+                                      value: selectedColor,
+                                      items: selectedSpecies == null
+                                          ? []
+                                          : colorMap[selectedSpecies] ?? [],
+                                      onSelected: (val) {
+                                        setState(() {
+                                          selectedColor = val;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                              child: DatePickerSelect(
+                                title: "Lost / Found Date",
+                                placeholder: "Select date",
+                                value: selectedDate,
+                                onSelected: (date) {
+                                  setState(() {
+                                    selectedDate = date;
+                                  });
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  subTitleText("Gender"),
+                                  GenderSelector(
+                                    value: selectedGender,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedGender = val;
+                                      });
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -172,318 +290,180 @@ class _EditPostFormPageState extends State<EditPostFormPage> {
                   ),
                 ),
               ),
-            ),
 
-            //Animal Details
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+              //location
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //LOCATION CARD
+                            /// LOCATION
+                            LocationCard(
+                              title: "Last Seen Location",
+                              address: post.location,
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          subTitleText("Animal Name"),
-                          inputArea(animalNameController),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    ],
+                  ),
+                ),
+              ),
+
+              //description
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            subTitleText("Descripton"),
+                            descriptionField(descriptionController),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              //photo
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            PhotoPicker(
+                              images: selectedImages,
+                              onAdd: () => addPhoto(context),
+                              onRemove: removePhoto,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              //buttons
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              height: 54,
+                              child: ElevatedButton.icon(
+                                onPressed: () {},
+                                label: const Text("Save Changes"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF18B394),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            /// cancel + DELETE
+                            Row(
                               children: [
                                 Expanded(
-                                  child: BottomSheetSelect(
-                                    title: "Species",
-                                    placeholder: "Select species",
-                                    value: selectedSpecies,
-                                    items: breedMap.keys.toList(),
-                                    onSelected: (val) {
-                                      setState(() {
-                                        selectedSpecies = val;
-                                        selectedBreed = null;
-                                      });
-                                    },
+                                  child: SizedBox(
+                                    height: 52,
+                                    child: OutlinedButton.icon(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: const Icon(Icons.cancel_outlined),
+                                      label: const Text("Cancel"),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
-                                  child: BottomSheetSelect(
-                                    title: "Breed",
-                                    placeholder: "Select breed",
-                                    value: selectedBreed,
-                                    items: selectedSpecies == null
-                                        ? []
-                                        : breedMap[selectedSpecies] ?? [],
-                                    onSelected: (val) {
-                                      setState(() {
-                                        selectedBreed = val;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: BottomSheetSelect(
-                                    title: "Color",
-                                    placeholder: "Select color",
-                                    value: selectedColor,
-                                    items: selectedSpecies == null
-                                        ? []
-                                        : colorMap[selectedSpecies] ?? [],
-                                    onSelected: (val) {
-                                      setState(() {
-                                        selectedColor = val;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                  child: SizedBox(
+                                    height: 52,
+                                    child: OutlinedButton.icon(
+                                      onPressed: () =>
+                                          showDeleteDialog(context),
+                                      // onPressed: () {},
 
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                            child: DatePickerSelect(
-                              title: "Lost / Found Date",
-                              placeholder: "Select date",
-                              value: selectedDate,
-                              onSelected: (date) {
-                                setState(() {
-                                  selectedDate = date;
-                                });
-                              },
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 4, 16, 4),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                subTitleText("Gender"),
-                                GenderSelector(
-                                  value: selectedGender,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedGender = val;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-
-            //location
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //LOCATION CARD
-                          /// LOCATION
-                          LocationCard(
-                            title: "Last Seen Location",
-                            address: post.location,
-                          ),
-
-
-
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            //description
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          subTitleText("Descripton"),
-                          descriptionField(descriptionController),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            //photo
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          PhotoPicker(
-                            images: selectedImages,
-                            onAdd: () => addPhoto(context),
-                            onRemove: removePhoto,
-                          ),
-
-
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-
-
-
-
-
-            //buttons
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 54,
-                            child: ElevatedButton.icon(
-                              onPressed: () {},
-                              label: const Text("Save Changes"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF18B394),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                textStyle: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          /// cancel + DELETE
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 52,
-                                  child: OutlinedButton.icon(
-                                    onPressed: ()  {
-                                      Navigator.pop(context);
-
-                                    },
-                                    icon: const Icon(Icons.cancel_outlined),
-                                    label: const Text("Cancel"),
-                                  ),
-
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 52,
-                                  child: OutlinedButton.icon(
-
-                                    onPressed: () => showDeleteDialog(context),
-                                    // onPressed: () {},
-
-                                    icon: const Icon(Icons.delete_outline),
-                                    label: const Text("Delete Post"),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: Colors.red,
-                                      side: BorderSide(color: Colors.red.shade200),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
+                                      icon: const Icon(Icons.delete_outline),
+                                      label: const Text("Delete Post"),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                        side: BorderSide(
+                                            color: Colors.red.shade200),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-
-
-
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-
-
-
-          ],
-        );
-      },
+            ],
+          );
+        },
 
       ),
     );

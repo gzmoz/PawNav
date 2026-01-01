@@ -6,6 +6,7 @@ class BottomSheetSelect extends StatefulWidget {
   final String? value;
   final List<String> items;
   final ValueChanged<String> onSelected;
+  final VoidCallback? onTap;
 
   const BottomSheetSelect({
     super.key,
@@ -14,6 +15,7 @@ class BottomSheetSelect extends StatefulWidget {
     required this.items,
     required this.onSelected,
     this.value,
+    this.onTap,
   });
 
   @override
@@ -34,7 +36,7 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
     final bool hasFocus = _focusNode.hasFocus;
 
     final Color activeColor =
-    hasFocus ? const Color(0xFF2563EB) : const Color(0xFFD1D5DB);
+        hasFocus ? const Color(0xFF2563EB) : const Color(0xFFD1D5DB);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,13 +51,19 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
             ),
           ),
         ),
-
         Focus(
           focusNode: _focusNode,
           child: InkWell(
-            onTap: widget.items.isEmpty
-                ? null
-                : () {
+            onTap: () {
+              // Parent'tan gelen özel kontrol (örn: uyarı)
+              if (widget.onTap != null) {
+                widget.onTap!();
+              }
+
+              // Eğer liste boşsa burada dur (sheet açma)
+              if (widget.items.isEmpty) return;
+
+              // Normal davranış
               _focusNode.requestFocus();
               _openBottomSheet(context);
             },
@@ -63,7 +71,6 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
             child: InputDecorator(
               decoration: InputDecoration(
                 isDense: true,
-
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
@@ -71,7 +78,6 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
                     width: 1,
                   ),
                 ),
-
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
@@ -79,7 +85,6 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
                     width: 1,
                   ),
                 ),
-
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 14,
@@ -135,9 +140,6 @@ class _BottomSheetSelectState extends State<BottomSheetSelect> {
   }
 }
 
-
-
-
 class _BottomSheetList extends StatelessWidget {
   final List<String> items;
   final String? selectedValue;
@@ -152,7 +154,7 @@ class _BottomSheetList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height *  0.45,
+      height: MediaQuery.of(context).size.height * 0.45,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(
@@ -162,7 +164,6 @@ class _BottomSheetList extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 10),
-
           Container(
             width: 40,
             height: 5,
@@ -171,9 +172,7 @@ class _BottomSheetList extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-
           const SizedBox(height: 16),
-
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(bottom: 20),
@@ -206,8 +205,7 @@ class _BottomSheetList extends StatelessWidget {
                       ),
                     ),
                     child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Text(
@@ -218,9 +216,7 @@ class _BottomSheetList extends StatelessWidget {
                               fontWeight: isSelected
                                   ? FontWeight.w600
                                   : FontWeight.w400,
-                              color: isSelected
-                                  ? Colors.blue
-                                  : Colors.black87,
+                              color: isSelected ? Colors.blue : Colors.black87,
                             ),
                           ),
                         ),
@@ -242,5 +238,3 @@ class _BottomSheetList extends StatelessWidget {
     );
   }
 }
-
-
