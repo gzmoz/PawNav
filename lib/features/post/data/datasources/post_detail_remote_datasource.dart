@@ -7,12 +7,16 @@ class PostDetailRemoteDataSource {
 
   PostDetailRemoteDataSource (this.client);
 
-  Future<PostModel> getPostById(String postId) async{
+  Future<PostModel?> getPostById(String postId) async{
     final response = await client
         .from('posts')
         .select()
         .eq('id',postId)
-        .single();
+        .maybeSingle();
+
+    if (response == null) {
+      return null;
+    }
 
     return PostModel.fromMap(response);
 

@@ -6,7 +6,7 @@ class GetPostById {
 
   GetPostById(this.repository);
 
-  Future<Post> call(String postId) {
+  Future<Post?> call(String postId) {
     return repository.getPostById(postId);
   }
 }

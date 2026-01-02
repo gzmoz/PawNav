@@ -39,7 +39,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     return description;
   }
 
-
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -62,13 +61,13 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
 
     return Scaffold(
       backgroundColor: AppColors.white5,
-      body: BlocBuilder<PostDetailCubit, PostDetailState>(
-        builder: (context, state) {
-          if (state is PostDeleted) {
+      body: BlocListener<PostDetailCubit, PostDetailState>(
+        listener: (context, state) {
+          /*if (state is PostDeleted) {
             Navigator.pop(context, true);
             // listeye dön
-            /*“Ben kapanıyorum ama sana şunu söylüyorum:
-            Burada bir değişiklik oldu”*/
+            */ /*“Ben kapanıyorum ama sana şunu söylüyorum:
+            Burada bir değişiklik oldu”*/ /*
           }
           if (state is PostDetailLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -80,37 +79,59 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
 
           if (state is! PostDetailLoaded) {
             return const SizedBox.shrink();
+          }*/
+          if (state is PostDeleted) {
+            AppSnackbar.success(context, "Post deleted successfully");
+            Navigator.pop(context, true);
           }
 
-          final post = state.post;
+          if (state is PostDetailError) {
+            AppSnackbar.error(context, state.message);
+          }
+        },
+        child: BlocBuilder<PostDetailCubit, PostDetailState>(
+          builder: (context, state) {
+            if (state is PostDetailLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final statusColor = PostStatusStyle.color(post.postType);
-          final statusBg = PostStatusStyle.background(post.postType);
-          final genderUI = getGenderUI(post.gender);
+            if (state is PostDetailError) {
+              return Center(child: Text(state.message));
+            }
 
-          return CustomScrollView(
-            slivers: [
-              /// APP BAR
-              SliverAppBar(
-                pinned: true,
-                backgroundColor: Colors.white,
-                elevation: 0,
-                centerTitle: true,
-                title: Text(
-                  "Post Detail",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w700,
-                    fontSize: width * 0.05,
+            if (state is! PostDetailLoaded) {
+              return const SizedBox.shrink();
+            }
+
+            final post = state.post;
+
+            final statusColor = PostStatusStyle.color(post.postType);
+            final statusBg = PostStatusStyle.background(post.postType);
+            final genderUI = getGenderUI(post.gender);
+
+            return CustomScrollView(
+              slivers: [
+                /// APP BAR
+                SliverAppBar(
+                  pinned: true,
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  centerTitle: true,
+                  title: Text(
+                    "Post Detail",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: width * 0.05,
+                    ),
                   ),
-                ),
-                leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon:
-                      const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-                ),
-                //SHARE BUTTON
-                /*actions: [
+                  leading: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios_new,
+                        color: Colors.black),
+                  ),
+                  //SHARE BUTTON
+                  /*actions: [
                   IconButton(
                     onPressed: () {
                       Share.share(
@@ -121,206 +142,208 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                     icon: const Icon(Icons.share, color: Colors.black),
                   ),
                 ],*/
-              ),
+                ),
 
-              /// CAROUSEL
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  child: MyCarousel(
-                    images: post.images,
-                    statusText: post.postType.toUpperCase(),
-                    statusColor: statusColor,
-                    statusBg: statusBg,
+                /// CAROUSEL
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                    child: MyCarousel(
+                      images: post.images,
+                      statusText: post.postType.toUpperCase(),
+                      statusColor: statusColor,
+                      statusBg: statusBg,
+                    ),
                   ),
                 ),
-              ),
 
-              /// CONTENT
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
-                  child: Column(
-                    children: [
-                      /// TOP INFO
-                      TopInfoCard(
-                        name: post.name ?? '',
-                        breed: post.breed,
-                        views: post.views,
-                        postDate: formatDate(post.eventDate),
-                        postedAgo: timeAgo(post.eventDate),
-                      ),
+                /// CONTENT
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
+                    child: Column(
+                      children: [
+                        /// TOP INFO
+                        TopInfoCard(
+                          name: post.name ?? '',
+                          breed: post.breed,
+                          views: post.views,
+                          postDate: formatDate(post.eventDate),
+                          postedAgo: timeAgo(post.eventDate),
+                        ),
 
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                      /// INFO CARDS
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InfoMiniCard(
-                              title: "SPECIES",
-                              value: post.species,
-                              icon: Icons.pets,
-                              iconBg: const Color(0xFFE9EDFF),
-                              iconColor: const Color(0xFF3B5BDB),
+                        /// INFO CARDS
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InfoMiniCard(
+                                title: "SPECIES",
+                                value: post.species,
+                                icon: Icons.pets,
+                                iconBg: const Color(0xFFE9EDFF),
+                                iconColor: const Color(0xFF3B5BDB),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: InfoMiniCard(
+                                title: "GENDER",
+                                value: post.gender,
+                                icon: genderUI.icon,
+                                iconBg: genderUI.bgColor,
+                                iconColor: genderUI.iconColor,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InfoMiniCard(
+                                title: "COLOR",
+                                value: post.color,
+                                icon: Icons.palette,
+                                iconBg: getPetColorBg(post.color),
+                                iconColor: getPetColor(post.color),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: InfoMiniCard(
+                                title: "LAST SEEN",
+                                value: formatDate(post.eventDate),
+                                icon: Icons.calendar_month,
+                                iconBg: const Color(0xFFFFE9E9),
+                                iconColor: const Color(0xFFE03131),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 14),
+
+                        /// ABOUT
+                        SectionCard(
+                          title: "About ${post.name ?? ''}",
+                          icon: Icons.description_outlined,
+                          child: Text(
+                            getDescription(post.description),
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: width * 0.035,
+                              height: 1.35,
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: InfoMiniCard(
-                              title: "GENDER",
-                              value: post.gender,
-                              icon: genderUI.icon,
-                              iconBg: genderUI.bgColor,
-                              iconColor: genderUI.iconColor,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
 
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 14),
 
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InfoMiniCard(
-                              title: "COLOR",
-                              value: post.color,
-                              icon: Icons.palette,
-                              iconBg: getPetColorBg(post.color),
-                              iconColor: getPetColor(post.color),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: InfoMiniCard(
-                              title: "LAST SEEN",
-                              value: formatDate(post.eventDate),
-                              icon: Icons.calendar_month,
-                              iconBg: const Color(0xFFFFE9E9),
-                              iconColor: const Color(0xFFE03131),
-                            ),
-                          ),
-                        ],
-                      ),
+                        /// LOCATION
+                        LocationCard(
+                          title: "Last Seen Location",
+                          address: post.location,
+                        ),
 
-                      const SizedBox(height: 14),
+                        const SizedBox(height: 20),
 
-                      /// ABOUT
-                      SectionCard(
-                        title: "About ${post.name ?? ''}",
-                        icon: Icons.description_outlined,
-                        child: Text(
-                          getDescription(post.description),
+                        /// OWNER ACTIONS
+                        const Text(
+                          "OWNER ACTIONS",
                           style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: width * 0.035,
-                            height: 1.35,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.2,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 15),
 
-                      const SizedBox(height: 14),
-
-                      /// LOCATION
-                      LocationCard(
-                        title: "Last Seen Location",
-                        address: post.location,
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      /// OWNER ACTIONS
-                      const Text(
-                        "OWNER ACTIONS",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-
-                      /// MARK AS REUNITED
-                      SizedBox(
-                        width: double.infinity,
-                        height: 54,
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.celebration_outlined),
-                          label: const Text("Mark as Reunited!"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF18B394),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            textStyle: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// EDIT + DELETE
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 52,
-                              child: OutlinedButton.icon(
-                                onPressed: () async {
-                                  final updated = await context.push<bool>(
-                                    '/edit-post/${post.id}',
-                                  );
-
-                                  if (updated == true) {
-                                    context
-                                        .read<PostDetailCubit>()
-                                        .loadPost(post.id);
-                                    AppSnackbar.success(
-                                        context, "Post updated successfully");
-                                    Navigator.pop(context, true);
-                                  }
-                                },
-                                icon: const Icon(Icons.edit_outlined),
-                                label: const Text("Edit Post"),
+                        /// MARK AS REUNITED
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.celebration_outlined),
+                            label: const Text("Mark as Reunited!"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF18B394),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: SizedBox(
-                              height: 52,
-                              child: OutlinedButton.icon(
-                                /*onPressed: () {
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// EDIT + DELETE
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 52,
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final updated = await context.push<bool>(
+                                      '/edit-post/${post.id}',
+                                    );
+
+                                    if (updated == true) {
+                                      context
+                                          .read<PostDetailCubit>()
+                                          .loadPost(post.id);
+                                      AppSnackbar.success(
+                                          context, "Post updated successfully");
+                                      Navigator.pop(context, true);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.edit_outlined),
+                                  label: const Text("Edit Post"),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: SizedBox(
+                                height: 52,
+                                child: OutlinedButton.icon(
+                                  /*onPressed: () {
                                   context.read<PostDetailCubit>().delete(widget.postId);
                                 },*/
-                                onPressed: () => showDeleteDialog(context),
-                                icon: const Icon(Icons.delete_outline),
-                                label: const Text("Delete Post"),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.red,
-                                  side: BorderSide(color: Colors.red.shade200),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                  onPressed: () => showDeleteDialog(context),
+                                  icon: const Icon(Icons.delete_outline),
+                                  label: const Text("Delete Post"),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.red,
+                                    side:
+                                        BorderSide(color: Colors.red.shade200),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -367,7 +390,11 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     );
   }
 
-  void deletePost(BuildContext context) async {
+   void deletePost(BuildContext context) {
+    context.read<PostDetailCubit>().delete(widget.postId);
+  }
+
+  /*void deletePost(BuildContext context) async {
     final cubit = context.read<PostDetailCubit>();
 
     try {
@@ -388,7 +415,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
         "Failed to delete post. Please try again.",
       );
     }
-  }
+  }*/
 }
 
 /// ---------------- GENDER UI ----------------

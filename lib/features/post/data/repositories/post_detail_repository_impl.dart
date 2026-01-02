@@ -7,9 +7,14 @@ class PostDetailRepositoryImpl  implements PostDetailRepository {
 
   PostDetailRepositoryImpl(this.remote);
 
-  @override
-  Future<Post> getPostById(String postId) {
+  /*@override
+  Future<Post?> getPostById(String postId) {
     return remote.getPostById(postId);
+  }*/
+  @override
+  Future<Post?> getPostById(String postId) async {
+    final model = await remote.getPostById(postId);
+    return model;
   }
 
   @override

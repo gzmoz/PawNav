@@ -71,21 +71,6 @@ class EditPostRepositoryImpl implements EditPostRepository {
     return urls;
   }
 
-  @override
-  Future<void> deletePost(String postId) async {
-    // DB kaydını sil
-    await supabase
-        .from('posts')
-        .delete()
-        .eq('id', postId);
-  }
-
-
-  /*@override
-  Future<void> updatePost(EditPost post) async {
-    final model = EditPostModel.fromEntity(post);
-    await remote.updatePost(model);
-  }*/
 
   String _extractPathFromUrl(String url) {
     final uri = Uri.parse(url);

@@ -10,7 +10,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
 
   PostDetailCubit(this.getPostById, this.deletePost) : super(PostDetailInitial());
 
-  Future<void> loadPost(String postId) async {
+  /*Future<void> loadPost(String postId) async {
     try {
       emit(PostDetailLoading());
       final post = await getPostById(postId);
@@ -18,7 +18,25 @@ class PostDetailCubit extends Cubit<PostDetailState> {
     } catch (e) {
       emit(PostDetailError(e.toString()));
     }
+  }*/
+  Future<void> loadPost(String postId) async {
+    try {
+      emit(PostDetailLoading());
+
+      final post = await getPostById(postId);
+
+      if (post == null) {
+        emit(PostDeleted());
+        return;
+      }
+
+      emit(PostDetailLoaded(post));
+    } catch (e) {
+      emit(PostDetailError(e.toString()));
+    }
   }
+
+
 
   Future<void> delete(String postId) async {
     try {

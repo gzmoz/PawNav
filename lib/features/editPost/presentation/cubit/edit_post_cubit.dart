@@ -25,10 +25,10 @@ class EditPostCubit extends Cubit<EditPostState> {
   }
 
   Future<void> save(
-      EditPost post, {
-        List<XFile> newImages = const [],
-        List<String> removedImages = const [],
-      }) async {
+    EditPost post, {
+    List<XFile> newImages = const [],
+    List<String> removedImages = const [],
+  }) async {
     try {
       emit(EditPostSaving());
 
@@ -43,29 +43,4 @@ class EditPostCubit extends Cubit<EditPostState> {
       emit(EditPostError(e.toString()));
     }
   }
-
-  Future<void> deletePost(String postId) async {
-    try {
-      emit(EditPostSaving());
-      await updatePost.repository.deletePost(postId);
-      emit(EditPostSuccess());
-    } catch (e) {
-      emit(EditPostError(e.toString()));
-    }
-  }
-
-
-
-/*Future<void> save(EditPost post) async {
-    try {
-      emit(EditPostSaving());
-      await updatePost(post);
-      emit(EditPostSuccess());
-    } catch (e) {
-      emit(EditPostError(e.toString()));
-    }
-  }*/
-
-
-
 }

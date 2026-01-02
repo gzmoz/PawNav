@@ -32,12 +32,3 @@ class UpdatePost {
   }
 }
 
-/*class UpdatePost {
-  final EditPostRepository repository;
-
-  UpdatePost(this.repository);
-
-  Future<void> call(EditPost post) {
-    return repository.updatePost(post);
-  }
-}*/

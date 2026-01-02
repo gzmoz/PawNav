@@ -6,6 +6,5 @@ abstract class EditPostRepository {
   Future<void> updatePost(EditPost post);
   Future<List<String>> uploadImages(List<XFile> images);
   Future<void> deleteImages(List<String> imageUrls);
-  Future<void> deletePost(String postId);
 
 }
