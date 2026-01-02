@@ -15,6 +15,7 @@ class EditPost {
   final List<String> images;
   final String postType;
 
+
   EditPost({
     required this.id,
     required this.userId,

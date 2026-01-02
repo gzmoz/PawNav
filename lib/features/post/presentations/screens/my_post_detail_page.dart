@@ -39,6 +39,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     return description;
   }
 
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -282,6 +283,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                         .loadPost(post.id);
                                     AppSnackbar.success(
                                         context, "Post updated successfully");
+                                    Navigator.pop(context, true);
                                   }
                                 },
                                 icon: const Icon(Icons.edit_outlined),

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pawnav/features/editPost/domain/entities/edit_post_entity.dart';
 import 'package:pawnav/features/editPost/domain/usecases/get_post_for_edit.dart';
 import 'package:pawnav/features/editPost/domain/usecases/update_post.dart';
@@ -23,7 +24,39 @@ class EditPostCubit extends Cubit<EditPostState> {
     }
   }
 
-  Future<void> save(EditPost post) async {
+  Future<void> save(
+      EditPost post, {
+        List<XFile> newImages = const [],
+        List<String> removedImages = const [],
+      }) async {
+    try {
+      emit(EditPostSaving());
+
+      await updatePost(
+        post,
+        newImages: newImages,
+        removedImages: removedImages,
+      );
+
+      emit(EditPostSuccess());
+    } catch (e) {
+      emit(EditPostError(e.toString()));
+    }
+  }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      emit(EditPostSaving());
+      await updatePost.repository.deletePost(postId);
+      emit(EditPostSuccess());
+    } catch (e) {
+      emit(EditPostError(e.toString()));
+    }
+  }
+
+
+
+/*Future<void> save(EditPost post) async {
     try {
       emit(EditPostSaving());
       await updatePost(post);
@@ -31,6 +64,8 @@ class EditPostCubit extends Cubit<EditPostState> {
     } catch (e) {
       emit(EditPostError(e.toString()));
     }
-  }
+  }*/
+
+
 
 }
