@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pawnav/features/badges/domain/entities/user_rank.dart';
 
 class UserRankCard extends StatelessWidget {
-  final String rankTitle; // "Gold Helper"
-  final IconData rankIcon; // Icons.star
-  final Color rankColor; // Colors.amber
   final VoidCallback? onTap;
+  final UserRank rank;
 
-  const UserRankCard(
-      {super.key,
-      required this.rankTitle,
-      required this.rankIcon,
-      required this.rankColor, this.onTap});
+  const UserRankCard({super.key, this.onTap, required this.rank});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +22,48 @@ class UserRankCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: rankColor.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(30),
-            /*boxShadow: [
-              BoxShadow(
-                color: rankColor.withOpacity(0.4),
-                spreadRadius: 1,
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],*/
-            /*border: Border.all(
-              color: rankColor.withOpacity(0.6),
-              width: 1.2,
-            ),*/
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: rank.gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(40),
           ),
+
+          /*decoration: BoxDecoration(
+            color: rank.color.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(30),
+
+          ),*/
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(rankIcon, color: Colors.black, size: width * 0.05),
-              const SizedBox(width: 2),
+              //Icon(rankIcon, color: Colors.black, size: width * 0.05),
+              Container(
+                width: width * 0.07,
+                height: width * 0.07,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+                child: Image.asset(
+                  rank.iconAsset,
+                  fit: BoxFit.contain,
+
+                ),
+              ),
+
+              /* Image.asset(
+                rank.iconAsset,
+                width: 22,
+                height: 22,
+              ),*/
+              const SizedBox(width: 5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    rankTitle,
+                    rank.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,

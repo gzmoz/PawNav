@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 class UserRank {
   final String title;
   final Color color;
-  final IconData icon;
+  final String iconAsset;
   final int level;
   final int minBadges;
   final int maxBadges;
+  final List<Color> gradientColors;
 
-  const UserRank({
-    required this.title,
-    required this.color,
-    required this.icon,
-    required this.level,
-    required this.minBadges,
-    required this.maxBadges,
-  });
+  UserRank(
+      {required this.title,
+      required this.color,
+      required this.iconAsset,
+      required this.level,
+      required this.minBadges,
+      required this.maxBadges,
+      required this.gradientColors});
 }

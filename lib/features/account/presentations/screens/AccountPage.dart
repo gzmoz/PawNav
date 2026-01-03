@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/badge_service.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_state.dart';
 import 'package:pawnav/features/account/presentations/widgets/my_posts_grid.dart';
 import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
+import 'package:pawnav/features/badges/domain/logic/rank_calculator.dart';
 import 'package:pawnav/features/badges/presentation/cubit/badge_cubit.dart';
 
 class AccountPage extends StatefulWidget {
@@ -17,17 +19,39 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  @override
+  int _earnedBadgeCount = 0;
+  bool _loadingBadges = true;
+
+
+
   void initState() {
     super.initState();
     context.read<ProfileCubit>().loadProfile();
     context.read<MyPostsCubit>().loadMyPosts();
     // context.read<BadgesCubit>().load();
+    _loadBadgeCount();
+  }
+
+  Future<void> _loadBadgeCount() async {
+    final service = BadgeService();
+    final count = await service.getEarnedBadgeCount();
+
+    setState(() {
+      _earnedBadgeCount = count;
+      _loadingBadges = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    // final int earnedBadgeCount = 1; // şimdilik
+    if (_loadingBadges) {
+      return const SizedBox(); // veya shimmer
+    }
+
+    final rank = RankCalculator.calculate(_earnedBadgeCount);
 
 
     return Scaffold(
@@ -118,9 +142,7 @@ class _AccountPageState extends State<AccountPage> {
                                     //badge
 
                                     UserRankCard(
-                                      rankTitle: "Gold Helper",
-                                      rankIcon: Icons.workspace_premium,
-                                      rankColor: Colors.amber.shade700,
+                                      rank: rank,
                                       onTap: () {
                                         context.push('/badges');
                                       },
