@@ -7,6 +7,7 @@ import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_state.dart';
 import 'package:pawnav/features/account/presentations/widgets/my_posts_grid.dart';
 import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
+import 'package:pawnav/features/badges/presentation/cubit/badge_cubit.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -21,6 +22,7 @@ class _AccountPageState extends State<AccountPage> {
     super.initState();
     context.read<ProfileCubit>().loadProfile();
     context.read<MyPostsCubit>().loadMyPosts();
+    // context.read<BadgesCubit>().load();
   }
 
   @override
@@ -113,11 +115,17 @@ class _AccountPageState extends State<AccountPage> {
                                       ),
                                     ),
                                     const SizedBox(height: 6),
+                                    //badge
+
                                     UserRankCard(
                                       rankTitle: "Gold Helper",
                                       rankIcon: Icons.workspace_premium,
                                       rankColor: Colors.amber.shade700,
+                                      onTap: () {
+                                        context.push('/badges');
+                                      },
                                     ),
+
                                     const SizedBox(height: 12),
                                     const Row(
                                       children: [
