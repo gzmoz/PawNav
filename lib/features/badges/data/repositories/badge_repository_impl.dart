@@ -17,4 +17,10 @@ class BadgeRepositoryImpl implements BadgeRepository{
     final userId = supabase.auth.currentUser!.id;
     return remote.fetchUserBadgeIds(userId);
   }
+
+  @override
+  Future<BadgeEntity?> getBadgeById(String badgeId) async {
+    final model = await remote.getBadgeById(badgeId);
+    return model; // BadgeModel extends BadgeEntity ise direkt döner
+  }
 }

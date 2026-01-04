@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawnav/features/badges/domain/logic/rank_calculator.dart';
 import 'package:pawnav/features/badges/presentation/cubit/badge_cubit.dart';
 import 'package:pawnav/features/badges/presentation/cubit/badge_state.dart';
+import 'package:pawnav/features/badges/presentation/widget/badge_unlocked_modal.dart';
 import '../widget/badges_header.dart';
 import '../widget/badges_progress.dart';
 import '../widget/badge_card.dart';
@@ -42,6 +44,10 @@ class _BadgesPageState extends State<BadgesPage> {
           if (state.error != null) {
             return Center(child: Text(state.error!));
           }
+          final rank = RankCalculator.calculate(state.earnedCount);
+          final overallProgress =
+          state.totalCount == 0 ? 0.0 : (state.earnedCount / state.totalCount);
+
 
           return SafeArea(
             child: SingleChildScrollView(
@@ -56,7 +62,7 @@ class _BadgesPageState extends State<BadgesPage> {
                     earned: state.earnedCount,
                     total: state.totalCount,
                     progress: state.progress,
-                    levelText: 'Level 3 Contributor', // şimdilik static
+                    levelText: 'Level 3 Contributor', rank: rank, // şimdilik static
                   ),
                   const SizedBox(height: 22),
 
@@ -79,9 +85,29 @@ class _BadgesPageState extends State<BadgesPage> {
                         title: badge.name,
                         iconUrl: badge.iconUrl,
                         earned: earned,
-                        onTap: () {
-                          // sonra bottom sheet ekleyeceğiz
+                        onTap: () async {
+                          await showModalBottomSheet(
+                            context: context,
+                            useRootNavigator: true,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.black.withOpacity(0.55),
+                            builder: (sheetCtx) {
+                              final isEarned = earned;
+
+                              return BadgeUnlockedModal(
+                                title: badge.name,
+                                message: isEarned
+                                    ? (badge.description ?? '')
+                                    : "This badge is locked.\n${badge.description ?? ''}",
+                                iconUrl: badge.iconUrl,
+                                onContinue: () => Navigator.of(sheetCtx).pop(),
+                                onViewBadges: () => Navigator.of(sheetCtx).pop(), earned: false,
+                              );
+                            },
+                          );
                         },
+
                       );
                     },
                   ),

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pawnav/features/badges/domain/entities/user_rank.dart';
 
 class BadgesProgress extends StatelessWidget {
   final int earned;
   final int total;
   final double progress;
   final String levelText;
+  final UserRank rank;
 
-  const BadgesProgress({
-    super.key,
-    required this.earned,
-    required this.total,
-    required this.progress,
-    required this.levelText,
-  });
+  const BadgesProgress(
+      {super.key,
+      required this.earned,
+      required this.total,
+      required this.progress,
+      required this.levelText,
+      required this.rank});
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +52,17 @@ class BadgesProgress extends StatelessWidget {
         const SizedBox(height: 6),
         Row(
           children: [
-            Text(levelText, style: const TextStyle(color: Color(0xFF64748B))),
+            Text(
+              'Level ${rank.level} • ${rank.title}',
+              style: TextStyle(color: rank.color, fontWeight: FontWeight.w700),
+            ),
           ],
         ),
+        /*Row(
+          children: [
+            Text(levelText, style: const TextStyle(color: Color(0xFF64748B))),
+          ],
+        ),*/
         const SizedBox(height: 12),
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
@@ -60,7 +70,8 @@ class BadgesProgress extends StatelessWidget {
             value: progress,
             minHeight: 10,
             backgroundColor: const Color(0xFFE2E8F0),
-            color: const Color(0xFF3B5BDB),
+            // color: const Color(0xFF3B5BDB),
+            color: rank.color,
           ),
         ),
       ],

@@ -4,4 +4,8 @@ abstract class BadgeRepository {
   Future<List<BadgeEntity>> getAllBadges();
 
   Future<Set<String>> getUserBadgeIds();
+
+  // : tek badge getir
+  Future<BadgeEntity?> getBadgeById(String badgeId);
+
 }

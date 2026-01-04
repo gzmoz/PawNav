@@ -9,6 +9,7 @@ import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/services/image_picker_service.dart';
 import 'package:pawnav/core/services/json_service.dart';
 import 'package:pawnav/core/services/permission_service.dart';
+import 'package:pawnav/core/services/user_badge_activity_service.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/utils/gender_selector.dart';
 import 'package:pawnav/core/utils/image_source_enum.dart';
@@ -21,6 +22,7 @@ import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_state.dart';
 import 'package:pawnav/features/addPost/presentation/widget/custom_rounded_input.dart';
+import 'package:pawnav/features/badges/presentation/widget/badge_unlocked_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 const List<String> animalTypeList = <String>["Dog", "Cat", "Bird", "Other"];
@@ -75,17 +77,82 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
     return Scaffold(
       backgroundColor: AppColors.white5,
       body: BlocListener<AddPostCubit, AddPostState>(
-        listener: (BuildContext context, AddPostState state) {
+        listener: (BuildContext context, AddPostState state) async {
           if (state is AddPostLoading) {
             AppSnackbar.info(context, "Uploading Post...");
           }
           if (state is AddPostSuccess) {
             AppSnackbar.success(context, "Post successfully created");
 
+            final supabase = Supabase.instance.client;
+            final uid = supabase.auth.currentUser!.id;
+
+            // 1) posts_count++
+            await supabase.rpc('inc_post_created');
+
+            // 2) posts_count çek
+            final stats = await supabase
+                .from('user_stats')
+                .select('posts_count')
+                .eq('user_id', uid)
+                .maybeSingle();
+
+            final postsCount = (stats?['posts_count'] as int?) ?? 0;
+
+            // 3) hangi badge?
+            String? badgeKey;
+            if (postsCount == 1) badgeKey = 'first_paw';
+            if (postsCount == 5) badgeKey = 'animal_advocate';
+
+            // badge yoksa direkt home
+            if (badgeKey == null) {
+              if (!context.mounted) return;
+              context.pushReplacement('/home');
+              return;
+            }
+
+            // 4) badge datasını çek (key ile)
+            final badgeRow = await supabase
+                .from('badges')
+                .select('name, description, icon_url')
+                .eq('key', badgeKey)
+                .maybeSingle();
+
+            if (badgeRow != null && context.mounted) {
+              final action = await showModalBottomSheet<String>(
+                context: context,
+                useRootNavigator: true,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                barrierColor: Colors.black.withOpacity(0.55),
+                builder: (sheetCtx) => BadgeUnlockedModal(
+                  title: badgeRow['name'] as String? ?? 'Badge Unlocked',
+                  message: badgeRow['description'] as String? ?? '',
+                  iconUrl: badgeRow['icon_url'] as String? ?? '',
+                  onContinue: () => Navigator.of(sheetCtx).pop('continue'),
+                  onViewBadges: () => Navigator.of(sheetCtx).pop('badges'), earned: true,
+                ),
+              );
+              if (!context.mounted) return;
+
+              if (action == 'badges') {
+                context.pushReplacement('/badges'); // veya pushReplacement
+                return; // çok önemli: home'a gitmesin
+              }
+
+            }
+
+            if (!context.mounted) return;
+            context.pushReplacement('/home');
+          }
+
+          /*if (state is AddPostSuccess) {
+            AppSnackbar.success(context, "Post successfully created");
+
             Future.delayed(const Duration(milliseconds: 500), () {
               context.pushReplacement('/home');
             });
-          }
+          }*/
           if (state is AddPostError) {
             AppSnackbar.error(context, state.message);
           }

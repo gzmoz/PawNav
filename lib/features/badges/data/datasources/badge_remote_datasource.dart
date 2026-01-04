@@ -28,4 +28,12 @@ class BadgeRemoteDataSource {
         .map((e) => (e as Map<String, dynamic>)['badge_id'] as String)
         .toSet();
   }
+
+  Future<BadgeModel?> getBadgeById(String badgeId) async {
+    final res =
+        await supabase.from('badges').select().eq('id', badgeId).maybeSingle();
+
+    if (res == null) return null;
+    return BadgeModel.fromJson(res);
+  }
 }
