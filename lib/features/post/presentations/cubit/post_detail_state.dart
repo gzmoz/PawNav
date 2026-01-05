@@ -20,4 +20,3 @@ class PostDeleting extends PostDetailState {}
 
 class PostDeleted extends PostDetailState {}
 
-

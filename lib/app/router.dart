@@ -41,6 +41,7 @@ import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart'
 import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.dart';
+import 'package:pawnav/features/post/presentations/screens/post_detail_page.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -189,6 +190,27 @@ final router = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/post-detail/:postId',
+      builder: (context, state) {
+        final postId = state.pathParameters['postId']!;
+
+        final remote = PostDetailRemoteDataSource(
+          Supabase.instance.client,
+        );
+
+        final repository = PostDetailRepositoryImpl(remote);
+
+        return BlocProvider(
+          create: (_) => PostDetailCubit(
+            GetPostById(repository),
+            DeletePost(repository), // şimdilik dursun
+          )..loadPost(postId),
+          child: DetailPage(postId: postId),
+        );
+      },
+    ),
+
 
 
   ],

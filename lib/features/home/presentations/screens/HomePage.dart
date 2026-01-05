@@ -362,7 +362,7 @@ class _HomePageState extends State<HomePage> {
                               subtitle:
                               "${post.location} • ${timeAgo(post.createdAt)}",
                               onTap: () {
-                                context.push('/postDetail/${post.id}');
+                                context.push('/post-detail/${post.id}');
                               },
                             );
                           }).toList(),
