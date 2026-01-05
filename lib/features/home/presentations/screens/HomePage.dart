@@ -1,7 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/daily_badge_runner.dart';
+import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
+import 'package:pawnav/features/home/presentations/cubit/recent_activity_state.dart';
 import 'package:pawnav/features/home/presentations/widgets/community_tips_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/feature_pet_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/home_screen_up_buttons.dart';
@@ -30,6 +35,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _pages = List.generate(imagePaths.length,
         (index) => SuccessStoriesCustom(imagePath: imagePaths[index]));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DailyBadgeRunner.run(context);
+    });
   }
 
   @override
@@ -335,7 +344,52 @@ class _HomePageState extends State<HomePage> {
                       right: width * 0.05,
                       // top: height * 0.02,
                       bottom: height * 0.015),
-                  child: Column(
+                  child: BlocBuilder<RecentActivityCubit, RecentActivityState>(
+                    builder: (context, state) {
+                      if (state is RecentActivityLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (state is RecentActivityLoaded) {
+                        return Column(
+                          children: state.posts.map((post) {
+                            return RecentActivityCard(
+                              imageUrl: post.imageUrl,
+                              title: "${post.postType}: ${post.name}",
+                              subtitle:
+                              "${post.location} • ${timeAgo(post.createdAt)}",
+                              onTap: () {
+                                context.push('/postDetail/${post.id}');
+                              },
+                            );
+                          }).toList(),
+                        );
+                      }
+
+                      if (state is RecentActivityError) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            'Error: ${state.message}',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
+
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+
+
+
+
+
+
+                  /*Column(
                     children: [
                       RecentActivityCard(
                         imageUrl:
@@ -373,7 +427,7 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {},
                       ),
                     ],
-                  ),
+                  ),*/
                 ),
               ],
             ),

@@ -13,6 +13,8 @@ import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart'
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
+import 'package:pawnav/features/home/data/repositories/recent_activity_repository_impl.dart';
+import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -93,6 +95,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+
+        //RECENT POSTS
+        BlocProvider(
+          create: (_) => RecentActivityCubit(
+            RecentActivityRepositoryImpl(
+              Supabase.instance.client,
+            ),
+          )..fetchRecentPosts(),
+        ),
+
       ],
       child: SafeArea(
         top: false,
@@ -104,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: (height * 0.08).clamp(0.0, 75.0),
             backgroundColor: Colors.transparent,
 
-            /// ❗ Gradient burada değil → icon içinde
+            /// Gradient burada değil → icon içinde
             buttonBackgroundColor: Colors.transparent,
 
             items: [

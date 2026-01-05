@@ -31,8 +31,8 @@ class RecentActivityCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
-              spreadRadius: 2,
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 4,
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -66,14 +66,39 @@ class RecentActivityCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          subtitle.split(' • ').first,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '• ${subtitle.split(' • ').last}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+
+                    ],
+                  ),
+
+                  /*Text(
                     subtitle,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 13,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
