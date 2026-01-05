@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/services/location_service.dart';
 import 'package:pawnav/core/services/permission_service.dart';
+import 'package:pawnav/features/badges/presentation/widget/badge_unlocked_modal.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -31,6 +33,15 @@ class _MapScreenState extends State<MapScreen> {
   String? selectedAddress;
 
   List<dynamic> placeResults = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      handleExplorerBadge(context);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -631,6 +642,58 @@ class _MapScreenState extends State<MapScreen> {
       );
     }
   }
+
+  Future<void> handleExplorerBadge(BuildContext context) async {
+    final supabase = Supabase.instance.client;
+    final uid = supabase.auth.currentUser!.id;
+
+    // 1) map_open_count++
+    await supabase.rpc('inc_map_open');
+
+    // 2) map_open_count çek
+    final stats = await supabase
+        .from('user_stats')
+        .select('map_open_count')
+        .eq('user_id', uid)
+        .maybeSingle();
+
+    final mapCount = (stats?['map_open_count'] as int?) ?? 0;
+
+    // 3) eşik: örnek -> 1'de explorer aç
+    // (senin kuralın kaçsa onu yaz)
+    if (mapCount != 1) return;
+
+    // 4) badge datası
+    final badgeRow = await supabase
+        .from('badges')
+        .select('name, description, icon_url')
+        .eq('key', 'explorer')
+        .maybeSingle();
+
+    if (badgeRow == null || !context.mounted) return;
+
+    // 5) modal
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.55),
+      builder: (_) => BadgeUnlockedModal(
+        title: badgeRow['name'] as String? ?? 'Badge Unlocked',
+        message: badgeRow['description'] as String? ?? '',
+        iconUrl: badgeRow['icon_url'] as String? ?? '',
+        onContinue: () => Navigator.pop(context),
+        onViewBadges: () {
+          Navigator.pop(context);
+          context.push('/badges');
+        },
+        earned: true,
+      ),
+    );
+  }
+
+
 
 
 }
