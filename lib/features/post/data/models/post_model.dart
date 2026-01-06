@@ -1,4 +1,5 @@
 import 'package:pawnav/features/post/domain/entities/post.dart';
+import 'package:pawnav/features/post/domain/entities/post_owner.dart';
 
 /*JSON → Entity çevirir*/
 class PostModel extends Post {
@@ -14,9 +15,42 @@ class PostModel extends Post {
     required super.eventDate,
     required super.images,
     required super.postType,
-    required super.views});
+    required super.views,
+    required super.owner
+
+  });
 
   factory PostModel.fromMap(Map<String, dynamic> map) {
+    final ownerMap = map['profiles'];
+
+    return PostModel(
+      id: map['id'],
+      userId: map['user_id'],
+      species: map['species'] ?? '',
+      breed: map['breed'] ?? '',
+      color: map['color'] ?? '',
+      gender: map['gender'] ?? 'unknown',
+      name: map['name'],
+      description: map['description'] ?? '',
+      location: map['location'] ?? '',
+      eventDate: DateTime.parse(map['event_date']),
+      images: map['images'] != null
+          ? List<String>.from(map['images'])
+          : [],
+      postType: map['post_type'] ?? '',
+      views: map['views'] ?? 0,
+      owner: ownerMap == null
+          ? null
+          : PostOwner(
+        id: ownerMap['id'],
+        name: ownerMap['name'] ?? '',
+        username: ownerMap['username'] ?? '',
+        photoUrl: ownerMap['photo_url'],
+      ),
+    );
+  }
+
+  /*factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
       id: map['id'],
       userId: map['user_id'],
@@ -34,6 +68,6 @@ class PostModel extends Post {
       postType: map['post_type'] ?? '',
       views: map['views'] ?? 0,
     );
-  }
+  }*/
 
 }

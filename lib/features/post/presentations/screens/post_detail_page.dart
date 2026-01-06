@@ -255,11 +255,15 @@ class _DetailPageState extends State<DetailPage> {
                           username: post.ownerUsername,
                           avatarUrl: post.ownerAvatar,
                         ),*/
-                        const PostOwnerCard(
-                          name: "post.ownerName",
-                          username: "post.ownerUsername",
-                          avatarUrl: "post.ownerAvatar",
-                        ),
+                        if (post.owner != null)
+                          PostOwnerCard(
+                            name: post.owner!.name,
+                            username: post.owner!.username,
+                            avatarUrl: post.owner!.photoUrl ?? '',
+                          ),
+
+
+
 
                         const SizedBox(height: 20),
 

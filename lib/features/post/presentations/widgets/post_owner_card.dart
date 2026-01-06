@@ -4,7 +4,7 @@ import 'package:pawnav/app/theme/colors.dart';
 class PostOwnerCard extends StatelessWidget {
   final String name;
   final String username;
-  final String avatarUrl;
+  final String? avatarUrl;
 
   const PostOwnerCard({
     super.key,
@@ -32,8 +32,18 @@ class PostOwnerCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 26,
-            backgroundImage: NetworkImage(avatarUrl),
+            backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
+                ? NetworkImage(avatarUrl!)
+                : null,
+            child: avatarUrl == null
+                ? const Icon(Icons.person)
+                : null,
           ),
+
+          /*CircleAvatar(
+            radius: 26,
+            backgroundImage: NetworkImage(avatarUrl),
+          ),*/
           const SizedBox(width: 14),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
