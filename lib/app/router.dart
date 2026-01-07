@@ -10,7 +10,8 @@ import 'package:pawnav/features/addPost/data/datasources/post_remote_datasource.
 import 'package:pawnav/features/addPost/data/repositories/post_repository_impl.dart';
 import 'package:pawnav/features/addPost/domain/usecases/create_post_usecase.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
-import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart' hide EditPostFormPage;
+import 'package:pawnav/features/addPost/presentation/screen/AddPostFormPage.dart'
+    hide EditPostFormPage;
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/select_location_screen.dart';
 import 'package:pawnav/features/auth/presentation/screens/additional_info_screen.dart';
@@ -35,6 +36,7 @@ import 'package:pawnav/features/onboarding/presentations/screens/onboarding_scre
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
 import 'package:pawnav/features/post/domain/repositories/post_detail_repository.dart';
+import 'package:pawnav/features/post/domain/usecases/add_post_view.dart';
 import 'package:pawnav/features/post/domain/usecases/delete_post.dart';
 import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
@@ -93,15 +95,6 @@ final router = GoRouter(
       path: '/addPostBottom',
       builder: (context, state) => const AddPostPage(),
     ),
-
-    /*GoRoute(
-        path: '/addPostForm',
-        builder: (context, state){
-          final type = state.uri.queryParameters['type'] ?? "Lost";
-          return AddPostFormPage(type: type);
-        },
-      ),*/
-
     GoRoute(
       path: '/my-post/:postId',
       builder: (context, state) {
@@ -117,6 +110,7 @@ final router = GoRouter(
           create: (_) => PostDetailCubit(
             GetPostById(repository),
             DeletePost(repository),
+            AddPostView(repository),
           ),
           child: MyPostDetailPage(postId: postId),
         );
@@ -131,7 +125,8 @@ final router = GoRouter(
           Supabase.instance.client,
         );
 
-        final repository = EditPostRepositoryImpl(remote,Supabase.instance.client);
+        final repository =
+            EditPostRepositoryImpl(remote, Supabase.instance.client);
 
         return BlocProvider(
           create: (_) => EditPostCubit(
@@ -204,14 +199,12 @@ final router = GoRouter(
         return BlocProvider(
           create: (_) => PostDetailCubit(
             GetPostById(repository),
-            DeletePost(repository), // şimdilik dursun
+            DeletePost(repository),
+            AddPostView(repository),
           )..loadPost(postId),
           child: DetailPage(postId: postId),
         );
       },
     ),
-
-
-
   ],
 );

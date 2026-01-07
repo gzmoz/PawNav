@@ -27,6 +27,17 @@ class PostDetailRemoteDataSource {
   Future<void> deletePost(String postId) async {
     await client.from('posts').delete().eq('id', postId);
   }
+
+  Future<void> addPostView(String postId) async {
+    final userId = client.auth.currentUser?.id;
+    if (userId == null) return;
+
+    await client.from('post_views').insert({
+      'post_id': postId,
+      'user_id': userId,
+    });
+  }
+
 }
 
 /*Supabase’e git, raw data getir*/ /*

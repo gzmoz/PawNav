@@ -63,26 +63,10 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
       backgroundColor: AppColors.white5,
       body: BlocListener<PostDetailCubit, PostDetailState>(
         listener: (context, state) {
-          /*if (state is PostDeleted) {
-            Navigator.pop(context, true);
-            // listeye dön
-            */ /*“Ben kapanıyorum ama sana şunu söylüyorum:
-            Burada bir değişiklik oldu”*/ /*
-          }
-          if (state is PostDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is PostDetailError) {
-            return Center(child: Text(state.message));
-          }
-
-          if (state is! PostDetailLoaded) {
-            return const SizedBox.shrink();
-          }*/
           if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
-            Navigator.pop(context, true);
+            context.pop(true);
+            //Navigator.pop(context, true);
           }
 
           if (state is PostDetailError) {
@@ -126,7 +110,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                     ),
                   ),
                   leading: IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.go('/home'),
                     icon: const Icon(Icons.arrow_back_ios_new,
                         color: Colors.black),
                   ),
@@ -390,11 +374,11 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     );
   }
 
-   void deletePost(BuildContext context) {
+  void deletePost(BuildContext context) {
     context.read<PostDetailCubit>().delete(widget.postId);
   }
 
-  /*void deletePost(BuildContext context) async {
+/*void deletePost(BuildContext context) async {
     final cubit = context.read<PostDetailCubit>();
 
     try {

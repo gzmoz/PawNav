@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawnav/features/post/domain/usecases/add_post_view.dart';
 import 'package:pawnav/features/post/domain/usecases/delete_post.dart';
 import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
@@ -6,9 +7,13 @@ import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart'
 class PostDetailCubit extends Cubit<PostDetailState> {
   final GetPostById getPostById;
   final DeletePost deletePost;
+  final AddPostView addPostView;
 
-
-  PostDetailCubit(this.getPostById, this.deletePost) : super(PostDetailInitial());
+  PostDetailCubit(
+      this.getPostById,
+      this.deletePost,
+      this.addPostView,
+      ) : super(PostDetailInitial());
 
   /*Future<void> loadPost(String postId) async {
     try {
@@ -31,6 +36,9 @@ class PostDetailCubit extends Cubit<PostDetailState> {
       }
 
       emit(PostDetailLoaded(post));
+
+      addPostView(postId);
+
     } catch (e) {
       emit(PostDetailError(e.toString()));
     }

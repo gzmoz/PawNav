@@ -21,4 +21,10 @@ class PostDetailRepositoryImpl  implements PostDetailRepository {
   Future<void> deletePost(String postId) {
     return remote.deletePost(postId);
   }
+
+  @override
+  Future<void> addPostView(String postId) {
+    return remote.addPostView(postId);
+  }
+
 }
