@@ -1,9 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, ReadContext;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
-import 'package:pawnav/features/account/domain/usecases/get_current_profile.dart';
-import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
-import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/addPost/data/datasources/post_remote_datasource.dart'
     show PostRemoteDataSource;
@@ -32,10 +29,13 @@ import 'package:pawnav/features/editPost/domain/usecases/get_post_for_edit.dart'
 import 'package:pawnav/features/editPost/domain/usecases/update_post.dart';
 import 'package:pawnav/features/editPost/presentation/cubit/edit_post_cubit.dart';
 import 'package:pawnav/features/editPost/presentation/screen/edit_post_form_page.dart';
+import 'package:pawnav/features/home/data/repositories/home_repository_impl.dart';
+import 'package:pawnav/features/home/domain/usecases/get_posts_by_views.dart';
+import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
+import 'package:pawnav/features/home/presentations/screens/most_viewed_pets_page.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
-import 'package:pawnav/features/post/domain/repositories/post_detail_repository.dart';
 import 'package:pawnav/features/post/domain/usecases/add_post_view.dart';
 import 'package:pawnav/features/post/domain/usecases/delete_post.dart';
 import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
@@ -206,5 +206,42 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/most-viewed',
+      builder: (context, state) {
+        final supabase = Supabase.instance.client;
+
+        final homeRepo = HomeRepositoryImpl(supabase);
+        final getPostsByViews = GetPostsByViews(homeRepo);
+
+        return BlocProvider(
+          create: (_) => FeaturedPostsCubit(
+            getPostsByViews,
+          )..loadTop(limit: 20),
+          child: const MostViewedPetsPage(),
+        );
+      },
+    ),
+
+
+    /*GoRoute(
+      path: '/most-viewed',
+      builder: (context, state) {
+        return BlocProvider(
+          create: (_) => FeaturedPostsCubit(
+            context.read<GetPostsByViews>(),
+          )..loadTop(limit: 20),
+          child: const MostViewedPetsPage(),
+        );
+      },
+    ),*/
+
+
+    /*GoRoute(
+      path: '/most-viewed',
+      builder: (context, state) => const MostViewedPetsPage(),
+    ),*/
+
   ],
 );

@@ -6,6 +6,17 @@ class GetPostsByViews {
 
   GetPostsByViews(this.repository);
 
+  Future<List<Post>> call({required int limit}) {
+    return repository.getPostsByViews(limit: limit);
+  }
+}
+
+/*
+class GetPostsByViews {
+  final HomeRepository repository;
+
+  GetPostsByViews(this.repository);
+
   Future<List<Post>> call({
     required int limit,
     int? lastViews,
@@ -18,3 +29,4 @@ class GetPostsByViews {
     );
   }
 }
+*/

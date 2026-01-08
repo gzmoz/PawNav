@@ -127,8 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
           BlocProvider(
             create: (context) => FeaturedPostsCubit(
               context.read<GetPostsByViews>(),
-            )..loadTop5(),
+            )..loadTop(limit: 5),
           ),
+
+
+          /*BlocProvider(
+            create: (context) => FeaturedPostsCubit(
+              context.read<GetPostsByViews>(),
+            )..loadTop5(),
+          ),*/
 
         ],
         child: SafeArea(

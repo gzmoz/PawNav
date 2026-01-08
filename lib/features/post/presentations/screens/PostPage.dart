@@ -7,23 +7,6 @@ import 'package:pawnav/features/post/presentations/widgets/post_card.dart';
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
 
-  /*String formatTimeAgo(DateTime postDate) {
-    final diff = DateTime.now().difference(postDate);
-
-    if (diff.inSeconds < 60) {
-      return "Just now";
-    } else if (diff.inMinutes < 60) {
-      return "Posted ${diff.inMinutes} minutes ago";
-    } else if (diff.inHours < 24) {
-      return "Posted ${diff.inHours} hours ago";
-    } else if (diff.inDays < 7) {
-      return "Posted ${diff.inDays} days ago";
-    } else {
-      final weeks = (diff.inDays / 7).floor();
-      return "Posted $weeks week${weeks > 1 ? 's' : ''} ago";
-    }
-  }*/
-
   @override
   State<PostPage> createState() => _PostPageState();
 }

@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
 
     //context.read<FeaturedPostsCubit>().loadTop5();
 
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       DailyBadgeRunner.run(context);
     });
@@ -64,7 +63,6 @@ class _HomePageState extends State<HomePage> {
             fit: BoxFit.contain,
           ),
         ),
-
         title: const Text(
           "PawNav",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
@@ -114,7 +112,6 @@ class _HomePageState extends State<HomePage> {
                             "Share a post to reunite the pet with its owner.",
                         onTap: () {
                           this.context.push('/addPostForm?type=Found');
-
                         },
                       ),
                       SizedBox(width: width * 0.01),
@@ -125,7 +122,6 @@ class _HomePageState extends State<HomePage> {
                             "Post an adoption ad and connect with adopters.",
                         onTap: () {
                           this.context.push('/addPostForm?type=Adoption');
-
                         },
                       ),
                     ],
@@ -223,18 +219,23 @@ class _HomePageState extends State<HomePage> {
                           fontSize: width * 0.05,
                         ),
                       ),
-                      Text(
-                        "View More",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: width * 0.03,
-                          color: AppColors.primary,
+                      TextButton(
+                        onPressed: () {
+                          context.push('/most-viewed');
+                        },
+                        child: Text(
+                          "View More",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.03,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                 SingleChildScrollView(
+                SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: BlocBuilder<FeaturedPostsCubit, FeaturedPostsState>(
                     builder: (context, state) {
@@ -256,11 +257,12 @@ class _HomePageState extends State<HomePage> {
                                   petName: post.name ?? '',
                                   status: post.postType,
                                   location: post.location,
-                                  imageUrl: post.images.isNotEmpty ? post.images.first : '',
+                                  imageUrl: post.images.isNotEmpty
+                                      ? post.images.first
+                                      : '',
                                   onTap: () {
                                     context.push('/post-detail/${post.id}');
                                   },
-
                                 );
                               }).toList(),
                             ),
@@ -282,14 +284,11 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
 
-
-
-
                   /*Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       children: [
-                        *//*FeaturedPetCard(
+                        */ /*FeaturedPetCard(
                           petName: "Buddy",
                           status: "Lost",
                           location: "San Francisco, CA",
@@ -316,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                           location: "San Diego, CA",
                           imageUrl:
                               "https://images.unsplash.com/photo-1507149833265-60c372daea22?w=800",
-                        ),*//*
+                        ),*/ /*
                       ],
                     ),
                   ),*/
@@ -362,7 +361,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(
                       left: width * 0.05,
@@ -387,11 +385,9 @@ class _HomePageState extends State<HomePage> {
                           color: AppColors.primary,
                         ),
                       ),
-
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(
                       left: width * 0.05,
@@ -414,7 +410,7 @@ class _HomePageState extends State<HomePage> {
                               imageUrl: post.imageUrl,
                               title: "${post.postType}: ${post.name}",
                               subtitle:
-                              "${post.location} • ${timeAgo(post.createdAt)}",
+                                  "${post.location} • ${timeAgo(post.createdAt)}",
                               onTap: () {
                                 context.push('/post-detail/${post.id}');
                               },
@@ -433,15 +429,9 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
 
-
                       return const SizedBox.shrink();
                     },
                   ),
-
-
-
-
-
 
                   /*Column(
                     children: [
