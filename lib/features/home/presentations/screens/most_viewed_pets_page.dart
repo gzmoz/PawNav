@@ -88,11 +88,20 @@ class _MostViewedPetsPageState extends State<MostViewedPetsPage> {
         if (state is FeaturedPostsLoaded) {
           final posts = state.posts;
 
+          // EN KOLAY FİLTRE: ekranda listeyi süz
+          final filteredPosts = posts.where((p) {
+            if (selectedFilter == PetFilter.all) return true;
+
+            // PetFilter enum'ındaki isimler: lost/found/adoption gibi
+            // postType ise: "Lost" / "Found" / "Adoption"
+            return (p.postType ?? '').toLowerCase() == selectedFilter.name;
+          }).toList();
+
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: posts.length,
+            itemCount: filteredPosts.length,
             itemBuilder: (context, index) {
-              return MostViewedPetCard(post: posts[index]);
+              return MostViewedPetCard(post: filteredPosts[index]);
             },
           );
         }
@@ -105,4 +114,5 @@ class _MostViewedPetsPageState extends State<MostViewedPetsPage> {
       },
     );
   }
+
 }
