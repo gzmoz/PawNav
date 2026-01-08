@@ -13,7 +13,10 @@ import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart'
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
+import 'package:pawnav/features/home/data/repositories/home_repository_impl.dart';
 import 'package:pawnav/features/home/data/repositories/recent_activity_repository_impl.dart';
+import 'package:pawnav/features/home/domain/usecases/get_posts_by_views.dart';
+import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
@@ -39,10 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Gradient'li icon widget
   Widget navIcon(
-      IconData icon,
-      int itemIndex,
-      double size,
-      ) {
+    IconData icon,
+    int itemIndex,
+    double size,
+  ) {
     final bool isActive = index == itemIndex;
 
     return Container(
@@ -50,10 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         gradient: isActive
             ? const LinearGradient(
-          colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        )
+                colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
             : null,
         borderRadius: BorderRadius.circular(20),
       ),
@@ -70,77 +73,96 @@ class _HomeScreenState extends State<HomeScreen> {
     final media = MediaQuery.of(context);
     final height = media.size.height;
     final width = media.size.width;
-
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        /// PROFILE
-        BlocProvider(
-          create: (_) => ProfileCubit(
-            GetCurrentProfile(
-              repo: ProfileRepositoryImpl(
-                remote: ProfileRemoteDataSource(
-                  client: Supabase.instance.client,
-                ),
-              ),
-            ),
-          )..loadProfile(),
-        ),
-
-        /// MY POSTS
-        BlocProvider(
-          create: (_) => MyPostsCubit(
-            client: Supabase.instance.client,
-            repository: PostRepository(
-              PostRemoteDataSource(Supabase.instance.client),
-            ),
+        /// HOME REPOSITORY
+        RepositoryProvider<HomeRepositoryImpl>(
+          create: (_) => HomeRepositoryImpl(
+            Supabase.instance.client,
           ),
         ),
 
-        //RECENT POSTS
-        BlocProvider(
-          create: (_) => RecentActivityCubit(
-            RecentActivityRepositoryImpl(
-              Supabase.instance.client,
-            ),
-          )..fetchRecentPosts(),
+        /// GET POSTS BY VIEWS USE CASE
+        RepositoryProvider<GetPostsByViews>(
+          create: (context) => GetPostsByViews(
+            context.read<HomeRepositoryImpl>(),
+          ),
         ),
-
       ],
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          backgroundColor: AppColors.background,
-          extendBody: true,
-          body: screens[index],
-          bottomNavigationBar: CurvedNavigationBar(
-            height: (height * 0.08).clamp(0.0, 75.0),
-            backgroundColor: Colors.transparent,
+      child: MultiBlocProvider(
+        providers: [
+          /// PROFILE
+          BlocProvider(
+            create: (_) => ProfileCubit(
+              GetCurrentProfile(
+                repo: ProfileRepositoryImpl(
+                  remote: ProfileRemoteDataSource(
+                    client: Supabase.instance.client,
+                  ),
+                ),
+              ),
+            )..loadProfile(),
+          ),
 
-            /// Gradient burada değil → icon içinde
-            buttonBackgroundColor: Colors.transparent,
+          /// MY POSTS
+          BlocProvider(
+            create: (_) => MyPostsCubit(
+              client: Supabase.instance.client,
+              repository: PostRepository(
+                PostRemoteDataSource(Supabase.instance.client),
+              ),
+            ),
+          ),
 
-            items: [
-              navIcon(Icons.home_outlined, 0, width * 0.07),
-              navIcon(Icons.list, 1, width * 0.07),
-              navIcon(Icons.add, 2, width * 0.07),
-              navIcon(Icons.messenger_outline_sharp, 3, width * 0.07),
-              navIcon(Icons.person_outline, 4, width * 0.07),
-            ],
-            index: index,
-            animationCurve: Curves.easeInOut,
-            animationDuration: const Duration(milliseconds: 300),
-            onTap: (i) {
-              setState(() {
-                index = i;
-              });
-            },
+          /// RECENT POSTS
+          BlocProvider(
+            create: (_) => RecentActivityCubit(
+              RecentActivityRepositoryImpl(
+                Supabase.instance.client,
+              ),
+            )..fetchRecentPosts(),
+          ),
+
+          /// FEATURED POSTS
+          BlocProvider(
+            create: (context) => FeaturedPostsCubit(
+              context.read<GetPostsByViews>(),
+            )..loadTop5(),
+          ),
+
+        ],
+        child: SafeArea(
+          top: false,
+          child: Scaffold(
+            backgroundColor: AppColors.background,
+            extendBody: true,
+            body: screens[index],
+            bottomNavigationBar: CurvedNavigationBar(
+              height: (height * 0.08).clamp(0.0, 75.0),
+              backgroundColor: Colors.transparent,
+
+              /// Gradient burada değil → icon içinde
+              buttonBackgroundColor: Colors.transparent,
+
+              items: [
+                navIcon(Icons.home_outlined, 0, width * 0.07),
+                navIcon(Icons.list, 1, width * 0.07),
+                navIcon(Icons.add, 2, width * 0.07),
+                navIcon(Icons.messenger_outline_sharp, 3, width * 0.07),
+                navIcon(Icons.person_outline, 4, width * 0.07),
+              ],
+              index: index,
+              animationCurve: Curves.easeInOut,
+              animationDuration: const Duration(milliseconds: 300),
+              onTap: (i) {
+                setState(() {
+                  index = i;
+                });
+              },
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-
-
-

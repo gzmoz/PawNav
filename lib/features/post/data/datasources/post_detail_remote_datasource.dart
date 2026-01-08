@@ -32,6 +32,7 @@ class PostDetailRemoteDataSource {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
+    //“Bu kullanıcı bu postu görüntüledi” kaydını ekliyor:
     await client.from('post_views').insert({
       'post_id': postId,
       'user_id': userId,

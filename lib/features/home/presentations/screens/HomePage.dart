@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/services/daily_badge_runner.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
+import 'package:pawnav/features/home/presentations/cubit/featured_posts_state.dart';
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_state.dart';
 import 'package:pawnav/features/home/presentations/widgets/community_tips_card.dart';
@@ -35,6 +37,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _pages = List.generate(imagePaths.length,
         (index) => SuccessStoriesCustom(imagePath: imagePaths[index]));
+
+    //context.read<FeaturedPostsCubit>().loadTop5();
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       DailyBadgeRunner.run(context);
@@ -229,13 +234,62 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                const SingleChildScrollView(
+                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Padding(
+                  child: BlocBuilder<FeaturedPostsCubit, FeaturedPostsState>(
+                    builder: (context, state) {
+                      if (state is FeaturedPostsLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (state is FeaturedPostsLoaded) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              children: state.posts.map((post) {
+                                return FeaturedPetCard(
+                                  petName: post.name ?? '',
+                                  status: post.postType,
+                                  location: post.location,
+                                  imageUrl: post.images.isNotEmpty ? post.images.first : '',
+                                  onTap: () {
+                                    context.push('/post-detail/${post.id}');
+                                  },
+
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (state is FeaturedPostsError) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            state.message,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+
+
+
+
+                  /*Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       children: [
-                        FeaturedPetCard(
+                        *//*FeaturedPetCard(
                           petName: "Buddy",
                           status: "Lost",
                           location: "San Francisco, CA",
@@ -262,10 +316,10 @@ class _HomePageState extends State<HomePage> {
                           location: "San Diego, CA",
                           imageUrl:
                               "https://images.unsplash.com/photo-1507149833265-60c372daea22?w=800",
-                        ),
+                        ),*//*
                       ],
                     ),
-                  ),
+                  ),*/
                 ),
                 Padding(
                   padding: EdgeInsets.only(

@@ -64,23 +64,7 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: AppColors.white5,
       body: BlocListener<PostDetailCubit, PostDetailState>(
         listener: (context, state) {
-          /*if (state is PostDeleted) {
-            Navigator.pop(context, true);
-            // listeye dön
-            */ /*“Ben kapanıyorum ama sana şunu söylüyorum:
-            Burada bir değişiklik oldu”*/ /*
-          }
-          if (state is PostDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
 
-          if (state is PostDetailError) {
-            return Center(child: Text(state.message));
-          }
-
-          if (state is! PostDetailLoaded) {
-            return const SizedBox.shrink();
-          }*/
           if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
             Navigator.pop(context, true);
