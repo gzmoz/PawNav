@@ -39,6 +39,8 @@ import 'package:pawnav/features/post/data/repositories/post_detail_repository_im
 import 'package:pawnav/features/post/domain/usecases/add_post_view.dart';
 import 'package:pawnav/features/post/domain/usecases/delete_post.dart';
 import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
+import 'package:pawnav/features/post/domain/usecases/is_post_saved.dart';
+import 'package:pawnav/features/post/domain/usecases/toggle_save_post.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
@@ -111,6 +113,8 @@ final router = GoRouter(
             GetPostById(repository),
             DeletePost(repository),
             AddPostView(repository),
+            ToggleSavePost(repository),
+            IsPostSaved(repository),
           ),
           child: MyPostDetailPage(postId: postId),
         );
@@ -201,12 +205,14 @@ final router = GoRouter(
             GetPostById(repository),
             DeletePost(repository),
             AddPostView(repository),
+            ToggleSavePost(repository),
+            IsPostSaved(repository),
+
           )..loadPost(postId),
           child: DetailPage(postId: postId),
         );
       },
     ),
-
     GoRoute(
       path: '/most-viewed',
       builder: (context, state) {
@@ -223,25 +229,5 @@ final router = GoRouter(
         );
       },
     ),
-
-
-    /*GoRoute(
-      path: '/most-viewed',
-      builder: (context, state) {
-        return BlocProvider(
-          create: (_) => FeaturedPostsCubit(
-            context.read<GetPostsByViews>(),
-          )..loadTop(limit: 20),
-          child: const MostViewedPetsPage(),
-        );
-      },
-    ),*/
-
-
-    /*GoRoute(
-      path: '/most-viewed',
-      builder: (context, state) => const MostViewedPetsPage(),
-    ),*/
-
   ],
 );

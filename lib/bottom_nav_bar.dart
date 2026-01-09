@@ -32,13 +32,31 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
 
-  final screens = const [
+  /*final screens = const [
     HomePage(),
     PostPage(),
     AddPostPage(),
     MessagePage(),
     AccountPage(),
-  ];
+  ];*/
+
+  Widget _buildScreen(int index) {
+    switch (index) {
+      case 0:
+        return const HomePage();
+      case 1:
+        return const PostPage();
+      case 2:
+        return const AddPostPage();
+      case 3:
+        return const MessagePage();
+      case 4:
+        return const AccountPage();
+      default:
+        return const HomePage();
+    }
+  }
+
 
   /// Gradient'li icon widget
   Widget navIcon(
@@ -143,7 +161,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Scaffold(
             backgroundColor: AppColors.background,
             extendBody: true,
-            body: screens[index],
+            body: _buildScreen(index),
+
+            // body: screens[index],
             bottomNavigationBar: CurvedNavigationBar(
               height: (height * 0.08).clamp(0.0, 75.0),
               backgroundColor: Colors.transparent,

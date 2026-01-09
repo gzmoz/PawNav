@@ -38,6 +38,48 @@ class PostDetailRemoteDataSource {
       'user_id': userId,
     });
   }
+  Future<void> toggleSavePost(String postId) async {
+    final userId = client.auth.currentUser?.id;
+    if (userId == null) return;
+
+    final existing = await client
+        .from('saved_posts')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('post_id', postId)
+        .maybeSingle();
+
+    if (existing != null) {
+      // UNSAVE
+      await client
+          .from('saved_posts')
+          .delete()
+          .eq('user_id', userId)
+          .eq('post_id', postId);
+    } else {
+      // SAVE
+      await client.from('saved_posts').insert({
+        'user_id': userId,
+        'post_id': postId,
+      });
+    }
+  }
+
+  Future<bool> isPostSaved(String postId) async {
+    final userId = client.auth.currentUser?.id;
+    if (userId == null) return false;
+
+    final res = await client
+        .from('saved_posts')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('post_id', postId)
+        .maybeSingle();
+
+    return res != null;
+  }
+
+
 
 }
 

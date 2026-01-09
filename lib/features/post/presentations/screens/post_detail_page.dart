@@ -65,6 +65,14 @@ class _DetailPageState extends State<DetailPage> {
       body: BlocListener<PostDetailCubit, PostDetailState>(
         listener: (context, state) {
 
+          if (state is PostDetailLoaded && state.justSaved != null) {
+            if (state.justSaved == true) {
+              AppSnackbar.success(context, "Saved to your bookmarks");
+            } else {
+              AppSnackbar.info(context, "Removed from saved");
+            }
+          }
+
           if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
             Navigator.pop(context, true);
@@ -116,14 +124,31 @@ class _DetailPageState extends State<DetailPage> {
                         color: Colors.black),
                   ),
                   actions: [
-                    IconButton(
-                      onPressed: () {
-                        // TODO: save post
+                    BlocBuilder<PostDetailCubit, PostDetailState>(
+                      builder: (context, state) {
+                        if (state is! PostDetailLoaded) {
+                          return const SizedBox.shrink();
+                        }
+
+                        return IconButton(
+                          onPressed: () {
+                            context
+                                .read<PostDetailCubit>()
+                                .toggleSave(state.post.id);
+                          },
+                          icon: Icon(
+                            state.isSaved
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            color: state.isSaved
+                                ? AppColors.primary
+                                : Colors.black,
+                          ),
+                        );
                       },
-                      icon: const Icon(Icons.bookmark_border,
-                          color: Colors.black),
                     ),
                   ],
+
                 ),
 
                 /// CAROUSEL
