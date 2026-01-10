@@ -11,6 +11,7 @@ import 'package:pawnav/features/account/domain/repositories/profile_repository.d
 import 'package:pawnav/features/account/domain/usecases/get_current_profile.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
 import 'package:pawnav/features/home/data/repositories/home_repository_impl.dart';
@@ -149,11 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
 
-          /*BlocProvider(
-            create: (context) => FeaturedPostsCubit(
-              context.read<GetPostsByViews>(),
-            )..loadTop5(),
-          ),*/
+          BlocProvider(
+            create: (_) => SavedPostsCubit(
+              Supabase.instance.client,
+            )..loadSavedPosts(),
+          ),
+
 
         ],
         child: SafeArea(

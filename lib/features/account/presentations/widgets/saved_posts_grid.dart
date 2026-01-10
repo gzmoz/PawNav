@@ -2,13 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/core/utils/post_status.dart';
+import 'package:pawnav/features/account/data/models/post_model.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_state.dart';
-import 'package:pawnav/features/editPost/domain/entities/edit_post_entity.dart';
-import 'package:pawnav/features/editPost/presentation/cubit/edit_post_cubit.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_state.dart';
 
-class MyPostsGrid extends StatelessWidget {
-  const MyPostsGrid({super.key});
+
+class SavedPostsGrid extends StatefulWidget {
+  const SavedPostsGrid({super.key});
+
+  static const pageKey = PageStorageKey('saved_posts_grid');
+
+  @override
+  State<SavedPostsGrid> createState() => _SavedPostsGridState();
+}
+
+class _SavedPostsGridState extends State<SavedPostsGrid>
+    with AutomaticKeepAliveClientMixin {
+
+  final _listKey = GlobalKey<AnimatedListState>();
+  late List<PostModel> _posts;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = context.read<SavedPostsCubit>().state;
+    if (state is SavedPostsLoaded) {
+      _posts = List.from(state.posts);
+    } else {
+      _posts = [];
+    }
+  }
+
+
+  @override
+  bool get wantKeepAlive => true;
 
   String? _firstImage(List<String>? images) {
     if (images == null || images.isEmpty) return null;
@@ -17,25 +46,30 @@ class MyPostsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MyPostsCubit, MyPostsState>(
+    super.build(context);
+    return BlocBuilder<SavedPostsCubit, SavedPostsState>(
       builder: (context, state) {
-        if (state is MyPostsLoading) {
+        if (state is SavedPostsLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is MyPostsError) {
+        if (state is SavedPostsError) {
           return Center(child: Text(state.message));
         }
 
-        if (state is! MyPostsLoaded) {
+        if (state is! SavedPostsLoaded) {
           return const SizedBox.shrink();
         }
 
         if (state.posts.isEmpty) {
-          return const Center(child: Text("NO POSTS FOUND"));
+          return const Center(
+            child: Text("NO SAVED POSTS"),
+          );
         }
 
+
         return GridView.builder(
+          key: SavedPostsGrid.pageKey,
           shrinkWrap: true,
           // physics: const NeverScrollableScrollPhysics(),
           // padding: const EdgeInsets.all(12),
@@ -69,47 +103,28 @@ class MyPostsGrid extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () async {
-                    final shouldRefresh = await context.push<bool>(
-                      '/my-post/${post.id}',
+                  onTap: () {
+                    context.push(
+                      '/post-detail/${post.id}',
                     );
-
-                    if (shouldRefresh == true) {
-                      context.read<MyPostsCubit>().loadMyPosts();
-                    }
-
-                    final deleted = await context.push<bool>(
-                      '/my-post/${post.id}',
-                    );
-
-                    if (deleted == true) {
-                      context.read<MyPostsCubit>().loadMyPosts();
-                    }
-
-                    /*AccountPage → DetailPage’e gider
-                      Bekler (await)
-                      DetailPage kapanınca geri dönen sonucu alır
-                      Eğer true ise:
-                      “Liste artık geçersiz”
-                      Yeniden fetch et*/
                   },
+
                   child: Stack(
                     children: [
                       Positioned.fill(
                         child: img == null
                             ? Container(color: Colors.grey.shade200)
                             : Image.network(
-                                img,
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.low,
-                              ),
+                          img,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.low,
+                        ),
                       ),
                       Positioned(
                         top: 6,
                         right: 6,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: statusBgColor,
                             borderRadius: BorderRadius.circular(12),
@@ -126,6 +141,7 @@ class MyPostsGrid extends StatelessWidget {
                       ),
                     ],
                   ),
+
                 ),
               ),
             );
@@ -134,4 +150,6 @@ class MyPostsGrid extends StatelessWidget {
       },
     );
   }
+
+
 }

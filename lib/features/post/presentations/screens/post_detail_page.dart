@@ -7,6 +7,7 @@ import 'package:pawnav/core/utils/date_formatter.dart';
 import 'package:pawnav/core/utils/pet_color_mapper.dart';
 import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/info_mini_card.dart';
@@ -66,11 +67,15 @@ class _DetailPageState extends State<DetailPage> {
         listener: (context, state) {
 
           if (state is PostDetailLoaded && state.justSaved != null) {
+            // SAVED GRID'İ YENİLE
+            //context.read<SavedPostsCubit>().loadSavedPosts();
             if (state.justSaved == true) {
               AppSnackbar.success(context, "Saved to your bookmarks");
             } else {
               AppSnackbar.info(context, "Removed from saved");
             }
+            context.read<SavedPostsCubit>().loadSavedPosts();
+
           }
 
           if (state is PostDeleted) {
@@ -81,6 +86,7 @@ class _DetailPageState extends State<DetailPage> {
           if (state is PostDetailError) {
             AppSnackbar.error(context, state.message);
           }
+
         },
         child: BlocBuilder<PostDetailCubit, PostDetailState>(
           builder: (context, state) {

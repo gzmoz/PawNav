@@ -6,7 +6,9 @@ import 'package:pawnav/core/services/badge_service.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_state.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/widgets/my_posts_grid.dart';
+import 'package:pawnav/features/account/presentations/widgets/saved_posts_grid.dart';
 import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
 import 'package:pawnav/features/badges/domain/logic/rank_calculator.dart';
 import 'package:pawnav/features/badges/presentation/cubit/badge_cubit.dart';
@@ -29,6 +31,8 @@ class _AccountPageState extends State<AccountPage> {
     context.read<ProfileCubit>().loadProfile();
     context.read<MyPostsCubit>().loadMyPosts();
     // context.read<BadgesCubit>().load();
+    context.read<SavedPostsCubit>().loadSavedPosts();
+
     _loadBadgeCount();
   }
 
@@ -185,10 +189,10 @@ class _AccountPageState extends State<AccountPage> {
               },
 
               //  SCROLL EDEN ASIL İÇERİK
-              body: const TabBarView(
+              body: TabBarView(
                 children: [
                   MyPostsGrid(),
-                  Center(child: Text("Saved posts will appear here.")),
+                  SavedPostsGrid(),
                   Center(child: Text("Success stories will appear here.")),
                 ],
               ),
