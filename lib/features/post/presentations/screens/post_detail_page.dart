@@ -73,8 +73,10 @@ class _DetailPageState extends State<DetailPage> {
               AppSnackbar.success(context, "Saved to your bookmarks");
             } else {
               AppSnackbar.info(context, "Removed from saved");
+              context
+                  .read<SavedPostsCubit>()
+                  .removeSavedPost(state.post.id);
             }
-            context.read<SavedPostsCubit>().loadSavedPosts();
 
           }
 

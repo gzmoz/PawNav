@@ -107,22 +107,5 @@ class PostDetailCubit extends Cubit<PostDetailState> {
   }
 
 
-/*Future<void> toggleSave(String postId) async {
-    if (state is! PostDetailLoaded) return;
-
-    final current = state as PostDetailLoaded;
-
-    //  UI’ı HEMEN değiştir
-    emit(current.copyWith(isSaved: !current.isSaved));
-
-    try {
-      //  DB’de save / unsave
-      await toggleSavePost(postId);
-    } catch (e) {
-      //  hata olursa eski state’e geri dön
-      emit(current);
-    }
-  }*/
-
 
 }

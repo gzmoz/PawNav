@@ -2,42 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/core/utils/post_status.dart';
-import 'package:pawnav/features/account/data/models/post_model.dart';
-import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
-import 'package:pawnav/features/account/presentations/cubit/my_posts_state.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_state.dart';
 
 
-class SavedPostsGrid extends StatefulWidget {
+class SavedPostsGrid extends StatelessWidget {
   const SavedPostsGrid({super.key});
-
-  static const pageKey = PageStorageKey('saved_posts_grid');
-
-  @override
-  State<SavedPostsGrid> createState() => _SavedPostsGridState();
-}
-
-class _SavedPostsGridState extends State<SavedPostsGrid>
-    with AutomaticKeepAliveClientMixin {
-
-  final _listKey = GlobalKey<AnimatedListState>();
-  late List<PostModel> _posts;
-
-  @override
-  void initState() {
-    super.initState();
-    final state = context.read<SavedPostsCubit>().state;
-    if (state is SavedPostsLoaded) {
-      _posts = List.from(state.posts);
-    } else {
-      _posts = [];
-    }
-  }
-
-
-  @override
-  bool get wantKeepAlive => true;
 
   String? _firstImage(List<String>? images) {
     if (images == null || images.isEmpty) return null;
@@ -46,7 +16,6 @@ class _SavedPostsGridState extends State<SavedPostsGrid>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocBuilder<SavedPostsCubit, SavedPostsState>(
       builder: (context, state) {
         if (state is SavedPostsLoading) {
@@ -69,7 +38,6 @@ class _SavedPostsGridState extends State<SavedPostsGrid>
 
 
         return GridView.builder(
-          key: SavedPostsGrid.pageKey,
           shrinkWrap: true,
           // physics: const NeverScrollableScrollPhysics(),
           // padding: const EdgeInsets.all(12),
@@ -150,6 +118,5 @@ class _SavedPostsGridState extends State<SavedPostsGrid>
       },
     );
   }
-
-
 }
+

@@ -38,6 +38,7 @@ class PostDetailRemoteDataSource {
       'user_id': userId,
     });
   }
+
   Future<void> toggleSavePost(String postId) async {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
@@ -78,39 +79,4 @@ class PostDetailRemoteDataSource {
 
     return res != null;
   }
-
-
-
 }
-
-/*Supabase’e git, raw data getir*/ /*
-
-class PostDetailRemoteDataSource {
-  final SupabaseClient client;
-
-  PostDetailRemoteDataSource (this.client);
-
-  Future<PostModel?> getPostById(String postId) async{
-    final response = await client
-        .from('posts')
-        .select()
-        .eq('id',postId)
-        .maybeSingle();
-
-    if (response == null) {
-      return null;
-    }
-
-    return PostModel.fromMap(response);
-
-  }
-
-  Future<void> deletePost(String postId) async {
-    await client
-        .from('posts')
-        .delete()
-        .eq('id', postId);
-  }
-
-
-}*/

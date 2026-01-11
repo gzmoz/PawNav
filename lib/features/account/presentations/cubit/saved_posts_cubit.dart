@@ -34,5 +34,17 @@ class SavedPostsCubit extends Cubit<SavedPostsState> {
     }
   }
 
+  void removeSavedPost(String postId) {
+    if (state is SavedPostsLoaded) {
+      final current = (state as SavedPostsLoaded).posts;
+      final updated =
+      current.where((post) => post.id != postId).toList();
+
+      emit(SavedPostsLoaded(updated));
+    }
+  }
+
+
+
 
 }
