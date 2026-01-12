@@ -7,6 +7,7 @@ import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart'
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_state.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
+import 'package:pawnav/features/account/presentations/cubit/saved_posts_state.dart';
 import 'package:pawnav/features/account/presentations/widgets/my_posts_grid.dart';
 import 'package:pawnav/features/account/presentations/widgets/saved_posts_grid.dart';
 import 'package:pawnav/features/account/presentations/widgets/user_rank_card.dart';
@@ -189,7 +190,7 @@ class _AccountPageState extends State<AccountPage> {
               },
 
               //  SCROLL EDEN ASIL İÇERİK
-              body: TabBarView(
+              body: const TabBarView(
                 children: [
                   MyPostsGrid(),
                   SavedPostsGrid(),

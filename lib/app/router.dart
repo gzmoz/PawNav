@@ -46,6 +46,12 @@ import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.dart';
 import 'package:pawnav/features/post/presentations/screens/post_detail_page.dart';
+import 'package:pawnav/features/success_story/data/datasources/success_story_remote_datasource.dart';
+import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
+import 'package:pawnav/features/success_story/domain/usecases/create_success_story.dart';
+import 'package:pawnav/features/success_story/domain/usecases/search_profiles.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/write_success_story_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/screen/write_success_story_page.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -229,5 +235,30 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/write-success-story/:postId',
+      builder: (context, state) {
+        final postId = state.pathParameters['postId']!;
+        final supabase = Supabase.instance.client;
+
+        //  Remote
+        final remote = SuccessStoryRemoteDataSource(supabase);
+
+        // Repository
+        final repository = SuccessStoryRepositoryImpl(remote);
+
+        return BlocProvider(
+          create: (_) => WriteSuccessStoryCubit(
+            repo: repository,
+            createStory: CreateSuccessStory(repository),
+            searchProfiles: SearchProfiles(repository),
+            supabase: supabase,
+          ),
+          child: WriteSuccessStoryPage(postId: postId),
+        );
+      },
+    ),
+
   ],
 );

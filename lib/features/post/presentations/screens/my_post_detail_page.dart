@@ -251,7 +251,9 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                           width: double.infinity,
                           height: 54,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.go('/write-success-story/${widget.postId}');
+                            },
                             icon: const Icon(Icons.celebration_outlined),
                             label: const Text("Mark as Reunited!"),
                             style: ElevatedButton.styleFrom(
