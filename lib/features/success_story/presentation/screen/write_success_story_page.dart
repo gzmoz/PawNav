@@ -18,6 +18,7 @@ class WriteSuccessStoryPage extends StatefulWidget {
 class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
   final _controller = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +52,9 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return BlocConsumer<WriteSuccessStoryCubit, WriteSuccessStoryState>(
       listener: (context, state) {
         if (state is WriteSuccessStorySuccess) {
@@ -103,10 +107,10 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
             actions: [
-              TextButton(
+              /*TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Cancel'),
-              )
+              )*/
             ],
           ),
 
@@ -123,10 +127,21 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                   icon: const Icon(Icons.send),
                   label: Text(s.isPublishing ? 'Publishing...' : 'Publish Success Story'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2B417A),
+                    backgroundColor: const Color(0xFF18B394),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
+                  ),
+                  /*style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFC2C3C6),
                     disabledBackgroundColor: const Color(0xFF2B417A).withOpacity(0.4),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
+                  ),*/
                 ),
               ),
             ),
@@ -146,9 +161,9 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                 ),
                 const SizedBox(height: 18),
 
-                const Text(
+                Text(
                   'How did it happen?',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
+                  style: TextStyle(fontSize: width * 0.052, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 12),
 

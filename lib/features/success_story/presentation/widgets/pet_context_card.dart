@@ -18,6 +18,9 @@ class PetContextCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenInfo = MediaQuery.of(context);
+    final double height = screenInfo.size.height;
+    final double width = screenInfo.size.width;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -37,8 +40,8 @@ class PetContextCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             child: Container(
               color: const Color(0xFFF3F4F6),
-              width: 70,
-              height: 70,
+              width: width * 0.2,
+              height: width * 0.2,
               child: imageUrl == null
                   ? const Icon(Icons.pets, size: 30, color: Color(0xFF9CA3AF))
                   : Image.network(imageUrl!, fit: BoxFit.cover),
@@ -49,13 +52,13 @@ class PetContextCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('PET DETAILS', style: TextStyle(color: Color(0xFF6B7280), fontWeight: FontWeight.w800)),
+                Text('PET DETAILS', style: TextStyle(color: const Color(0xFF6B7280), fontWeight: FontWeight.w800, fontSize: width * 0.034)),
                 const SizedBox(height: 6),
-                Text(petName, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+                Text(petName, style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 4),
                 Text(
                   [breed, species].where((e) => (e ?? '').trim().isNotEmpty).join(' • '),
-                  style: const TextStyle(color: Color(0xFF6B7280), fontSize: 16),
+                  style: TextStyle(color: const Color(0xFF6B7280), fontSize: width * 0.04),
                 ),
               ],
             ),
@@ -69,7 +72,7 @@ class PetContextCard extends StatelessWidget {
             ),
             child: Text(
               statusLabel,
-              style: const TextStyle(color: Color(0xFF065F46), fontWeight: FontWeight.w900),
+              style: TextStyle(color: Color(0xFF065F46), fontWeight: FontWeight.w900,fontSize: width * 0.03),
             ),
           ),
         ],
