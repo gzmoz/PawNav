@@ -5,6 +5,7 @@ import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
 import 'package:pawnav/features/post/domain/usecases/is_post_saved.dart';
 import 'package:pawnav/features/post/domain/usecases/toggle_save_post.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailCubit extends Cubit<PostDetailState> {
   final GetPostById getPostById;
@@ -12,6 +13,9 @@ class PostDetailCubit extends Cubit<PostDetailState> {
   final AddPostView addPostView;
   final ToggleSavePost toggleSavePost;
   final IsPostSaved isPostSaved;
+  final SupabaseClient supabase;
+
+
 
 
   PostDetailCubit(
@@ -20,6 +24,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
       this.addPostView,
       this.toggleSavePost,
       this.isPostSaved,
+      this.supabase
       ) : super(PostDetailInitial());
 
   Future<void> loadPost(String postId) async {
@@ -34,9 +39,18 @@ class PostDetailCubit extends Cubit<PostDetailState> {
 
       final saved = await isPostSaved(postId);
 
+      final story = await supabase
+          .from('success_stories')
+          .select('id')
+          .eq('post_id', postId)
+          .maybeSingle();
+
+      final hasSuccessStory = story != null;
+
       emit(PostDetailLoaded(
         post: post,
         isSaved: saved,
+        hasSuccessStory: hasSuccessStory,
       ));
 
       addPostView(postId);

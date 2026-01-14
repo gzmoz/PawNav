@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 
 import '../cubit/write_success_story_cubit.dart';
 import '../cubit/write_success_story_state.dart';
@@ -28,7 +31,8 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
     });
   }
 
-  @override
+
+   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -57,15 +61,43 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
     final double width = screenInfo.size.width;
     return BlocConsumer<WriteSuccessStoryCubit, WriteSuccessStoryState>(
       listener: (context, state) {
-        if (state is WriteSuccessStorySuccess) {
-          Navigator.pop(context, true); // true = "story created"
-        }
+          if (state is WriteSuccessStorySuccess) {
+            AppSnackbar.success(context, "Success story is created!");
+            context.go('/post-detail/${widget.postId}');
+          }
+
+          if (state is WriteSuccessStoryError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+
+
+        /*if (state is WriteSuccessStorySuccess) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            context.go('/home', extra: 4);
+          });
+        }*/
+
         if (state is WriteSuccessStoryError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
         }
       },
+
+      /*listener: (context, state) {
+        if (state is WriteSuccessStorySuccess) {
+          context.go('/home', extra: 4);
+        }
+        if (state is WriteSuccessStoryError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },*/
+
       builder: (context, state) {
         if (state is WriteSuccessStoryLoading || state is WriteSuccessStoryInitial) {
           return const Scaffold(
@@ -99,7 +131,9 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.go('/home', extra: 4),
+
+              //onPressed: () => context.pop(4),
             ),
             centerTitle: true,
             title: const Text(
@@ -128,6 +162,7 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                   label: Text(s.isPublishing ? 'Publishing...' : 'Publish Success Story'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF18B394),
+                    disabledBackgroundColor: const Color(0xFF6DB2A4).withOpacity(0.4),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),

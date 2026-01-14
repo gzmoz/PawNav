@@ -121,6 +121,7 @@ final router = GoRouter(
             AddPostView(repository),
             ToggleSavePost(repository),
             IsPostSaved(repository),
+            Supabase.instance.client,
           ),
           child: MyPostDetailPage(postId: postId),
         );
@@ -213,6 +214,7 @@ final router = GoRouter(
             AddPostView(repository),
             ToggleSavePost(repository),
             IsPostSaved(repository),
+            Supabase.instance.client,
 
           )..loadPost(postId),
           child: DetailPage(postId: postId),
@@ -259,6 +261,14 @@ final router = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/home',
+      builder: (context, state) {
+        final tab = state.extra as int?;
+        return HomeScreen(initialIndex: tab ?? 0);
+      },
+    ),
+
 
   ],
 );

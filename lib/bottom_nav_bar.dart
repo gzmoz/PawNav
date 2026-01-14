@@ -23,8 +23,15 @@ import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({super.key});
+//
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int initialIndex;
+  const HomeScreen({super.key, this.initialIndex = 0});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -33,13 +40,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
 
-  /*final screens = const [
-    HomePage(),
-    PostPage(),
-    AddPostPage(),
-    MessagePage(),
-    AccountPage(),
-  ];*/
+  @override
+  void initState() {
+    super.initState();
+    index = widget.initialIndex;
+  }
 
   Widget _buildScreen(int index) {
     switch (index) {

@@ -26,6 +26,7 @@ class MyPostDetailPage extends StatefulWidget {
 }
 
 class _MyPostDetailPageState extends State<MyPostDetailPage> {
+
   @override
   void initState() {
     super.initState();
@@ -246,8 +247,60 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                         ),
                         const SizedBox(height: 15),
 
+                        if (!state.hasSuccessStory) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                context.pushReplacement('/write-success-story/${post.id}');
+
+                              },
+
+                              icon: const Icon(Icons.celebration_outlined),
+                              label: const Text("Mark as Reunited!"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF18B394),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                context.push('/success-story/${post.id}');
+                              },
+                              icon: const Icon(Icons.celebration_outlined),
+                              label: const Text("View Success Story"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF18B394),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
+
+
                         /// MARK AS REUNITED
-                        SizedBox(
+                        /*SizedBox(
                           width: double.infinity,
                           height: 54,
                           child: ElevatedButton.icon(
@@ -268,7 +321,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                               ),
                             ),
                           ),
-                        ),
+                        ),*/
 
                         const SizedBox(height: 12),
 
