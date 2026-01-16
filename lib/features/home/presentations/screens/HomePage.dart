@@ -377,6 +377,27 @@ class _HomePageState extends State<HomePage> {
                           fontSize: width * 0.05,
                         ),
                       ),
+                      GestureDetector(
+                        onTap: () {
+                          context.push('/recent-activity');
+                        },
+                        child: Text(
+                          "View More",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.03,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+
+                      /*Text(
+                        "Recent Activity",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width * 0.05,
+                        ),
+                      ),
                       Text(
                         "View More",
                         style: TextStyle(
@@ -384,7 +405,7 @@ class _HomePageState extends State<HomePage> {
                           fontSize: width * 0.03,
                           color: AppColors.primary,
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

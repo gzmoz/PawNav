@@ -30,9 +30,12 @@ import 'package:pawnav/features/editPost/domain/usecases/update_post.dart';
 import 'package:pawnav/features/editPost/presentation/cubit/edit_post_cubit.dart';
 import 'package:pawnav/features/editPost/presentation/screen/edit_post_form_page.dart';
 import 'package:pawnav/features/home/data/repositories/home_repository_impl.dart';
+import 'package:pawnav/features/home/data/repositories/recent_activity_repository_impl.dart';
 import 'package:pawnav/features/home/domain/usecases/get_posts_by_views.dart';
 import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
+import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/most_viewed_pets_page.dart';
+import 'package:pawnav/features/home/presentations/screens/recent_activity_page.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
@@ -268,6 +271,20 @@ final router = GoRouter(
         return HomeScreen(initialIndex: tab ?? 0);
       },
     ),
+    GoRoute(
+      path: '/recent-activity',
+      builder: (context, state) {
+        final supabase = Supabase.instance.client;
+        final repo = RecentActivityRepositoryImpl(supabase);
+
+        return BlocProvider(
+          create: (_) => RecentActivityCubit(repo)..fetchAll(),
+          child: const RecentActivityPage(),
+        );
+      },
+    ),
+
+
 
 
   ],

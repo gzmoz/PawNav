@@ -6,6 +6,41 @@ class RecentActivityRepositoryImpl
     implements RecentActivityRepository {
   final SupabaseClient supabase;
 
+  static const int _previewLimit = 5;
+  static const int _fullLimit = 50;
+
+  RecentActivityRepositoryImpl(this.supabase);
+
+  @override
+  Future<List<RecentPostModel>> getPreviewPosts() async {
+    return _fetch(limit: _previewLimit);
+  }
+
+  @override
+  Future<List<RecentPostModel>> getAllRecentPosts() async {
+    return _fetch(limit: _fullLimit);
+  }
+
+  Future<List<RecentPostModel>> _fetch({required int limit}) async {
+    final response = await supabase
+        .from('posts')
+        .select('id, name, location, images, created_at, post_type')
+        .order('created_at', ascending: false)
+        .limit(limit);
+
+    return (response as List)
+        .map((e) => RecentPostModel.fromJson(e))
+        .toList();
+  }
+}
+
+
+
+/*
+class RecentActivityRepositoryImpl
+    implements RecentActivityRepository {
+  final SupabaseClient supabase;
+
   RecentActivityRepositoryImpl(this.supabase);
 
   @override
@@ -26,3 +61,4 @@ class RecentActivityRepositoryImpl
 
   }
 }
+*/

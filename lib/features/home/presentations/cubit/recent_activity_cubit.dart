@@ -8,6 +8,35 @@ class RecentActivityCubit extends Cubit<RecentActivityState> {
   RecentActivityCubit(this.repository)
       : super(RecentActivityInitial());
 
+  Future<void> fetchPreview() async {
+    emit(RecentActivityLoading());
+    try {
+      final posts = await repository.getPreviewPosts();
+      emit(RecentActivityLoaded(posts));
+    } catch (e) {
+      emit(RecentActivityError(e.toString()));
+    }
+  }
+
+  Future<void> fetchAll() async {
+    emit(RecentActivityLoading());
+    try {
+      final posts = await repository.getAllRecentPosts();
+      emit(RecentActivityLoaded(posts));
+    } catch (e) {
+      emit(RecentActivityError(e.toString()));
+    }
+  }
+}
+
+
+
+/*class RecentActivityCubit extends Cubit<RecentActivityState> {
+  final RecentActivityRepository repository;
+
+  RecentActivityCubit(this.repository)
+      : super(RecentActivityInitial());
+
   Future<void> fetchRecentPosts() async {
     emit(RecentActivityLoading());
     try {
@@ -17,4 +46,4 @@ class RecentActivityCubit extends Cubit<RecentActivityState> {
       emit(RecentActivityError(e.toString()));
     }
   }
-}
+}*/

@@ -144,8 +144,16 @@ class _HomeScreenState extends State<HomeScreen> {
               RecentActivityRepositoryImpl(
                 Supabase.instance.client,
               ),
-            )..fetchRecentPosts(),
+            )..fetchPreview(),
           ),
+
+          /*BlocProvider(
+            create: (_) => RecentActivityCubit(
+              RecentActivityRepositoryImpl(
+                Supabase.instance.client,
+              ),
+            )..fetchRecentPosts(),
+          ),*/
 
           /// FEATURED POSTS
           BlocProvider(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
 
 import '../cubit/write_success_story_cubit.dart';
