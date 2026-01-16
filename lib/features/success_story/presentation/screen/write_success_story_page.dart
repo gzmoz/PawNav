@@ -71,14 +71,6 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
             );
           }
 
-
-        /*if (state is WriteSuccessStorySuccess) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            context.go('/home', extra: 4);
-          });
-        }*/
-
         if (state is WriteSuccessStoryError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -86,16 +78,6 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
         }
       },
 
-      /*listener: (context, state) {
-        if (state is WriteSuccessStorySuccess) {
-          context.go('/home', extra: 4);
-        }
-        if (state is WriteSuccessStoryError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-        }
-      },*/
 
       builder: (context, state) {
         if (state is WriteSuccessStoryLoading || state is WriteSuccessStoryInitial) {
@@ -140,10 +122,10 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
             actions: [
-              /*TextButton(
-                onPressed: () => Navigator.pop(context),
+              TextButton(
+                onPressed: () => context.go('/home', extra: 4),
                 child: const Text('Cancel'),
-              )*/
+              )
             ],
           ),
 

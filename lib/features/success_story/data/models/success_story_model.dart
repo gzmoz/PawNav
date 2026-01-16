@@ -13,6 +13,7 @@ class SuccessStoryModel {
     this.heroId,
   });
 
+
   Map<String, dynamic> toInsertMap() => {
     'post_id': postId,
     'owner_id': ownerId,

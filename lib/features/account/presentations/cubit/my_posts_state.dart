@@ -14,3 +14,5 @@ class MyPostsError extends MyPostsState {
   final String message;
   MyPostsError(this.message);
 }
+class MyPostDeleted extends MyPostsState {}
+

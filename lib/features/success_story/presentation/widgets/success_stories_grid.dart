@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_state.dart';
+import 'package:pawnav/features/success_story/presentation/widgets/success_story_grid_card.dart';
+
+class SuccessStoriesGrid extends StatelessWidget {
+  const SuccessStoriesGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AccountSuccessStoriesCubit,
+        AccountSuccessStoriesState>(
+      builder: (context, state) {
+        if (state is AccountSuccessStoriesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is AccountSuccessStoriesError) {
+          return Center(child: Text(state.message));
+        }
+
+        if (state is AccountSuccessStoriesLoaded) {
+          if (state.stories.isEmpty) {
+            return const Center(
+              child: Text(
+                "Success stories will appear here.",
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(12),
+            child: GridView.builder(
+              itemCount: state.stories.length,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 0.65,
+              ),
+              itemBuilder: (context, index) {
+                final item = state.stories[index];
+
+                return SuccessStoryGridCard(
+                  imageUrl: item.imageUrl ?? '',
+                  petName: item.petName,
+                  subtitle: item.story.story,
+                  isAdopted: item.isAdopted,
+                  onTap: () {
+                    context.push(
+                      '/success-story/${item.story.id}',
+                    );
+                  },
+                );
+              },
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}

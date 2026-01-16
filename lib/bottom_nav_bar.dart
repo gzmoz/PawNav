@@ -5,10 +5,12 @@ import 'package:pawnav/MessagePage.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/account/data/datasources/post_remote_datasource.dart';
 import 'package:pawnav/features/account/data/datasources/profile_remote_datasource.dart';
+import 'package:pawnav/features/account/data/repositories/account_status_repository_impl.dart';
 import 'package:pawnav/features/account/data/repositories/post_repository.dart';
 import 'package:pawnav/features/account/data/repositories/profile_repository_impl.dart';
 import 'package:pawnav/features/account/domain/repositories/profile_repository.dart';
 import 'package:pawnav/features/account/domain/usecases/get_current_profile.dart';
+import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
@@ -21,6 +23,9 @@ import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.da
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
+import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
+import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // class HomeScreen extends StatefulWidget {
@@ -147,13 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )..fetchPreview(),
           ),
 
-          /*BlocProvider(
-            create: (_) => RecentActivityCubit(
-              RecentActivityRepositoryImpl(
-                Supabase.instance.client,
-              ),
-            )..fetchRecentPosts(),
-          ),*/
+
 
           /// FEATURED POSTS
           BlocProvider(
@@ -168,6 +167,20 @@ class _HomeScreenState extends State<HomeScreen> {
               Supabase.instance.client,
             )..loadSavedPosts(),
           ),
+
+          /// ACCOUNT STATS (Listings / Saved / Successes)
+          BlocProvider(
+            create: (_) => AccountStatsCubit(
+              AccountStatsRepositoryImpl(
+                Supabase.instance.client,
+              ),
+            )..loadStats(),
+          ),
+
+
+
+
+
 
 
         ],

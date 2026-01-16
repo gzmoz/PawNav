@@ -37,4 +37,5 @@ class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
         story: story,
         heroId: heroId,
       );
+
 }
