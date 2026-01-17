@@ -70,7 +70,8 @@ class SuccessStoryRemoteDataSource {
           species,
           breed,
           images,
-          post_type
+          post_type,
+          created_at
         ),
         owner:profiles!owner_id(id, name, username, photo_url),
         hero:profiles!hero_id(id, name, username, photo_url)
@@ -80,30 +81,41 @@ class SuccessStoryRemoteDataSource {
 
     final post = response['posts'];
 
-    // images text → ilk image
     final List images = post['images'] ?? [];
-
     final String coverImageUrl =
     images.isNotEmpty ? images.first as String : '';
 
+    /// 🔥 Timeline tarihleri
+    final DateTime lostDate =
+    DateTime.parse(post['created_at']);
+
+    final DateTime reunitedDate =
+    DateTime.parse(response['created_at']);
 
     final bool isAdopted =
-        post['post_type'] == 'Adopted' || post['post_type'] == 'Reunited';
+        post['post_type'] == 'Adopted' ||
+            post['post_type'] == 'Reunited';
 
     return SuccessStoryDetailEntity(
       story: SuccessStoryModel.fromMap(response),
       petName: post['name'],
       species: post['species'],
       breed: post['breed'],
-      age: null, // DB’de yok
+      age: null,
       coverImageUrl: coverImageUrl,
       isAdopted: isAdopted,
+
+      /// 👇 EKLENDİ
+      lostDate: lostDate,
+      reunitedDate: reunitedDate,
+
       owner: ProfileModel.fromMap(response['owner']),
       hero: response['hero'] != null
           ? ProfileModel.fromMap(response['hero'])
           : null,
     );
   }
+
 
 
 

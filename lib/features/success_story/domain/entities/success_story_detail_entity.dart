@@ -11,6 +11,9 @@ class SuccessStoryDetailEntity {
   final bool isAdopted;
   final ProfileModel owner;
   final ProfileModel? hero;
+  final DateTime lostDate;      // post created_at
+  final DateTime reunitedDate;  // success_story created_at
+
 
   SuccessStoryDetailEntity({
     required this.story,
@@ -20,6 +23,8 @@ class SuccessStoryDetailEntity {
     required this.coverImageUrl,
     required this.isAdopted,
     required this.owner,
+    required this.lostDate,
+    required this.reunitedDate,
     this.hero,
     this.age,
   });

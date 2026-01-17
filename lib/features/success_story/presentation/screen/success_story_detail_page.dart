@@ -14,8 +14,7 @@ class SuccessStoryDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      SuccessStoryDetailCubit(
+      create: (context) => SuccessStoryDetailCubit(
         context.read<SuccessStoryRepository>(),
       )..load(storyId),
       child: Scaffold(
@@ -48,39 +47,37 @@ class SuccessStoryDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// HERO IMAGE
-                  Stack(
-                    children: [
-                      Image.network(
-                        s.coverImageUrl,
-                        height: 320,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      Positioned(
-                        top: 20,
-                        right: 20,
-                        child: _StatusBadge(),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 80),
-
-                  /// PET INFO CARD (floating)
-                  Transform.translate(
-                    offset: const Offset(0, -120),
-                    child: Center(
-                      child: _PetInfoCard(
-                        petName: s.petName,
-                        breed: s.breed,
-                        species: s.species,
-                        onViewPost: () {
-                          context.push('/post-detail/${s.story.postId}');
-                        },
-                      ),
+                  SizedBox(
+                    height: 420, // 320 image + ~100 card overlap
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Image.network(
+                          s.coverImageUrl,
+                          height: 320,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: _PetInfoCard(
+                              petName: s.petName,
+                              breed: s.breed,
+                              species: s.species,
+                              onViewPost: () {
+                                context.push('/post-detail/${s.story.postId}');
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
+                  const SizedBox(height: 20),
 
                   /// STORY
                   Padding(
@@ -95,17 +92,7 @@ class SuccessStoryDetailPage extends StatelessWidget {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 24),
-
-                        /*_JourneyTimelineCard(
-                          lostDate: s.lostDate,
-                          reunitedDate: s.reunitedDate,
-                          location: "Brookside Park", // şimdilik sabit
-                        ),*/
-
-
-                        const SizedBox(height: 32),
-
+                        const SizedBox(height: 12),
                         Text(
                           s.story.story,
                           style: const TextStyle(
@@ -114,11 +101,18 @@ class SuccessStoryDetailPage extends StatelessWidget {
                             color: Colors.black87,
                           ),
                         ),
+                        const SizedBox(height: 20),
+
+                        TimelineWithBackground(
+                          lostDate: s.lostDate,
+                          reunitedDate: s.reunitedDate,
+                          location: "Brookside Park",
+                        ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 30),
 
                   /// HEROES
                   Padding(
@@ -139,7 +133,6 @@ class SuccessStoryDetailPage extends StatelessWidget {
     );
   }
 }
-
 
 class _StatusBadge extends StatelessWidget {
   @override
@@ -166,7 +159,6 @@ class _StatusBadge extends StatelessWidget {
     );
   }
 }
-
 
 class _PetInfoCard extends StatelessWidget {
   final String petName;
@@ -199,11 +191,11 @@ class _PetInfoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const CircleAvatar(
+          /*const CircleAvatar(
             radius: 40,
             backgroundImage: AssetImage('assets/images/pet_placeholder.png'),
-          ),
-          const SizedBox(height: 12),
+          ),*/
+          const SizedBox(height: 8),
           Text(
             petName,
             style: const TextStyle(
@@ -243,7 +235,10 @@ class _HeroesRow extends StatelessWidget {
   final ProfileModel owner;
   final ProfileModel? hero;
 
-  const _HeroesRow({required this.owner, this.hero});
+  const _HeroesRow({
+    required this.owner,
+    this.hero,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -252,74 +247,125 @@ class _HeroesRow extends StatelessWidget {
       children: [
         const Text(
           "The Heroes",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            _HeroTile("The Owner", owner),
-            const SizedBox(width: 20),
-            if (hero != null) _HeroTile("The Finder", hero!),
-          ],
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _HeroMiniCard(
+                title: "The Owner",
+                profile: owner,
+              ),
+              const Icon(
+                Icons.favorite,
+                color: Color(0xFFD1CDE8),
+                size: 22,
+              ),
+              if (hero != null)
+                _HeroMiniCard(
+                  title: "The Finder",
+                  profile: hero!,
+                ),
+            ],
+          ),
         ),
       ],
     );
   }
 }
 
-class _HeroTile extends StatelessWidget {
-  final String label;
+class _HeroMiniCard extends StatelessWidget {
+  final String title;
   final ProfileModel profile;
 
-  const _HeroTile(this.label, this.profile);
+  const _HeroMiniCard({
+    required this.title,
+    required this.profile,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         CircleAvatar(
-          radius: 30,
-          backgroundImage: (profile.photoUrl != null && profile.photoUrl!.isNotEmpty)
-              ? NetworkImage(profile.photoUrl!)
-              : null,
+          radius: 26,
+          backgroundColor: const Color(0xFFF2F2F7),
+          backgroundImage:
+              (profile.photoUrl != null && profile.photoUrl!.isNotEmpty)
+                  ? NetworkImage(profile.photoUrl!)
+                  : null,
           child: (profile.photoUrl == null || profile.photoUrl!.isEmpty)
-              ? const Icon(Icons.person)
+              ? const Icon(Icons.person, color: Colors.grey)
               : null,
         ),
-
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        Text(profile.displayName, style: const TextStyle(color: Colors.grey)),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          profile.displayName,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
       ],
     );
   }
 }
 
-
-class _JourneyTimelineCard extends StatelessWidget {
+class JourneyTimelineCard extends StatelessWidget {
   final DateTime lostDate;
   final DateTime reunitedDate;
   final String location;
 
-  const _JourneyTimelineCard({
+  const JourneyTimelineCard({
+    super.key,
     required this.lostDate,
     required this.reunitedDate,
     required this.location,
   });
 
-  int get totalDays =>
-      reunitedDate.difference(lostDate).inDays.abs();
+  int get totalDays => reunitedDate.difference(lostDate).inDays.abs();
 
-  String _format(DateTime d) {
-    return "${_month(d.month)} ${d.day}";
-  }
-
-  String _month(int m) {
+  String _dateLabel(DateTime d) {
     const months = [
-      "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-      "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
+      "JANUARY",
+      "FEBRUARY",
+      "MARCH",
+      "APRIL",
+      "MAY",
+      "JUNE",
+      "JULY",
+      "AUGUST",
+      "SEPTEMBER",
+      "OCTOBER",
+      "NOVEMBER",
+      "DECEMBER"
     ];
-    return months[m - 1];
+    return "${months[d.month - 1]} ${d.day}";
   }
 
   @override
@@ -327,8 +373,8 @@ class _JourneyTimelineCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F1F6),
-        borderRadius: BorderRadius.circular(16),
+        //color: const Color(0xFFE9E6F7),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,15 +385,17 @@ class _JourneyTimelineCard extends StatelessWidget {
               const Text(
                 "Journey Timeline",
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
                   fontSize: 15,
+                  fontWeight: FontWeight.w700,
                   color: Color(0xFF4B3FAF),
                 ),
               ),
               const Spacer(),
               Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF4B3FAF),
                   borderRadius: BorderRadius.circular(12),
@@ -366,19 +414,17 @@ class _JourneyTimelineCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          /// TIMELINE ITEM 1
-          _TimelineRow(
+          _TimelineItem(
             dotColor: Colors.grey,
-            date: _format(lostDate),
+            date: _dateLabel(lostDate),
             text: "Reported Lost in $location",
           ),
 
           const SizedBox(height: 12),
 
-          /// TIMELINE ITEM 2
-          _TimelineRow(
+          _TimelineItem(
             dotColor: const Color(0xFF2ECC71),
-            date: _format(reunitedDate),
+            date: _dateLabel(reunitedDate),
             text: "Safely Reunited with Family",
             isLast: true,
           ),
@@ -388,13 +434,13 @@ class _JourneyTimelineCard extends StatelessWidget {
   }
 }
 
-class _TimelineRow extends StatelessWidget {
+class _TimelineItem extends StatelessWidget {
   final Color dotColor;
   final String date;
   final String text;
   final bool isLast;
 
-  const _TimelineRow({
+  const _TimelineItem({
     required this.dotColor,
     required this.date,
     required this.text,
@@ -453,6 +499,59 @@ class _TimelineRow extends StatelessWidget {
   }
 }
 
+class TimelineWithBackground extends StatelessWidget {
+  final DateTime lostDate;
+  final DateTime reunitedDate;
+  final String location;
+
+  const TimelineWithBackground({
+    super.key,
+    required this.lostDate,
+    required this.reunitedDate,
+    required this.location,
+  });
+
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        /// BACK CARD → front card kadar
+        Positioned.fill(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 12,
+              left: 12,
+              right: 12,
+              bottom: 12,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFE9E6F7),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        /// FRONT CARD (ölçüyü belirleyen)
+        Padding(
+          padding: EdgeInsets.all(14),
+          child: JourneyTimelineCard(
+            lostDate: lostDate,
+            reunitedDate: reunitedDate,
+            location: location,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 
 
