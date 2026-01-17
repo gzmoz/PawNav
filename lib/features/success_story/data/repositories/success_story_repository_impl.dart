@@ -1,4 +1,5 @@
 import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
+import 'package:pawnav/features/success_story/domain/entities/success_story_detail_entity.dart';
 
 import '../../domain/repositories/success_story_repository.dart';
 import '../datasources/success_story_remote_datasource.dart';
@@ -22,6 +23,12 @@ class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
     final list = await remote.searchProfiles(query);
     return list.map(ProfileModel.fromMap).toList();
   }
+  @override
+  Future<SuccessStoryDetailEntity> getStoryDetail(String storyId) async {
+    final data = await remote.getStoryDetail(storyId);
+    return data;
+  }
+
 
   //Success story oluştur
   @override

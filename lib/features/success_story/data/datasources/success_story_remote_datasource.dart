@@ -1,3 +1,6 @@
+import 'package:pawnav/features/success_story/data/models/profile_model.dart';
+import 'package:pawnav/features/success_story/data/models/success_story_model.dart';
+import 'package:pawnav/features/success_story/domain/entities/success_story_detail_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SuccessStoryRemoteDataSource {
@@ -56,4 +59,52 @@ class SuccessStoryRemoteDataSource {
       'story': story,
     });
   }
+
+  Future<SuccessStoryDetailEntity> getStoryDetail(String storyId) async {
+    final response = await client
+        .from('success_stories')
+        .select('''
+        *,
+        posts (
+          name,
+          species,
+          breed,
+          images,
+          post_type
+        ),
+        owner:profiles!owner_id(id, name, username, photo_url),
+        hero:profiles!hero_id(id, name, username, photo_url)
+      ''')
+        .eq('id', storyId)
+        .single();
+
+    final post = response['posts'];
+
+    // images text → ilk image
+    final List images = post['images'] ?? [];
+
+    final String coverImageUrl =
+    images.isNotEmpty ? images.first as String : '';
+
+
+    final bool isAdopted =
+        post['post_type'] == 'Adopted' || post['post_type'] == 'Reunited';
+
+    return SuccessStoryDetailEntity(
+      story: SuccessStoryModel.fromMap(response),
+      petName: post['name'],
+      species: post['species'],
+      breed: post['breed'],
+      age: null, // DB’de yok
+      coverImageUrl: coverImageUrl,
+      isAdopted: isAdopted,
+      owner: ProfileModel.fromMap(response['owner']),
+      hero: response['hero'] != null
+          ? ProfileModel.fromMap(response['hero'])
+          : null,
+    );
+  }
+
+
+
 }

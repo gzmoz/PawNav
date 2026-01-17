@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, ReadContext;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, ReadContext, RepositoryProvider;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
@@ -51,9 +51,12 @@ import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.d
 import 'package:pawnav/features/post/presentations/screens/post_detail_page.dart';
 import 'package:pawnav/features/success_story/data/datasources/success_story_remote_datasource.dart';
 import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
+import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/domain/usecases/create_success_story.dart';
 import 'package:pawnav/features/success_story/domain/usecases/search_profiles.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/write_success_story_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/screen/success_story_detail_page.dart';
 import 'package:pawnav/features/success_story/presentation/screen/write_success_story_page.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
@@ -283,6 +286,28 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/success-story/:storyId',
+      builder: (context, state) {
+        final storyId = state.pathParameters['storyId']!;
+        final supabase = Supabase.instance.client;
+
+        return RepositoryProvider<SuccessStoryRepository>(
+          create: (_) => SuccessStoryRepositoryImpl(
+            SuccessStoryRemoteDataSource(supabase),
+          ),
+          child: BlocProvider(
+            create: (context) => SuccessStoryDetailCubit(
+              context.read<SuccessStoryRepository>(),
+            )..load(storyId),
+            child: SuccessStoryDetailPage(storyId: storyId),
+          ),
+        );
+      },
+    ),
+
+
 
 
 
