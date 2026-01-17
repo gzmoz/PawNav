@@ -23,15 +23,17 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
           age: data.age,
           coverImageUrl: data.coverImageUrl,
           isAdopted: data.isAdopted,
-
-
-          lostDate: data.lostDate,
-          reunitedDate: data.reunitedDate,
-
           owner: data.owner,
           hero: data.hero,
+          lostDate: data.lostDate,
+          reunitedDate: data.reunitedDate,
+          postType: data.postType,
+          location: data.location,
         ),
       );
+
+
+
 
       /*emit(
         SuccessStoryDetailLoaded(
@@ -42,10 +44,17 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
           age: data.age,
           coverImageUrl: data.coverImageUrl,
           isAdopted: data.isAdopted,
+
+
+          lostDate: data.lostDate,
+          reunitedDate: data.reunitedDate,
+
           owner: data.owner,
           hero: data.hero,
         ),
       );*/
+
+
     } catch (e) {
       emit(SuccessStoryDetailError(e.toString()));
     }

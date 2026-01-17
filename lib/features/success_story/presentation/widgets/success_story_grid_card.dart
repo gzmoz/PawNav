@@ -65,7 +65,7 @@ class SuccessStoryGridCard extends StatelessWidget {
                 ),
                 Positioned(
                   top: 10,
-                  left: 10,
+                  right: 10,
                   child: _StatusBadge(isAdopted: isAdopted),
                 ),
               ],
@@ -129,7 +129,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: isAdopted ? Colors.blue : Colors.green,
+        color: isAdopted ? const Color(0xFF358C5A) :  const Color(0xFF2B6A94),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

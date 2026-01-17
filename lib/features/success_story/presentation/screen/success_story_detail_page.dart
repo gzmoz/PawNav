@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/features/success_story/data/models/profile_model.dart';
+import 'package:pawnav/features/success_story/domain/repositories/post_type_enum.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_state.dart';
@@ -21,6 +22,7 @@ class SuccessStoryDetailPage extends StatelessWidget {
         backgroundColor: const Color(0xFFF6F6FA),
         appBar: AppBar(
           title: const Text("Success Story"),
+          centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0,
           leading: const BackButton(color: Colors.black),
@@ -57,6 +59,11 @@ class SuccessStoryDetailPage extends StatelessWidget {
                           height: 320,
                           width: double.infinity,
                           fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: StatusBadge(postType: s.postType),
                         ),
                         Positioned(
                           bottom: 0,
@@ -106,8 +113,10 @@ class SuccessStoryDetailPage extends StatelessWidget {
                         TimelineWithBackground(
                           lostDate: s.lostDate,
                           reunitedDate: s.reunitedDate,
-                          location: "Brookside Park",
+                          initialText: s.initialTimelineText,
+                          finalText: s.finalTimelineText,
                         ),
+
                       ],
                     ),
                   ),
@@ -123,7 +132,50 @@ class SuccessStoryDetailPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 60),
+                  const SizedBox(height: 30),
+
+                  /// EDIT + DELETE
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 52,
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+
+                              },
+                              icon: const Icon(Icons.edit_outlined),
+                              label: const Text("Edit Story"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: SizedBox(
+                            height: 52,
+                            child: OutlinedButton.icon(
+                              /*onPressed: () {
+                                    context.read<PostDetailCubit>().delete(widget.postId);
+                                  },*/
+                              onPressed: () => showDeleteDialog(context),
+                              icon: const Icon(Icons.delete_outline),
+                              label: const Text("Delete Story"),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.red,
+                                side:
+                                BorderSide(color: Colors.red.shade200),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
@@ -134,31 +186,6 @@ class SuccessStoryDetailPage extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2ECC71),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.check, size: 14, color: Colors.white),
-          SizedBox(width: 6),
-          Text(
-            "REUNITED",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _PetInfoCard extends StatelessWidget {
   final String petName;
@@ -336,34 +363,27 @@ class _HeroMiniCard extends StatelessWidget {
   }
 }
 
+
 class JourneyTimelineCard extends StatelessWidget {
   final DateTime lostDate;
   final DateTime reunitedDate;
-  final String location;
+  final String initialText;
+  final String finalText;
 
   const JourneyTimelineCard({
     super.key,
     required this.lostDate,
     required this.reunitedDate,
-    required this.location,
+    required this.initialText,
+    required this.finalText,
   });
 
   int get totalDays => reunitedDate.difference(lostDate).inDays.abs();
 
   String _dateLabel(DateTime d) {
     const months = [
-      "JANUARY",
-      "FEBRUARY",
-      "MARCH",
-      "APRIL",
-      "MAY",
-      "JUNE",
-      "JULY",
-      "AUGUST",
-      "SEPTEMBER",
-      "OCTOBER",
-      "NOVEMBER",
-      "DECEMBER"
+      "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+      "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
     ];
     return "${months[d.month - 1]} ${d.day}";
   }
@@ -373,13 +393,11 @@ class JourneyTimelineCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        //color: const Color(0xFFE9E6F7),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// HEADER
           Row(
             children: [
               const Text(
@@ -392,10 +410,7 @@ class JourneyTimelineCard extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xFF4B3FAF),
                   borderRadius: BorderRadius.circular(12),
@@ -417,15 +432,15 @@ class JourneyTimelineCard extends StatelessWidget {
           _TimelineItem(
             dotColor: Colors.grey,
             date: _dateLabel(lostDate),
-            text: "Reported Lost in $location",
+            text: initialText,
           ),
 
           const SizedBox(height: 12),
 
           _TimelineItem(
-            dotColor: const Color(0xFF2ECC71),
+            dotColor: const Color(0xFF358C5A),
             date: _dateLabel(reunitedDate),
-            text: "Safely Reunited with Family",
+            text: finalText,
             isLast: true,
           ),
         ],
@@ -433,6 +448,7 @@ class JourneyTimelineCard extends StatelessWidget {
     );
   }
 }
+
 
 class _TimelineItem extends StatelessWidget {
   final Color dotColor;
@@ -502,56 +518,152 @@ class _TimelineItem extends StatelessWidget {
 class TimelineWithBackground extends StatelessWidget {
   final DateTime lostDate;
   final DateTime reunitedDate;
-  final String location;
+  final String initialText;
+  final String finalText;
 
   const TimelineWithBackground({
     super.key,
     required this.lostDate,
     required this.reunitedDate,
-    required this.location,
+    required this.initialText,
+    required this.finalText,
   });
 
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        /// BACK CARD → front card kadar
         Positioned.fill(
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: 12,
-              left: 12,
-              right: 12,
-              bottom: 12,
-            ),
+            padding: const EdgeInsets.all(12),
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFE9E6F7),
                 borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
               ),
             ),
           ),
         ),
 
-        /// FRONT CARD (ölçüyü belirleyen)
         Padding(
-          padding: EdgeInsets.all(14),
+          padding: const EdgeInsets.all(14),
           child: JourneyTimelineCard(
             lostDate: lostDate,
             reunitedDate: reunitedDate,
-            location: location,
+            initialText: initialText,
+            finalText: finalText,
           ),
         ),
       ],
     );
   }
 }
+
+class StatusBadge extends StatelessWidget {
+  final PostType postType;
+
+  const StatusBadge({super.key, required this.postType});
+
+  Color get backgroundColor {
+    switch (postType) {
+      case PostType.lost:
+        return const Color(0xFF2B6A94);
+      case PostType.found:
+        return const Color(0xFF2B6A94);
+      case PostType.adopted:
+        return const Color(0xFF358C5A);
+    }
+  }
+
+  IconData get icon {
+    switch (postType) {
+      case PostType.lost:
+        return Icons.search;
+      case PostType.found:
+        return Icons.pets;
+      case PostType.adopted:
+        return Icons.check;
+    }
+  }
+
+  String get label {
+    switch (postType) {
+      case PostType.adopted:
+        return "ADOPTED";
+      case PostType.lost:
+      case PostType.found:
+        return "REUNITED";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          //Icon(icon, size: 14, color: Colors.white),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void showDeleteDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text(
+          "Delete story?",
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        content: const Text(
+          "Are you sure you want to permanently delete this success story? "
+              "This action cannot be undone.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context); // dialog kapat
+            },
+            child: const Text("Delete"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
 
 

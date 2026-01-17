@@ -1,6 +1,7 @@
 import 'package:pawnav/features/success_story/data/models/profile_model.dart';
 import 'package:pawnav/features/success_story/data/models/success_story_model.dart';
 import 'package:pawnav/features/success_story/domain/entities/success_story_detail_entity.dart';
+import 'package:pawnav/features/success_story/domain/repositories/post_type_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SuccessStoryRemoteDataSource {
@@ -71,7 +72,8 @@ class SuccessStoryRemoteDataSource {
           breed,
           images,
           post_type,
-          created_at
+          created_at,
+          location
         ),
         owner:profiles!owner_id(id, name, username, photo_url),
         hero:profiles!hero_id(id, name, username, photo_url)
@@ -85,7 +87,6 @@ class SuccessStoryRemoteDataSource {
     final String coverImageUrl =
     images.isNotEmpty ? images.first as String : '';
 
-    /// 🔥 Timeline tarihleri
     final DateTime lostDate =
     DateTime.parse(post['created_at']);
 
@@ -96,7 +97,15 @@ class SuccessStoryRemoteDataSource {
         post['post_type'] == 'Adopted' ||
             post['post_type'] == 'Reunited';
 
+    final PostType postType =
+    parsePostType(post['post_type']);
+
+    final String? location = post['location']; // varsa
+
+
     return SuccessStoryDetailEntity(
+      postType: postType,
+      location: location,
       story: SuccessStoryModel.fromMap(response),
       petName: post['name'],
       species: post['species'],
@@ -105,7 +114,6 @@ class SuccessStoryRemoteDataSource {
       coverImageUrl: coverImageUrl,
       isAdopted: isAdopted,
 
-      /// 👇 EKLENDİ
       lostDate: lostDate,
       reunitedDate: reunitedDate,
 

@@ -299,30 +299,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                         ],
 
 
-                        /// MARK AS REUNITED
-                        /*SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              context.go('/write-success-story/${widget.postId}');
-                            },
-                            icon: const Icon(Icons.celebration_outlined),
-                            label: const Text("Mark as Reunited!"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF18B394),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),*/
-
                         const SizedBox(height: 12),
 
                         /// EDIT + DELETE
@@ -433,28 +409,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
     context.read<PostDetailCubit>().delete(widget.postId);
   }
 
-/*void deletePost(BuildContext context) async {
-    final cubit = context.read<PostDetailCubit>();
-
-    try {
-      await cubit
-          .deletePost(widget.postId); // postId içeride tutuluyor varsayımı
-
-      // SUCCESS SNACK
-      AppSnackbar.success(
-        context,
-        "Post deleted successfully",
-      );
-
-      // AccountPage’e sinyal gönder
-      Navigator.pop(context, true);
-    } catch (e) {
-      AppSnackbar.error(
-        context,
-        "Failed to delete post. Please try again.",
-      );
-    }
-  }*/
 }
 
 /// ---------------- GENDER UI ----------------
