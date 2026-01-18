@@ -286,28 +286,31 @@ class _DetailPageState extends State<DetailPage> {
                         const SizedBox(height: 20),
 
                         //owner info
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              // TODO: open chat
-                            },
-                            icon: const Icon(Icons.chat_bubble_outline),
-                            label: const Text("Contact Owner"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
+                        if (!state.isOwner)
+                          SizedBox(
+                            width: double.infinity,
+                            height: 54,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                // TODO: open chat
+                              },
+                              icon: const Icon(Icons.chat_bubble_outline),
+                              label: const Text("Contact Owner"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
-                        ),
+
+
                       ],
                     ),
                   ),

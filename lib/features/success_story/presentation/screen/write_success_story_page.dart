@@ -62,7 +62,11 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
       listener: (context, state) {
           if (state is WriteSuccessStorySuccess) {
             AppSnackbar.success(context, "Success story is created!");
-            context.go('/post-detail/${widget.postId}');
+            context.go('/home');
+            // context.pushReplacement('/post-detail/${widget.postId}');
+
+
+            //context.go('/post-detail/${widget.postId}');
           }
 
           if (state is WriteSuccessStoryError) {
@@ -112,7 +116,9 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.go('/home', extra: 4),
+              onPressed: () => context.pop(),
+
+              //onPressed: () => context.go('/home', extra: 4),
 
               //onPressed: () => context.pop(4),
             ),

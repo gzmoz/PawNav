@@ -7,6 +7,7 @@ import 'package:pawnav/core/utils/date_formatter.dart';
 import 'package:pawnav/core/utils/pet_color_mapper.dart';
 import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/info_mini_card.dart';
@@ -14,6 +15,7 @@ import 'package:pawnav/features/post/presentations/widgets/location_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
 import 'package:pawnav/features/post/presentations/widgets/section_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MyPostDetailPage extends StatefulWidget {
@@ -31,6 +33,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
   void initState() {
     super.initState();
     context.read<PostDetailCubit>().loadPost(widget.postId);
+
   }
 
   String getDescription(String? description) {
@@ -66,7 +69,11 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
         listener: (context, state) {
           if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
-            context.pop(true);
+            GoRouter.of(context).pop(true);
+            context.read<AccountStatsCubit>().refresh();
+
+
+            //context.pop(true);
             //Navigator.pop(context, true);
           }
 
@@ -75,6 +82,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
           }
         },
         child: BlocBuilder<PostDetailCubit, PostDetailState>(
+
           builder: (context, state) {
             if (state is PostDetailLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -87,6 +95,15 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
             if (state is! PostDetailLoaded) {
               return const SizedBox.shrink();
             }
+
+            if (state is PostDeleted) {
+              return const SizedBox(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+
 
             final post = state.post;
 
@@ -111,10 +128,19 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                     ),
                   ),
                   leading: IconButton(
-                    onPressed: () => context.go('/home'),
+                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                    onPressed: () {
+                        context.go('/home');
+                    },
+                  ),
+
+                  /*leading: IconButton(
+                    onPressed: () => context.pop(false),
+
+                    //onPressed: () => context.go('/home'),
                     icon: const Icon(Icons.arrow_back_ios_new,
                         color: Colors.black),
-                  ),
+                  ),*/
                   //SHARE BUTTON
                   /*actions: [
                   IconButton(
@@ -253,7 +279,9 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                             height: 54,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                context.pushReplacement('/write-success-story/${post.id}');
+                                context.push('/write-success-story/${post.id}');
+
+                                //context.pushReplacement('/write-success-story/${post.id}');
 
                               },
 

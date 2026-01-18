@@ -16,5 +16,9 @@ class AccountStatsCubit extends Cubit<AccountStats?> {
       debugPrint('AccountStats error: $e');
     }
   }
+
+  Future<void> refresh() async {
+    await loadStats();
+  }
 }
 

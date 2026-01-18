@@ -47,11 +47,27 @@ class PostDetailCubit extends Cubit<PostDetailState> {
 
       final hasSuccessStory = story != null;
 
+
+      //  CURRENT USER
+      final currentUserId = supabase.auth.currentUser?.id;
+
+      //  OWNER CHECK
+      final isOwner =
+          currentUserId != null && post.owner?.id == currentUserId;
+
+      //  STATE EMIT (EKSİK OLAN BUYDU)
       emit(PostDetailLoaded(
         post: post,
         isSaved: saved,
         hasSuccessStory: hasSuccessStory,
+        isOwner: isOwner,
       ));
+
+      /*emit(PostDetailLoaded(
+        post: post,
+        isSaved: saved,
+        hasSuccessStory: hasSuccessStory,
+      ));*/
 
       addPostView(postId);
     } catch (e) {

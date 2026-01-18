@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/core/utils/post_status.dart';
+import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_state.dart';
 import 'package:pawnav/features/editPost/domain/entities/edit_post_entity.dart';
@@ -84,6 +85,7 @@ class MyPostsGrid extends StatelessWidget {
 
                     if (deleted == true) {
                       context.read<MyPostsCubit>().loadMyPosts();
+                      context.read<AccountStatsCubit>().loadStats();
                     }
 
                     /*AccountPage → DetailPage’e gider
