@@ -73,9 +73,10 @@ class _DetailPageState extends State<DetailPage> {
               AppSnackbar.success(context, "Saved to your bookmarks");
             } else {
               AppSnackbar.info(context, "Removed from saved");
-              context
+              Navigator.pop(context, true);
+              /*context
                   .read<SavedPostsCubit>()
-                  .removeSavedPost(state.post.id);
+                  .removeSavedPost(state.post.id);*/
             }
 
           }
@@ -127,7 +128,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   leading: IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context,false),
                     icon: const Icon(Icons.arrow_back_ios_new,
                         color: Colors.black),
                   ),

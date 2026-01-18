@@ -5,7 +5,6 @@ import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_state.dart';
 
-
 class SavedPostsGrid extends StatelessWidget {
   const SavedPostsGrid({super.key});
 
@@ -35,7 +34,6 @@ class SavedPostsGrid extends StatelessWidget {
             child: Text("NO SAVED POSTS"),
           );
         }
-
 
         return GridView.builder(
           shrinkWrap: true,
@@ -71,11 +69,29 @@ class SavedPostsGrid extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    final removed = await context.push<bool>(
+                      '/post-detail/${post.id}',
+                    );
+
+                    if (removed == true) {
+                      context
+                          .read<SavedPostsCubit>()
+                          .removeSavedPost(post.id);
+                    }
+
+
+                    /*if (removed == true) {
+                      context.read<SavedPostsCubit>().loadSavedPosts();
+                      // veya aşağıda anlatacağım optimistic remove
+                    }*/
+                  },
+
+                  /*onTap: () {
                     context.push(
                       '/post-detail/${post.id}',
                     );
-                  },
+                  },*/
 
                   child: Stack(
                     children: [
@@ -83,16 +99,17 @@ class SavedPostsGrid extends StatelessWidget {
                         child: img == null
                             ? Container(color: Colors.grey.shade200)
                             : Image.network(
-                          img,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.low,
-                        ),
+                                img,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.low,
+                              ),
                       ),
                       Positioned(
                         top: 6,
                         right: 6,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: statusBgColor,
                             borderRadius: BorderRadius.circular(12),
@@ -109,7 +126,6 @@ class SavedPostsGrid extends StatelessWidget {
                       ),
                     ],
                   ),
-
                 ),
               ),
             );
@@ -119,4 +135,3 @@ class SavedPostsGrid extends StatelessWidget {
     );
   }
 }
-

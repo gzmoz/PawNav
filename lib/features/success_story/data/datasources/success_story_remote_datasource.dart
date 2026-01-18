@@ -124,6 +124,14 @@ class SuccessStoryRemoteDataSource {
     );
   }
 
+  Future<void> deleteStory(String storyId) async {
+    await client
+        .from('success_stories')
+        .delete()
+        .eq('id', storyId);
+  }
+
+
 
 
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pawnav/features/success_story/data/models/profile_model.dart';
 import 'package:pawnav/features/success_story/domain/repositories/post_type_enum.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_state.dart';
 
@@ -33,153 +34,190 @@ class SuccessStoryDetailPage extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<SuccessStoryDetailCubit, SuccessStoryDetailState>(
-          builder: (context, state) {
-            if (state is SuccessStoryDetailLoading) {
-              return const Center(child: CircularProgressIndicator());
+        body: BlocListener<SuccessStoryDetailCubit, SuccessStoryDetailState>(
+          listener: (context, state) {
+            if (state is SuccessStoryDeleted) {
+              // SADECE DETAIL PAGE KAPAT
+              Navigator.pop(context,true);
             }
+          },
+          child: BlocBuilder<SuccessStoryDetailCubit, SuccessStoryDetailState>(
+            buildWhen: (previous, current) {
+              // Deleted state UI'ı rebuild ETMESİN
+              return current is! SuccessStoryDeleted;
+            },
+            builder: (context, state) {
+              if (state is SuccessStoryDetailLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (state is SuccessStoryDetailError) {
-              return Center(child: Text(state.message));
-            }
+              if (state is SuccessStoryDetailError) {
+                return Center(child: Text(state.message));
+              }
 
-            final s = state as SuccessStoryDetailLoaded;
+              if (state is! SuccessStoryDetailLoaded) {
+                return const SizedBox.shrink();
+              }
 
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 420, // 320 image + ~100 card overlap
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Image.network(
-                          s.coverImageUrl,
-                          height: 320,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          top: 16,
-                          right: 16,
-                          child: StatusBadge(postType: s.postType),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: _PetInfoCard(
-                              petName: s.petName,
-                              breed: s.breed,
-                              species: s.species,
-                              onViewPost: () {
-                                context.push('/post-detail/${s.story.postId}');
-                              },
+              final s = state;
+
+
+              /*if (state is SuccessStoryDetailLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+          
+              if (state is SuccessStoryDetailError) {
+                return Center(child: Text(state.message));
+              }
+              final s = state as SuccessStoryDetailLoaded;*/
+
+
+          
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 420, // 320 image + ~100 card overlap
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Image.network(
+                            s.coverImageUrl,
+                            height: 320,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            top: 16,
+                            right: 16,
+                            child: StatusBadge(postType: s.postType),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: _PetInfoCard(
+                                petName: s.petName,
+                                breed: s.breed,
+                                species: s.species,
+                                onViewPost: () {
+                                  context.push('/post-detail/${s.story.postId}');
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// STORY
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "The Journey Home",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          s.story.story,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            height: 1.7,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        TimelineWithBackground(
-                          lostDate: s.lostDate,
-                          reunitedDate: s.reunitedDate,
-                          initialText: s.initialTimelineText,
-                          finalText: s.finalTimelineText,
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  /// HEROES
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _HeroesRow(
-                      owner: s.owner,
-                      hero: s.hero,
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  /// EDIT + DELETE
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 52,
-                            child: OutlinedButton.icon(
-                              onPressed: () async {
-
-                              },
-                              icon: const Icon(Icons.edit_outlined),
-                              label: const Text("Edit Story"),
+          
+                    const SizedBox(height: 20),
+          
+                    /// STORY
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "The Journey Home",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: SizedBox(
-                            height: 52,
-                            child: OutlinedButton.icon(
-                              /*onPressed: () {
-                                    context.read<PostDetailCubit>().delete(widget.postId);
-                                  },*/
-                              onPressed: () => showDeleteDialog(context),
-                              icon: const Icon(Icons.delete_outline),
-                              label: const Text("Delete Story"),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                side:
-                                BorderSide(color: Colors.red.shade200),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                          const SizedBox(height: 12),
+                          Text(
+                            s.story.story,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              height: 1.7,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+          
+                          TimelineWithBackground(
+                            lostDate: s.lostDate,
+                            reunitedDate: s.reunitedDate,
+                            initialText: s.initialTimelineText,
+                            finalText: s.finalTimelineText,
+                          ),
+          
+                        ],
+                      ),
+                    ),
+          
+                    const SizedBox(height: 30),
+          
+                    /// HEROES
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _HeroesRow(
+                        owner: s.owner,
+                        hero: s.hero,
+                      ),
+                    ),
+          
+                    const SizedBox(height: 30),
+          
+                    /// EDIT + DELETE
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+          
+                                },
+                                icon: const Icon(Icons.edit_outlined),
+                                label: const Text("Edit Story"),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                /*onPressed: () {
+                                      context.read<PostDetailCubit>().delete(widget.postId);
+                                    },*/
+                                onPressed: () {
+                                  showDeleteDialog(
+                                    context,
+                                    onConfirm: () {
+                                      context.read<SuccessStoryDetailCubit>()
+                                          .deleteStory(storyId);
+                                    },
+                                  );
+                                },
+          
+                                icon: const Icon(Icons.delete_outline),
+                                label: const Text("Delete Story"),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                  side:
+                                  BorderSide(color: Colors.red.shade200),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -622,7 +660,11 @@ class StatusBadge extends StatelessWidget {
   }
 }
 
-void showDeleteDialog(BuildContext context) {
+
+void showDeleteDialog(
+    BuildContext context, {
+      required VoidCallback onConfirm,
+    }) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -653,7 +695,8 @@ void showDeleteDialog(BuildContext context) {
               ),
             ),
             onPressed: () {
-              Navigator.pop(context); // dialog kapat
+              Navigator.pop(context);
+              onConfirm();
             },
             child: const Text("Delete"),
           ),

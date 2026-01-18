@@ -32,31 +32,18 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
         ),
       );
 
-
-
-
-      /*emit(
-        SuccessStoryDetailLoaded(
-          story: data.story,
-          petName: data.petName,
-          species: data.species,
-          breed: data.breed,
-          age: data.age,
-          coverImageUrl: data.coverImageUrl,
-          isAdopted: data.isAdopted,
-
-
-          lostDate: data.lostDate,
-          reunitedDate: data.reunitedDate,
-
-          owner: data.owner,
-          hero: data.hero,
-        ),
-      );*/
-
-
     } catch (e) {
       emit(SuccessStoryDetailError(e.toString()));
     }
   }
+
+  Future<void> deleteStory(String storyId) async {
+    try {
+      await repository.deleteStory(storyId);
+      emit(SuccessStoryDeleted());
+    } catch (e) {
+      emit(SuccessStoryDetailError(e.toString()));
+    }
+  }
+
 }

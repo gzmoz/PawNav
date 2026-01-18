@@ -21,48 +21,121 @@ class SuccessStoriesGrid extends StatelessWidget {
           return Center(child: Text(state.message));
         }
 
-        if (state is AccountSuccessStoriesLoaded) {
-          if (state.stories.isEmpty) {
-            return const Center(
-              child: Text(
-                "Success stories will appear here.",
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
+        if (state is! AccountSuccessStoriesLoaded) {
+          return const SizedBox.shrink();
+        }
 
-          return Padding(
-            padding: const EdgeInsets.all(12),
-            child: GridView.builder(
-              itemCount: state.stories.length,
-              gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 0.65,
-              ),
-              itemBuilder: (context, index) {
-                final item = state.stories[index];
-
-                return SuccessStoryGridCard(
-                  imageUrl: item.imageUrl ?? '',
-                  petName: item.petName,
-                  subtitle: item.story.story,
-                  isAdopted: item.isAdopted,
-                  onTap: () {
-                    context.push(
-                      '/success-story/${item.story.id}',
-                    );
-                  },
-                );
-              },
+        if (state.stories.isEmpty) {
+          return const Center(
+            child: Text(
+              "Success stories will appear here.",
+              style: TextStyle(color: Colors.grey),
             ),
           );
         }
 
-        return const SizedBox.shrink();
+        return GridView.builder(
+          padding: EdgeInsets.fromLTRB(
+            12,
+            12,
+            12,
+            12 +
+                MediaQuery.of(context).padding.bottom +
+                kBottomNavigationBarHeight,
+          ),
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: state.stories.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 14,
+            childAspectRatio: 0.65,
+          ),
+          itemBuilder: (context, index) {
+            final item = state.stories[index];
+
+            return SuccessStoryGridCard(
+              imageUrl: item.imageUrl ?? '',
+              petName: item.petName,
+              subtitle: item.story.story,
+              isAdopted: item.isAdopted,
+              onTap: () async {
+                final deleted = await context.push<bool>(
+                  '/success-story/${item.story.id}',
+                );
+
+                if (deleted == true) {
+                  context
+                      .read<AccountSuccessStoriesCubit>()
+                      .loadMySuccessStories();
+                }
+              },
+            );
+          },
+        );
       },
     );
   }
 }
+
+// class SuccessStoriesGrid extends StatelessWidget {
+//   const SuccessStoriesGrid({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<AccountSuccessStoriesCubit,
+//         AccountSuccessStoriesState>(
+//       builder: (context, state) {
+//         if (state is AccountSuccessStoriesLoading) {
+//           return const Center(child: CircularProgressIndicator());
+//         }
+//
+//         if (state is AccountSuccessStoriesError) {
+//           return Center(child: Text(state.message));
+//         }
+//
+//         if (state is AccountSuccessStoriesLoaded) {
+//           if (state.stories.isEmpty) {
+//             return const Center(
+//               child: Text(
+//                 "Success stories will appear here.",
+//                 style: TextStyle(color: Colors.grey),
+//               ),
+//             );
+//           }
+//
+//           return Padding(
+//             padding: const EdgeInsets.all(12),
+//             child: GridView.builder(
+//               itemCount: state.stories.length,
+//               gridDelegate:
+//               const SliverGridDelegateWithFixedCrossAxisCount(
+//                 crossAxisCount: 2,
+//                 mainAxisSpacing: 14,
+//                 crossAxisSpacing: 14,
+//                 childAspectRatio: 0.65,
+//               ),
+//               itemBuilder: (context, index) {
+//                 final item = state.stories[index];
+//
+//                 return SuccessStoryGridCard(
+//                   imageUrl: item.imageUrl ?? '',
+//                   petName: item.petName,
+//                   subtitle: item.story.story,
+//                   isAdopted: item.isAdopted,
+//                   onTap: () {
+//                     context.push(
+//                       '/success-story/${item.story.id}',
+//                     );
+//                   },
+//                 );
+//               },
+//             ),
+//           );
+//         }
+//
+//         return const SizedBox.shrink();
+//       },
+//     );
+//   }
+// }

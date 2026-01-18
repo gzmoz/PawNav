@@ -29,6 +29,12 @@ class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
     return data;
   }
 
+  @override
+  Future<void> deleteStory(String storyId) async {
+    await remote.deleteStory(storyId);
+  }
+
+
 
   //Success story oluştur
   @override
