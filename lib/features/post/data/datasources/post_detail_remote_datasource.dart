@@ -28,7 +28,7 @@ class PostDetailRemoteDataSource {
     await client.from('posts').delete().eq('id', postId);
   }
 
-  Future<void> addPostView(String postId) async {
+  /*Future<void> addPostView(String postId) async {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
@@ -37,7 +37,7 @@ class PostDetailRemoteDataSource {
       'post_id': postId,
       'user_id': userId,
     });
-  }
+  }*/
 
   Future<void> toggleSavePost(String postId) async {
     final userId = client.auth.currentUser?.id;
@@ -79,4 +79,15 @@ class PostDetailRemoteDataSource {
 
     return res != null;
   }
+
+  Future<void> addPostView(String postId, String userId) async {
+    await client.from('post_views').upsert(
+      {
+        'post_id': postId,
+        'user_id': userId,
+      },
+      onConflict: 'post_id,user_id',
+    );
+  }
+
 }

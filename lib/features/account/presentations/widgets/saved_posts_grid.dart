@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/core/utils/post_status.dart';
+import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_state.dart';
 
@@ -78,6 +79,7 @@ class SavedPostsGrid extends StatelessWidget {
                       context
                           .read<SavedPostsCubit>()
                           .removeSavedPost(post.id);
+                      context.read<AccountStatsCubit>().refresh();
                     }
 
 

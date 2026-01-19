@@ -81,6 +81,10 @@ class _DetailPageState extends State<DetailPage> {
 
           }
 
+          if (state is PostUnsaved) {
+            context.pop(true); // 🔥 parent’a haber
+          }
+
           if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
             Navigator.pop(context, true);

@@ -85,10 +85,10 @@ final router = GoRouter(
       path: '/verify_email_screen',
       builder: (context, state) => const VerifyEmailScreen(),
     ),
-    GoRoute(
+    /*GoRoute(
       path: '/home',
       builder: (context, state) => const HomeScreen(),
-    ),
+    ),*/
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -118,7 +118,13 @@ final router = GoRouter(
           Supabase.instance.client,
         );
 
-        final repository = PostDetailRepositoryImpl(remote);
+        //final repository = PostDetailRepositoryImpl(remote);
+
+        final repository = PostDetailRepositoryImpl(
+          remote,
+          Supabase.instance.client,
+        );
+
 
         return BlocProvider(
           create: (_) => PostDetailCubit(
@@ -211,7 +217,13 @@ final router = GoRouter(
           Supabase.instance.client,
         );
 
-        final repository = PostDetailRepositoryImpl(remote);
+        final repository = PostDetailRepositoryImpl(
+          remote,
+          Supabase.instance.client,
+        );
+
+
+        //final repository = PostDetailRepositoryImpl(remote);
 
         return BlocProvider(
           create: (_) => PostDetailCubit(
@@ -270,10 +282,18 @@ final router = GoRouter(
     GoRoute(
       path: '/home',
       builder: (context, state) {
+        final tab = state.extra is int ? state.extra as int : 0;
+        return HomeScreen(initialIndex: tab);
+      },
+    ),
+
+    /*GoRoute(
+      path: '/home',
+      builder: (context, state) {
         final tab = state.extra as int?;
         return HomeScreen(initialIndex: tab ?? 0);
       },
-    ),
+    ),*/
     GoRoute(
       path: '/recent-activity',
       builder: (context, state) {

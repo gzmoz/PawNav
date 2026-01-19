@@ -12,6 +12,8 @@ class PostDetailError extends PostDetailState {
   PostDetailError(this.message);
 }
 
+
+
 class PostDeleting extends PostDetailState {}
 
 class PostDeleted extends PostDetailState {}
@@ -46,3 +48,8 @@ class PostDetailLoaded extends PostDetailState {
     );
   }
 }
+
+class PostUnsaved extends PostDetailState {}
+
+
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_state.dart';
 import 'package:pawnav/features/success_story/presentation/widgets/success_story_grid_card.dart';
@@ -68,6 +69,8 @@ class SuccessStoriesGrid extends StatelessWidget {
                   context
                       .read<AccountSuccessStoriesCubit>()
                       .loadMySuccessStories();
+
+                  context.read<AccountStatsCubit>().loadStats();
                 }
               },
             );

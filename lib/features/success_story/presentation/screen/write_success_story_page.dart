@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 
 import '../cubit/write_success_story_cubit.dart';
 import '../cubit/write_success_story_state.dart';
@@ -11,6 +12,7 @@ import '../widgets/profile_picker_sheet.dart';
 
 class WriteSuccessStoryPage extends StatefulWidget {
   final String postId;
+
   const WriteSuccessStoryPage({super.key, required this.postId});
 
   @override
@@ -19,7 +21,6 @@ class WriteSuccessStoryPage extends StatefulWidget {
 
 class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
   final _controller = TextEditingController();
-
 
   @override
   void initState() {
@@ -30,14 +31,14 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
     });
   }
 
-
-   @override
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _pickHero(BuildContext context, WriteSuccessStoryLoaded s) async {
+  Future<void> _pickHero(
+      BuildContext context, WriteSuccessStoryLoaded s) async {
     final picked = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -60,20 +61,21 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
     final double width = screenInfo.size.width;
     return BlocConsumer<WriteSuccessStoryCubit, WriteSuccessStoryState>(
       listener: (context, state) {
-          if (state is WriteSuccessStorySuccess) {
-            AppSnackbar.success(context, "Success story is created!");
-            context.go('/home');
-            // context.pushReplacement('/post-detail/${widget.postId}');
+        if (state is WriteSuccessStorySuccess) {
+          context.push('/home', extra: 4);
+          FlutterError.onError = (details) {
+            debugPrint(details.exceptionAsString());
+          };
 
+        }
 
-            //context.go('/post-detail/${widget.postId}');
-          }
+        /*if (state is WriteSuccessStorySuccess) {
+          AppSnackbar.success(context, "Success story is created!");
+          context.pushReplacement('/home', extra: 4);
 
-          if (state is WriteSuccessStoryError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
+          //context.pop(true); // sadece geri dön
+        }*/
+
 
         if (state is WriteSuccessStoryError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -81,10 +83,34 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
           );
         }
       },
-
-
       builder: (context, state) {
-        if (state is WriteSuccessStoryLoading || state is WriteSuccessStoryInitial) {
+
+        if (state is WriteSuccessStoryLoading ||
+            state is WriteSuccessStoryInitial) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (state is WriteSuccessStoryError) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Write Success Story')),
+            body: Center(child: Text(state.message)),
+          );
+        }
+
+        if (state is WriteSuccessStorySuccess) {
+          // UI ÇİZME → listener zaten navigation yapıyor
+          return const SizedBox.shrink();
+        }
+
+        if (state is! WriteSuccessStoryLoaded) {
+          return const SizedBox.shrink();
+        }
+
+        final s = state; // ✅ artık güvenli
+        /*if (state is WriteSuccessStoryLoading ||
+            state is WriteSuccessStoryInitial) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
@@ -105,7 +131,7 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
             text: s.story,
             selection: TextSelection.collapsed(offset: s.story.length),
           );
-        }
+        }*/
 
         final chars = s.story.length;
 
@@ -146,10 +172,13 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                       ? () => context.read<WriteSuccessStoryCubit>().publish()
                       : null,
                   icon: const Icon(Icons.send),
-                  label: Text(s.isPublishing ? 'Publishing...' : 'Publish Success Story'),
+                  label: Text(s.isPublishing
+                      ? 'Publishing...'
+                      : 'Publish Success Story'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF18B394),
-                    disabledBackgroundColor: const Color(0xFF6DB2A4).withOpacity(0.4),
+                    disabledBackgroundColor:
+                        const Color(0xFF6DB2A4).withOpacity(0.4),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -185,7 +214,8 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
 
                 Text(
                   'How did it happen?',
-                  style: TextStyle(fontSize: width * 0.052, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                      fontSize: width * 0.052, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 12),
 
@@ -205,8 +235,11 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText:
-                          'Share the happy news with the community! Tell us about the reunion or the moment your pet found home...',
-                          hintStyle: TextStyle(color: Color(0xFF9AA3AF), fontSize: 18, height: 1.4),
+                              'Share the happy news with the community! Tell us about the reunion or the moment your pet found home...',
+                          hintStyle: TextStyle(
+                              color: Color(0xFF9AA3AF),
+                              fontSize: 18,
+                              height: 1.4),
                           counterText: '',
                         ),
                         style: const TextStyle(fontSize: 18, height: 1.5),
@@ -225,7 +258,8 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                 const SizedBox(height: 22),
                 const Text(
                   'PEOPLE INVOLVED',
-                  style: TextStyle(letterSpacing: 1.2, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                      letterSpacing: 1.2, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 12),
 
@@ -249,7 +283,9 @@ class _WriteSuccessStoryPageState extends State<WriteSuccessStoryPage> {
                     children: [
                       if (s.hero != null)
                         IconButton(
-                          onPressed: () => context.read<WriteSuccessStoryCubit>().setHero(null),
+                          onPressed: () => context
+                              .read<WriteSuccessStoryCubit>()
+                              .setHero(null),
                           icon: const Icon(Icons.close),
                         ),
                       IconButton(

@@ -76,5 +76,13 @@ class AccountSuccessStoriesCubit
     }
   }
 
+  Future<void> refresh() async {
+    emit(AccountSuccessStoriesLoading());
+    await loadMySuccessStories();
+  }
+
+
+
+
 
 }

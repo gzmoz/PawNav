@@ -46,6 +46,12 @@ class SavedPostsCubit extends Cubit<SavedPostsState> {
     emit(SavedPostsLoaded(updated));
   }
 
+  Future<void> refresh() async {
+    emit(SavedPostsLoading());
+    await loadSavedPosts();
+  }
+
+
 
 /*void removeSavedPost(String postId) {
     if (state is SavedPostsLoaded) {

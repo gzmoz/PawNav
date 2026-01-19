@@ -20,6 +20,7 @@ import 'package:pawnav/features/success_story/data/datasources/success_story_rem
 import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_state.dart';
 import 'package:pawnav/features/success_story/presentation/widgets/success_stories_grid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,9 +35,6 @@ class _AccountPageState extends State<AccountPage> {
   int _earnedBadgeCount = 0;
   bool _loadingBadges = true;
 
-
-
-
   void initState() {
     super.initState();
     context.read<ProfileCubit>().loadProfile();
@@ -44,7 +42,6 @@ class _AccountPageState extends State<AccountPage> {
     // context.read<BadgesCubit>().load();
     context.read<SavedPostsCubit>().loadSavedPosts();
     context.read<AccountStatsCubit>().loadStats();
-
 
     _loadBadgeCount();
   }
@@ -70,7 +67,6 @@ class _AccountPageState extends State<AccountPage> {
 
     final rank = RankCalculator.calculate(_earnedBadgeCount);
 
-
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<SuccessStoryRepository>(
@@ -86,7 +82,6 @@ class _AccountPageState extends State<AccountPage> {
               Supabase.instance.client,
             )..loadMySuccessStories(),
           ),
-
         ],
         child: Scaffold(
           backgroundColor: AppColors.white5,
@@ -117,7 +112,6 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ],
           ),
-
           body: BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state is ProfileLoading) {
@@ -163,7 +157,8 @@ class _AccountPageState extends State<AccountPage> {
                                     ),
                                     const SizedBox(width: 20),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           user.name,
@@ -183,7 +178,8 @@ class _AccountPageState extends State<AccountPage> {
                                         ),
 
                                         const SizedBox(height: 12),
-                                        BlocBuilder<AccountStatsCubit, AccountStats?>(
+                                        BlocBuilder<AccountStatsCubit,
+                                            AccountStats?>(
                                           builder: (context, stats) {
                                             if (stats == null) {
                                               return const SizedBox.shrink();
@@ -192,7 +188,8 @@ class _AccountPageState extends State<AccountPage> {
                                             return Row(
                                               children: [
                                                 _StatItem(
-                                                  title: stats.listings.toString(),
+                                                  title:
+                                                      stats.listings.toString(),
                                                   subtitle: "Listings",
                                                 ),
                                                 const SizedBox(width: 16),
@@ -202,7 +199,8 @@ class _AccountPageState extends State<AccountPage> {
                                                 ),
                                                 const SizedBox(width: 16),
                                                 _StatItem(
-                                                  title: stats.successes.toString(),
+                                                  title: stats.successes
+                                                      .toString(),
                                                   subtitle: "Successes",
                                                 ),
                                               ],
@@ -246,11 +244,22 @@ class _AccountPageState extends State<AccountPage> {
                   },
 
                   //  SCROLL EDEN ASIL İÇERİK
-                  body: const TabBarView(
+
+                  body: TabBarView(
                     children: [
-                      MyPostsGrid(),
-                      SavedPostsGrid(),
-                      SuccessStoriesGrid(),
+                      const MyPostsGrid(),
+                      const SavedPostsGrid(),
+                      BlocBuilder<AccountSuccessStoriesCubit, AccountSuccessStoriesState>(
+                        builder: (context, state) {
+                          final key = state is AccountSuccessStoriesLoaded
+                              ? ValueKey(state.stories.length)
+                              : const ValueKey('loading');
+
+                          return SuccessStoriesGrid(key: key);
+                        },
+                      ),
+
+                      //SuccessStoriesGrid(),
                     ],
                   ),
                 ),
@@ -288,7 +297,3 @@ class _StatItem extends StatelessWidget {
     );
   }
 }
-
-
-
-

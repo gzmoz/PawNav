@@ -5,9 +5,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailRepositoryImpl  implements PostDetailRepository {
   final PostDetailRemoteDataSource remote;
+  final SupabaseClient supabase;
 
 
-  PostDetailRepositoryImpl(this.remote);
+
+  PostDetailRepositoryImpl(this.remote, this.supabase);
 
 
   @override
@@ -21,9 +23,17 @@ class PostDetailRepositoryImpl  implements PostDetailRepository {
     return remote.deletePost(postId);
   }
 
-  @override
+  /*@override
   Future<void> addPostView(String postId) {
     return remote.addPostView(postId);
+  }*/
+
+  @override
+  Future<void> addPostView(String postId) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    return remote.addPostView(postId, userId);
   }
 
   @override

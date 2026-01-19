@@ -15,6 +15,7 @@ import 'package:pawnav/features/post/presentations/widgets/location_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
 import 'package:pawnav/features/post/presentations/widgets/section_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -279,9 +280,25 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                             height: 54,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                context.push('/write-success-story/${post.id}');
+                                //context.push('/write-success-story/${post.id}');
 
-                                //context.pushReplacement('/write-success-story/${post.id}');
+                                final created = await context.push<bool>(
+                                  '/write-success-story/${post.id}',
+                                );
+
+                                if (created == true) {
+                                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+                                  context.read<AccountStatsCubit>().refresh();
+                                }
+
+
+                                /*final created = await context.push<bool>(
+                                  '/write-success-story/${post.id}',
+                                );
+
+                                if (created == true) {
+                                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+                                }*/
 
                               },
 

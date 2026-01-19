@@ -31,6 +31,12 @@ class MyPostsCubit extends Cubit<MyPostsState>{
     }
   }
 
+  Future<void> refresh() async {
+    emit(MyPostsLoading());
+    await loadMyPosts();
+  }
+
+
 
 
 

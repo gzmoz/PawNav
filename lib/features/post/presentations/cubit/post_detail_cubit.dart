@@ -113,6 +113,26 @@ class PostDetailCubit extends Cubit<PostDetailState> {
     if (state is! PostDetailLoaded) return;
 
     final current = state as PostDetailLoaded;
+    final newSavedState = !current.isSaved;
+
+    emit(current.copyWith(isSaved: newSavedState));
+
+    try {
+      await toggleSavePost(postId);
+
+      if (!newSavedState) {
+        emit(PostUnsaved()); // 🔥 SİNYAL
+      }
+    } catch (e) {
+      emit(current); // rollback
+    }
+  }
+
+
+/*Future<void> toggleSave(String postId) async {
+    if (state is! PostDetailLoaded) return;
+
+    final current = state as PostDetailLoaded;
     final bool newSavedState = !current.isSaved;
 
     //  UI hemen değişsin + sinyal ver
@@ -134,7 +154,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
       // rollback
       emit(current);
     }
-  }
+  }*/
 
 
 

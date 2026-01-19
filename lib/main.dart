@@ -7,6 +7,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 void main() async{
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint('🔥 FLUTTER ERROR 🔥');
+    debugPrint(details.exceptionAsString());
+    debugPrint(details.stack.toString());
+  };
 
   WidgetsFlutterBinding.ensureInitialized();
 

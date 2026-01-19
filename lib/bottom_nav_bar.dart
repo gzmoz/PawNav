@@ -62,7 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         return const MessagePage();
       case 4:
-        return const AccountPage();
+        return AccountPage(
+          key: ValueKey('account-$index'),
+        );
+        //return const AccountPage();
       default:
         return const HomePage();
     }
