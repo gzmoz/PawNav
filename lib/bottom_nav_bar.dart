@@ -22,6 +22,8 @@ import 'package:pawnav/features/home/domain/usecases/get_posts_by_views.dart';
 import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
+import 'package:pawnav/features/home/success_stories/data/home_success_story_remote_ds.dart';
+import 'package:pawnav/features/home/success_stories/presentation/cubit/home_success_stories_cubit.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
@@ -36,6 +38,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // }
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
+
   const HomeScreen({super.key, this.initialIndex = 0});
 
   @override
@@ -65,12 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
         return AccountPage(
           key: ValueKey('account-$index'),
         );
-        //return const AccountPage();
+      //return const AccountPage();
       default:
         return const HomePage();
     }
   }
-
 
   /// Gradient'li icon widget
   Widget navIcon(
@@ -155,15 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
             )..fetchPreview(),
           ),
 
-
-
           /// FEATURED POSTS
           BlocProvider(
             create: (context) => FeaturedPostsCubit(
               context.read<GetPostsByViews>(),
             )..loadTop(limit: 5),
           ),
-
 
           BlocProvider(
             create: (_) => SavedPostsCubit(
@@ -186,13 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
             )..loadMySuccessStories(),
           ),
 
-
-
-
-
-
-
-
+          BlocProvider(
+            create: (_) => HomeSuccessStoriesCubit(
+              HomeSuccessStoryRemoteDS(Supabase.instance.client),
+            ),
+          ),
         ],
         child: SafeArea(
           top: false,

@@ -14,6 +14,9 @@ import 'package:pawnav/features/home/presentations/widgets/feature_pet_card.dart
 import 'package:pawnav/features/home/presentations/widgets/home_screen_up_buttons.dart';
 import 'package:pawnav/features/home/presentations/widgets/recent_activity_card.dart';
 import 'package:pawnav/features/home/presentations/widgets/success_stories_section.dart';
+import 'package:pawnav/features/home/success_stories/presentation/cubit/home_success_stories_cubit.dart';
+import 'package:pawnav/features/home/success_stories/presentation/cubit/home_success_stories_state.dart';
+import 'package:pawnav/features/home/success_stories/presentation/widgets/home_success_story_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,6 +46,14 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       DailyBadgeRunner.run(context);
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeSuccessStoriesCubit>().load();
+      DailyBadgeRunner.run(context);
+    });
+
+    //context.read<HomeSuccessStoriesCubit>().load();
+
   }
 
   @override
@@ -163,7 +174,35 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 
-            Column(
+            BlocBuilder<HomeSuccessStoriesCubit, HomeSuccessStoriesState>(
+              builder: (context, state) {
+                if (state is HomeSuccessStoriesLoading) {
+                  return const CircularProgressIndicator();
+                }
+
+                if (state is HomeSuccessStoriesLoaded) {
+                  return CarouselSlider(
+                    options: CarouselOptions(
+                      height: height * 0.25,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.85,
+                    ),
+                    items: state.stories.map((s) {
+                      return HomeSuccessStoryCard(
+                        imageUrl: s.imageUrl,
+                        title: s.title,
+                        description: s.description,
+                      );
+                    }).toList(),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+
+            /*Column(
               children: [
                 SizedBox(
                   width: double.infinity,
@@ -192,14 +231,14 @@ class _HomePageState extends State<HomePage> {
                     }).toList(),
                   ),
 
-                  /*PageView.builder(
+                  *//*PageView.builder(
                       itemCount: imagePaths.length,
                       itemBuilder: (context, index ) {
                         return _pages[index];
-                      }),*/
+                      }),*//*
                 ),
               ],
-            ),
+            ),*/
 
             Column(
               children: [
