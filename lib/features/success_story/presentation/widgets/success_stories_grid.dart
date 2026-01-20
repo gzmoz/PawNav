@@ -60,20 +60,20 @@ class SuccessStoriesGrid extends StatelessWidget {
               petName: item.petName,
               subtitle: item.story.story,
               isAdopted: item.isAdopted,
-                onTap: () async {
-              final deletedStoryId = await context.push<String>(
-                '/success-story/${item.story.id}',
-              );
+              onTap: () async {
+                final deletedStoryId = await context.push<String>(
+                  '/success-story/${item.story.id}',
+                );
 
-              if (deletedStoryId != null) {
-                context.read<AccountSuccessStoriesCubit>()
-                    .removeStory(deletedStoryId);
+                if (deletedStoryId != null) {
+                  context.read<AccountSuccessStoriesCubit>()
+                      .removeStory(deletedStoryId);
 
-                context.read<AccountStatsCubit>().refresh();
-              }
-            },
+                  context.read<AccountStatsCubit>().refresh();
+                }
+              },
 
-            /*onTap: () async {
+              /*onTap: () async {
                 final deleted = await context.push<bool>(
                   '/success-story/${item.story.id}',
                 );
@@ -94,5 +94,4 @@ class SuccessStoriesGrid extends StatelessWidget {
     );
   }
 }
-
 

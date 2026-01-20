@@ -131,7 +131,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
                     onPressed: () {
-                        context.go('/home');
+                      context.go('/home');
                     },
                   ),
 
@@ -313,21 +313,21 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                             width: double.infinity,
                             height: 54,
                             child: ElevatedButton.icon(
-                              onPressed: () async{
-                                if (state.successStoryId != null) {
-                                  context.push('/success-story/${state.successStoryId}');
-                                }
+                                onPressed: () async {
+                                  if (state.successStoryId == null) return;
 
-                                final deleted = await context.push<bool>(
-                                  '/success-story/${post.id}',
-                                );
+                                  final deleted = await context.push<bool>(
+                                    '/success-story/${state.successStoryId}',
+                                  );
 
-                                if (deleted == true) {
-                                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
-                                  context.read<AccountStatsCubit>().refresh();
-                                  context.read<PostDetailCubit>().loadPost(post.id);
-                                }
-                              },
+                                  if (deleted == true) {
+                                    context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+                                    context.read<AccountStatsCubit>().refresh();
+                                    context.read<PostDetailCubit>().loadPost(post.id);
+                                  }
+                                },
+
+
 
                               icon: const Icon(Icons.celebration_outlined),
                               label: const Text("View Success Story"),
@@ -390,7 +390,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: Colors.red,
                                     side:
-                                        BorderSide(color: Colors.red.shade200),
+                                    BorderSide(color: Colors.red.shade200),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(14),
                                     ),
@@ -427,7 +427,7 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
           ),
           content: const Text(
             "Are you sure you want to permanently delete this post? "
-            "This action cannot be undone.",
+                "This action cannot be undone.",
           ),
           actions: [
             TextButton(

@@ -180,6 +180,13 @@ class _HomeScreenState extends State<HomeScreen> {
             )..loadStats(),
           ),
 
+          BlocProvider(
+            create: (_) => AccountSuccessStoriesCubit(
+              Supabase.instance.client,
+            )..loadMySuccessStories(),
+          ),
+
+
 
 
 
