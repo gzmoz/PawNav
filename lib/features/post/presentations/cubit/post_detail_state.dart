@@ -23,6 +23,41 @@ class PostDetailLoaded extends PostDetailState {
   final bool isSaved;
   final bool hasSuccessStory;
   final bool? justSaved;
+  final String? successStoryId;
+  final bool isOwner;
+
+  PostDetailLoaded({
+    required this.post,
+    required this.isSaved,
+    required this.hasSuccessStory,
+    required this.isOwner,
+    this.successStoryId,
+    this.justSaved,
+  });
+
+  PostDetailLoaded copyWith({
+    bool? isSaved,
+    bool? hasSuccessStory,
+    bool? justSaved,
+    bool? isOwner,
+  }) {
+    return PostDetailLoaded(
+      post: post,
+      isSaved: isSaved ?? this.isSaved,
+      hasSuccessStory: hasSuccessStory ?? this.hasSuccessStory,
+      justSaved: justSaved,
+      successStoryId: successStoryId ?? this.successStoryId,
+      isOwner: isOwner ?? this.isOwner,
+    );
+  }
+}
+
+
+/*class PostDetailLoaded extends PostDetailState {
+  final Post post;
+  final bool isSaved;
+  final bool hasSuccessStory;
+  final bool? justSaved;
   final bool isOwner;
 
   PostDetailLoaded({
@@ -47,7 +82,7 @@ class PostDetailLoaded extends PostDetailState {
       isOwner: isOwner ?? this.isOwner,
     );
   }
-}
+}*/
 
 class PostUnsaved extends PostDetailState {}
 

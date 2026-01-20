@@ -18,6 +18,7 @@ class HomeRepositoryImpl implements HomeRepository {
     dynamic query = client
         .from('posts')
         .select()
+        .eq('is_active', true)
         .order('views', ascending: false)
         .order('id', ascending: false)
         .limit(limit);

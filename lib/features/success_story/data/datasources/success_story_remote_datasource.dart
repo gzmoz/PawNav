@@ -53,13 +53,35 @@ class SuccessStoryRemoteDataSource {
     required String story,
     String? heroId,
   }) async {
+    // 1 success story oluştur
     await client.from('success_stories').insert({
       'post_id': postId,
       'owner_id': ownerId,
       'hero_id': heroId,
       'story': story,
     });
+
+    //  post'u pasifleştir
+    await client
+        .from('posts')
+        .update({'is_active': false})
+        .eq('id', postId);
   }
+
+
+  /*Future<void> createSuccessStory({
+    required String postId,
+    required String ownerId,
+    required String story,
+    String? heroId,
+  }) async {
+    await client.from('success_stories').insert({
+      'post_id': postId,
+      'owner_id': ownerId,
+      'hero_id': heroId,
+      'story': story,
+    });
+  }*/
 
   Future<SuccessStoryDetailEntity> getStoryDetail(String storyId) async {
     final response = await client

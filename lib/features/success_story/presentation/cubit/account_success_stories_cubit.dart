@@ -81,6 +81,18 @@ class AccountSuccessStoriesCubit
     await loadMySuccessStories();
   }
 
+  void removeStory(String storyId) {
+    if (state is! AccountSuccessStoriesLoaded) return;
+
+    final current = state as AccountSuccessStoriesLoaded;
+
+    final updatedStories =
+    current.stories.where((s) => s.story.id != storyId).toList();
+
+    emit(AccountSuccessStoriesLoaded(updatedStories));
+  }
+
+
 
 
 

@@ -55,11 +55,14 @@ class PostDetailCubit extends Cubit<PostDetailState> {
       final isOwner =
           currentUserId != null && post.owner?.id == currentUserId;
 
+      final storyId = story?['id'] as String?;
+
       //  STATE EMIT (EKSİK OLAN BUYDU)
       emit(PostDetailLoaded(
         post: post,
         isSaved: saved,
         hasSuccessStory: hasSuccessStory,
+        successStoryId: storyId,
         isOwner: isOwner,
       ));
 
@@ -67,7 +70,10 @@ class PostDetailCubit extends Cubit<PostDetailState> {
         post: post,
         isSaved: saved,
         hasSuccessStory: hasSuccessStory,
+        isOwner: isOwner,
       ));*/
+
+
 
       addPostView(postId);
     } catch (e) {
@@ -121,7 +127,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
       await toggleSavePost(postId);
 
       if (!newSavedState) {
-        emit(PostUnsaved()); // 🔥 SİNYAL
+        emit(PostUnsaved()); //  SİNYAL
       }
     } catch (e) {
       emit(current); // rollback

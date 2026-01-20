@@ -25,6 +25,7 @@ class RecentActivityRepositoryImpl
     final response = await supabase
         .from('posts')
         .select('id, name, location, images, created_at, post_type')
+        .eq('is_active', true)
         .order('created_at', ascending: false)
         .limit(limit);
 
@@ -35,30 +36,3 @@ class RecentActivityRepositoryImpl
 }
 
 
-
-/*
-class RecentActivityRepositoryImpl
-    implements RecentActivityRepository {
-  final SupabaseClient supabase;
-
-  RecentActivityRepositoryImpl(this.supabase);
-
-  @override
-  Future<List<RecentPostModel>> getRecentPosts() async {
-    final response = await supabase
-        .from('posts')
-        .select('id, name, location, images, created_at, post_type')
-        .order('created_at', ascending: false)
-        .limit(5);
-
-    print('RAW RESPONSE: $response');
-
-
-    return (response as List)
-        .map((e) => RecentPostModel.fromJson(e))
-        .toList();
-
-
-  }
-}
-*/

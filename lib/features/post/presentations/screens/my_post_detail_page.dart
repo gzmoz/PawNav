@@ -280,7 +280,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                             height: 54,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                //context.push('/write-success-story/${post.id}');
 
                                 final created = await context.push<bool>(
                                   '/write-success-story/${post.id}',
@@ -291,14 +290,6 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                                   context.read<AccountStatsCubit>().refresh();
                                 }
 
-
-                                /*final created = await context.push<bool>(
-                                  '/write-success-story/${post.id}',
-                                );
-
-                                if (created == true) {
-                                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
-                                }*/
 
                               },
 
@@ -322,9 +313,22 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
                             width: double.infinity,
                             height: 54,
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                context.push('/success-story/${post.id}');
+                              onPressed: () async{
+                                if (state.successStoryId != null) {
+                                  context.push('/success-story/${state.successStoryId}');
+                                }
+
+                                final deleted = await context.push<bool>(
+                                  '/success-story/${post.id}',
+                                );
+
+                                if (deleted == true) {
+                                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+                                  context.read<AccountStatsCubit>().refresh();
+                                  context.read<PostDetailCubit>().loadPost(post.id);
+                                }
                               },
+
                               icon: const Icon(Icons.celebration_outlined),
                               label: const Text("View Success Story"),
                               style: ElevatedButton.styleFrom(
