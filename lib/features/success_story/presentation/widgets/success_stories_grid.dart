@@ -61,6 +61,19 @@ class SuccessStoriesGrid extends StatelessWidget {
               subtitle: item.story.story,
               isAdopted: item.isAdopted,
               onTap: () async {
+                final result = await context.push<String>(
+                  '/success-story/${item.story.id}',
+                );
+
+                if (result == 'story_deleted') {
+                  context.read<AccountSuccessStoriesCubit>()
+                      .loadMySuccessStories();
+
+                  context.read<AccountStatsCubit>().refresh();
+                }
+              },
+
+              /*onTap: () async {
                 final deletedStoryId = await context.push<String>(
                   '/success-story/${item.story.id}',
                 );
@@ -71,7 +84,7 @@ class SuccessStoriesGrid extends StatelessWidget {
 
                   context.read<AccountStatsCubit>().refresh();
                 }
-              },
+              },*/
 
               /*onTap: () async {
                 final deleted = await context.push<bool>(

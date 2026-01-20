@@ -38,7 +38,8 @@ class SuccessStoryDetailPage extends StatelessWidget {
           listener: (context, state) {
             if (state is SuccessStoryDeleted) {
               // SADECE DETAIL PAGE KAPAT
-              Navigator.pop(context,true);
+              context.pop('story_deleted');
+              //Navigator.pop(context,true);
             }
           },
           child: BlocBuilder<SuccessStoryDetailCubit, SuccessStoryDetailState>(
@@ -668,6 +669,7 @@ void showDeleteDialog(
   showDialog(
     context: context,
     barrierDismissible: false,
+    useRootNavigator: true,
     builder: (_) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
