@@ -7,6 +7,7 @@ import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart'
 import 'package:pawnav/features/account/presentations/cubit/my_posts_state.dart';
 import 'package:pawnav/features/editPost/domain/entities/edit_post_entity.dart';
 import 'package:pawnav/features/editPost/presentation/cubit/edit_post_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 
 class MyPostsGrid extends StatelessWidget {
   const MyPostsGrid({super.key});
@@ -71,13 +72,22 @@ class MyPostsGrid extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                     onTap: () async {
-                      final result = await context.push<bool>(
+                      final result = await context.push<Object?>(
                         '/my-post/${post.id}',
                       );
+
+                      /*final result = await context.push<bool>(
+                        '/my-post/${post.id}',
+                      );*/
 
                       if (result == true) {
                         context.read<MyPostsCubit>().loadMyPosts();
                         context.read<AccountStatsCubit>().refresh();
+                      }
+                      if (result == 'post_deleted') {
+                        context.read<MyPostsCubit>().loadMyPosts();
+                        context.read<AccountStatsCubit>().refresh();
+                        context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
                       }
                     },
 

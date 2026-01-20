@@ -10,6 +10,7 @@ class AccountSuccessStoriesCubit
     extends Cubit<AccountSuccessStoriesState> {
   final SupabaseClient supabase;
 
+
   AccountSuccessStoriesCubit(this.supabase)
       : super(AccountSuccessStoriesInitial());
 
@@ -86,11 +87,13 @@ class AccountSuccessStoriesCubit
 
     final current = state as AccountSuccessStoriesLoaded;
 
-    final updatedStories =
-    current.stories.where((s) => s.story.id != storyId).toList();
+    final updatedStories = current.stories
+        .where((e) => e.story.id != storyId)
+        .toList(); //  YENİ LİSTE
 
     emit(AccountSuccessStoriesLoaded(updatedStories));
   }
+
 
 
 

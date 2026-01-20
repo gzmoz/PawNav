@@ -270,6 +270,10 @@ class _AccountPageState extends State<AccountPage> {
       ),
     );
   }
+  void _reloadSuccessStories() {
+    context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+  }
+
 }
 
 class _StatItem extends StatelessWidget {

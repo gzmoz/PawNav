@@ -69,14 +69,24 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
       body: BlocListener<PostDetailCubit, PostDetailState>(
         listener: (context, state) {
           if (state is PostDeleted) {
+            Future.microtask(() {
+              if (!context.mounted) return;
+
+              context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+              context.read<AccountStatsCubit>().refresh();
+            });
+
+            AppSnackbar.success(context, "Post deleted successfully");
+            GoRouter.of(context).pop('post_deleted');
+
+            //GoRouter.of(context).pop(true);
+          }
+          /*if (state is PostDeleted) {
             AppSnackbar.success(context, "Post deleted successfully");
             GoRouter.of(context).pop(true);
             context.read<AccountStatsCubit>().refresh();
 
-
-            //context.pop(true);
-            //Navigator.pop(context, true);
-          }
+          }*/
 
           if (state is PostDetailError) {
             AppSnackbar.error(context, state.message);
