@@ -58,6 +58,7 @@ import 'package:pawnav/features/success_story/presentation/cubit/success_story_d
 import 'package:pawnav/features/success_story/presentation/cubit/write_success_story_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/screen/success_story_detail_page.dart';
 import 'package:pawnav/features/success_story/presentation/screen/write_success_story_page.dart';
+import 'package:pawnav/features/success_story/view_more/presentation/screens/success_stories_list_page.dart';
 import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -324,6 +325,13 @@ final router = GoRouter(
             child: SuccessStoryDetailPage(storyId: storyId),
           ),
         );
+      },
+    ),
+
+    GoRoute(
+      path: '/success-stories',
+      builder: (context, state) {
+        return const SuccessStoriesListPage();
       },
     ),
 

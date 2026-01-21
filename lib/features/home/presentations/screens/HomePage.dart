@@ -160,14 +160,28 @@ class _HomePageState extends State<HomePage> {
                           fontSize: width * 0.05,
                         ),
                       ),
-                      Text(
+                      GestureDetector(
+                        onTap: () {
+                          context.push('/success-stories');
+                        },
+                        child: Text(
+                          "View More",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.03,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+
+                      /*Text(
                         "View More",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: width * 0.03,
                           color: AppColors.primary,
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -193,8 +207,19 @@ class _HomePageState extends State<HomePage> {
                         imageUrl: s.imageUrl,
                         title: s.title,
                         description: s.description,
+                        onTap: () {
+                          context.push('/success-story/${s.id}');
+                        },
                       );
                     }).toList(),
+
+                    /*items: state.stories.map((s) {
+                      return HomeSuccessStoryCard(
+                        imageUrl: s.imageUrl,
+                        title: s.title,
+                        description: s.description,
+                      );
+                    }).toList(),*/
                   );
                 }
 

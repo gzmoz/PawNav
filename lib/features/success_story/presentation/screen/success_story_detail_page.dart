@@ -164,56 +164,104 @@ class SuccessStoryDetailPage extends StatelessWidget {
                     const SizedBox(height: 30),
           
                     /// EDIT + DELETE
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 52,
-                              child: OutlinedButton.icon(
-                                onPressed: () async {
-          
-                                },
-                                icon: const Icon(Icons.edit_outlined),
-                                label: const Text("Edit Story"),
+                    if (s.isOwner)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 25, right: 10, left: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 52,
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    // edit flow
+                                  },
+                                  icon: const Icon(Icons.edit_outlined),
+                                  label: const Text("Edit Story"),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: SizedBox(
-                              height: 52,
-                              child: OutlinedButton.icon(
-                                /*onPressed: () {
-                                      context.read<PostDetailCubit>().delete(widget.postId);
-                                    },*/
-                                onPressed: () {
-                                  showDeleteDialog(
-                                    context,
-                                    onConfirm: () {
-                                      context.read<SuccessStoryDetailCubit>()
-                                          .deleteStory(storyId);
-                                    },
-                                  );
-                                },
-          
-                                icon: const Icon(Icons.delete_outline),
-                                label: const Text("Delete Story"),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.red,
-                                  side:
-                                  BorderSide(color: Colors.red.shade200),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: SizedBox(
+                                height: 52,
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    showDeleteDialog(
+                                      context,
+                                      onConfirm: () {
+                                        context
+                                            .read<SuccessStoryDetailCubit>()
+                                            .deleteStory(storyId);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.delete_outline),
+                                  label: const Text("Delete Story"),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.red,
+                                    side: BorderSide(color: Colors.red.shade200),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
+                    //   child: Row(
+                    //     children: [
+                    //       Expanded(
+                    //         child: SizedBox(
+                    //           height: 52,
+                    //           child: OutlinedButton.icon(
+                    //             onPressed: () async {
+                    //
+                    //             },
+                    //             icon: const Icon(Icons.edit_outlined),
+                    //             label: const Text("Edit Story"),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       const SizedBox(width: 12),
+                    //       Expanded(
+                    //         child: SizedBox(
+                    //           height: 52,
+                    //           child: OutlinedButton.icon(
+                    //             /*onPressed: () {
+                    //                   context.read<PostDetailCubit>().delete(widget.postId);
+                    //                 },*/
+                    //             onPressed: () {
+                    //               showDeleteDialog(
+                    //                 context,
+                    //                 onConfirm: () {
+                    //                   context.read<SuccessStoryDetailCubit>()
+                    //                       .deleteStory(storyId);
+                    //                 },
+                    //               );
+                    //             },
+                    //
+                    //             icon: const Icon(Icons.delete_outline),
+                    //             label: const Text("Delete Story"),
+                    //             style: OutlinedButton.styleFrom(
+                    //               foregroundColor: Colors.red,
+                    //               side:
+                    //               BorderSide(color: Colors.red.shade200),
+                    //               shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular(14),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               );

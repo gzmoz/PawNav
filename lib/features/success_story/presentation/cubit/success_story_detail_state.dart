@@ -31,6 +31,8 @@ class SuccessStoryDetailLoaded extends SuccessStoryDetailState {
   final PostType postType;
   final String? location;
 
+  final bool isOwner;
+
   SuccessStoryDetailLoaded({
     required this.story,
     required this.petName,
@@ -45,6 +47,7 @@ class SuccessStoryDetailLoaded extends SuccessStoryDetailState {
     this.location,
     this.hero,
     this.age,
+    required this.isOwner,
   });
 
   String get initialTimelineText {

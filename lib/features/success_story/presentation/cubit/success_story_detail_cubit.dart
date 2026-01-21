@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
   final SuccessStoryRepository repository;
@@ -13,6 +14,13 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
       emit(SuccessStoryDetailLoading());
 
       final data = await repository.getStoryDetail(storyId);
+
+      final currentUserId =
+          Supabase.instance.client.auth.currentUser?.id;
+
+      final bool isOwner =
+          currentUserId != null &&
+              currentUserId == data.story.ownerId;
 
       emit(
         SuccessStoryDetailLoaded(
@@ -29,6 +37,8 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
           reunitedDate: data.reunitedDate,
           postType: data.postType,
           location: data.location,
+          isOwner: isOwner, // ✅ BURASI
+
         ),
       );
 
