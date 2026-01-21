@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_list_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/post_card.dart';
 
 class PostPage extends StatefulWidget {
@@ -12,45 +16,24 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  bool _newestFirst = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<PostListCubit>().load(
+      newestFirst: _newestFirst,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
 
-    // Örnek ilan verileri
-    /*final posts = [
-      {
-        "image":
-        "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-        "name": "Buddy",
-        "location": "Near Central Park, NYC",
-        "description":
-        "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
-        "status": "Lost",
-        "postDate": DateTime.now().subtract(const Duration(minutes: 45)),
-      },
-      {
-        "image":
-        "https://images.unsplash.com/photo-1592194996308-7b43878e84a6",
-        "name": "Luna",
-        "location": "Downtown, Brooklyn",
-        "description":
-        "Found this sweet cat near the library. Very friendly and appears to be well-cared for.",
-        "status": "Found",
-        "postDate": DateTime.now().subtract(const Duration(hours: 3)),
-      },
-      {
-        "image":
-        "https://images.unsplash.com/photo-1601758123927-1960c88fda55",
-        "name": "Milo",
-        "location": "Queens, NYC",
-        "description":
-        "Lovely kitten looking for a new home. Vaccinated and very playful.",
-        "status": "Adoption",
-        "postDate": DateTime.now().subtract(const Duration(days: 1, hours: 5)),
-      },
-    ];*/
     return Scaffold(
       // backgroundColor: AppColors.white3,
       backgroundColor: AppColors.white5,
@@ -106,11 +89,11 @@ class _PostPageState extends State<PostPage> {
                         ],
                       ),
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          showModalBottomSheet(
+                        onPressed: () async {
+                          //  DEĞİŞTİ: sonucu bekliyoruz
+                          final result = await showModalBottomSheet<String>(
                             context: context,
                             backgroundColor: AppColors.white5,
-                            // sheet’in arka plan rengi
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(30),
@@ -118,11 +101,14 @@ class _PostPageState extends State<PostPage> {
                               ),
                             ),
                             builder: (BuildContext context) {
-                              String selectedOption = "Newest"; //default secim
+                              String selectedOption =
+                                  _newestFirst ? "Newest" : "Oldest";
 
                               return Padding(
                                 padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                          50,
                                   top: 10,
                                 ),
                                 child: StatefulBuilder(
@@ -135,7 +121,6 @@ class _PostPageState extends State<PostPage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          //drag indicator
                                           Center(
                                             child: Container(
                                               width: width * 0.2,
@@ -149,7 +134,6 @@ class _PostPageState extends State<PostPage> {
                                           ),
                                           const SizedBox(height: 16),
 
-                                          //title
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -162,112 +146,63 @@ class _PostPageState extends State<PostPage> {
                                                 ),
                                               ),
                                               IconButton(
-                                                onPressed: () {
-                                                  context.pop();
-                                                },
+                                                onPressed: () => context.pop(),
                                                 icon: const Icon(Icons.close),
                                               ),
                                             ],
                                           ),
 
-                                          const SizedBox(height: 3),
-                                          Divider(
-                                              color: Colors.grey.shade300,
-                                              height: 1),
                                           const SizedBox(height: 10),
 
-                                          //radio buttons
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              /* border: Border.all(
-                                                  color:
-                                                      selectedOption == "Newest"
-                                                          ? AppColors.primary
-                                                          : Colors.grey.shade300),*/
-                                              color: selectedOption == "Newest"
-                                                  ? AppColors.background2
-                                                  : Colors.grey.shade100,
-                                            ),
-                                            child: RadioListTile<String>(
-                                              title:
-                                                  const Text("Newest to Oldest"),
-                                              value: "Newest",
-                                              groupValue: selectedOption,
-                                              activeColor: Colors.blue.shade800,
-                                              onChanged: (value) {
-                                                setState(() =>
-                                                    selectedOption = value!);
-                                              },
-                                            ),
+                                          // Newest
+                                          RadioListTile<String>(
+                                            title:
+                                                const Text("Newest to Oldest"),
+                                            value: "Newest",
+                                            activeColor: Colors.blueAccent,
+                                            groupValue: selectedOption,
+                                            onChanged: (value) {
+                                              setState(() =>
+                                                  selectedOption = value!);
+                                            },
                                           ),
-                                          const SizedBox(height: 10),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              /* border: Border.all(
-                                                  color:
-                                                      selectedOption == "Newest"
-                                                          ? AppColors.primary
-                                                          : Colors.grey.shade300),*/
-                                              color: selectedOption == "Oldest"
-                                                  ? AppColors.background2
-                                                  : Colors.grey.shade100,
-                                            ),
-                                            child: RadioListTile<String>(
-                                              title:
-                                                  const Text("Oldest to Newest"),
-                                              value: "Oldest",
-                                              groupValue: selectedOption,
-                                              activeColor: Colors.blue.shade800,
-                                              onChanged: (value) {
-                                                setState(() =>
-                                                    selectedOption = value!);
-                                              },
-                                            ),
+
+                                          // Oldest
+                                          RadioListTile<String>(
+                                            title:
+                                                const Text("Oldest to Newest"),
+                                            value: "Oldest",
+                                            groupValue: selectedOption,
+                                            activeColor: Colors.blueAccent,
+                                            onChanged: (value) {
+                                              setState(() =>
+                                                  selectedOption = value!);
+                                            },
                                           ),
-                                          //close and approve buttons
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 12.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                /*TextButton(
-                                                  onPressed: () {
-                                                    context.pop();
-                                                  },
-                                                  child: const Text(
-                                                    "Cancel",
-                                                    style: TextStyle(
-                                                        color: Colors.grey),
-                                                  ),
-                                                ),*/
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    context.pop(selectedOption);
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.primary,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              30),
-                                                    ),
-                                                    minimumSize: Size(width * 0.4,
-                                                        height * 0.05),
-                                                  ),
-                                                  child: const Text(
-                                                    "Apply",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
+
+                                          const SizedBox(height: 12),
+
+                                          Center(
+                                            child: ElevatedButton(
+                                              // DEĞİŞTİ: sadece seçimi geri gönderiyoruz
+                                              onPressed: () {
+                                                context.pop(selectedOption);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.primary,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
                                                 ),
-                                              ],
+                                                minimumSize: Size(
+                                                    width * 0.4, height * 0.05),
+                                              ),
+                                              child: const Text(
+                                                "Apply",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -278,15 +213,25 @@ class _PostPageState extends State<PostPage> {
                               );
                             },
                           );
+
+                          //  bottom sheet kapandıktan sonra Cubit çağrılıyor
+                          if (result != null) {
+                            final newest = result == "Newest";
+
+                            // UI state güncelleniyor
+                            setState(() {
+                              _newestFirst = newest;
+                            });
+
+                            //  Cubit çağrılıyor
+                            context.read<PostListCubit>().load(
+                                  newestFirst: newest,
+                                );
+                          }
                         },
-                        icon: const Icon(
-                          Icons.swap_vert,
-                          size: 18,
-                        ),
+                        icon: const Icon(Icons.swap_vert, size: 18),
                         label: const Text("Sort"),
                         style: ElevatedButton.styleFrom(
-                          /*backgroundColor: AppColors.background,
-                          foregroundColor: Colors.grey.shade700,*/
                           backgroundColor: Colors.white,
                           foregroundColor: AppColors.primary,
                           elevation: 0,
@@ -330,7 +275,9 @@ class _PostPageState extends State<PostPage> {
 
                               return Padding(
                                 padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                          50,
                                   top: 10,
                                 ),
                                 child: StatefulBuilder(
@@ -360,7 +307,8 @@ class _PostPageState extends State<PostPage> {
 
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Filters",
@@ -434,8 +382,8 @@ class _PostPageState extends State<PostPage> {
                                                             : const Color(
                                                                 0xFFF3F4F6),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                30),
+                                                            BorderRadius
+                                                                .circular(30),
                                                         boxShadow: isSelected
                                                             ? [
                                                                 BoxShadow(
@@ -510,17 +458,20 @@ class _PostPageState extends State<PostPage> {
                                                     text: 'Radius: ',
                                                     style: TextStyle(
                                                       fontSize: width * 0.042,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: Colors.black,
                                                     ),
                                                   ),
                                                   TextSpan(
-                                                    text: '${radiusValue.toStringAsFixed(0)} km',
+                                                    text:
+                                                        '${radiusValue.toStringAsFixed(0)} km',
                                                     style: TextStyle(
-                                                      fontSize: width * 0.042,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Colors.blueAccent
-                                                    ),
+                                                        fontSize: width * 0.042,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Colors.blueAccent),
                                                   ),
                                                 ],
                                               ),
@@ -551,41 +502,54 @@ class _PostPageState extends State<PostPage> {
 
                                             //animal type
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 14,
+                                                      vertical: 14),
                                               decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.grey.shade300),
-                                                borderRadius: BorderRadius.circular(12)
-                                              ),
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade300),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      const Icon(Icons.pets, color: Colors.grey),
+                                                      const Icon(Icons.pets,
+                                                          color: Colors.grey),
                                                       const SizedBox(width: 12),
-                                                      Text("Animal Type",
-                                                        style: TextStyle(fontSize: width * 0.035),
+                                                      Text(
+                                                        "Animal Type",
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                width * 0.035),
                                                       ),
                                                     ],
                                                   ),
                                                   GestureDetector(
-                                                    onTap: (){
-
-                                                    },
+                                                    onTap: () {},
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           selectedAnimal,
-                                                          style: const TextStyle(
-                                                            fontWeight: FontWeight.w500,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
                                                           ),
                                                         ),
-                                                        const SizedBox(width: 5),
-                                                        const Icon(Icons.chevron_right,
-                                                        color: Colors.grey),
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        const Icon(
+                                                            Icons.chevron_right,
+                                                            color: Colors.grey),
                                                       ],
                                                     ),
-
                                                   ),
                                                 ],
                                               ),
@@ -595,41 +559,54 @@ class _PostPageState extends State<PostPage> {
 
                                             //BREED
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 14,
+                                                      vertical: 14),
                                               decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.grey.shade300),
-                                                  borderRadius: BorderRadius.circular(12)
-                                              ),
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.grey.shade300),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      const Icon(Icons.science, color: Colors.grey),
+                                                      const Icon(Icons.science,
+                                                          color: Colors.grey),
                                                       const SizedBox(width: 12),
-                                                      Text("Breed",
-                                                        style: TextStyle(fontSize: width * 0.035),
+                                                      Text(
+                                                        "Breed",
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                width * 0.035),
                                                       ),
                                                     ],
                                                   ),
                                                   GestureDetector(
-                                                    onTap: (){
-
-                                                    },
+                                                    onTap: () {},
                                                     child: Row(
                                                       children: [
                                                         Text(
                                                           selectedBreed,
-                                                          style: const TextStyle(
-                                                            fontWeight: FontWeight.w500,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
                                                           ),
                                                         ),
-                                                        const SizedBox(width: 5),
-                                                        const Icon(Icons.chevron_right,
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        const Icon(
+                                                            Icons.chevron_right,
                                                             color: Colors.grey),
                                                       ],
                                                     ),
-
                                                   ),
                                                 ],
                                               ),
@@ -644,59 +621,79 @@ class _PostPageState extends State<PostPage> {
 
                                             //bottom buttons
                                             Row(
-                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 OutlinedButton(
-                                                    onPressed: (){
-                                                      setState((){
-                                                        selectedPostType = "";
-                                                        selectedAnimal = "";
-                                                        selectedBreed = "";
-                                                        locationController.clear();
-                                                        radiusValue = 10;
-                                                      });
-                                                    },
-                                                    style: OutlinedButton.styleFrom(
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(30),
-                                                      ),
-                                                      side: const BorderSide(color: AppColors.primary),
-                                                      padding: const EdgeInsets.symmetric(
-                                                        horizontal: 24, vertical: 12
-                                                      ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      selectedPostType = "";
+                                                      selectedAnimal = "";
+                                                      selectedBreed = "";
+                                                      locationController
+                                                          .clear();
+                                                      radiusValue = 10;
+                                                    });
+                                                  },
+                                                  style:
+                                                      OutlinedButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
                                                     ),
-                                                    child: const Text(
-                                                      "Reset Filters",
-                                                      style: TextStyle(color: AppColors.primary),
-                                                    ),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            AppColors.primary),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 24,
+                                                        vertical: 12),
+                                                  ),
+                                                  child: const Text(
+                                                    "Reset Filters",
+                                                    style: TextStyle(
+                                                        color:
+                                                            AppColors.primary),
+                                                  ),
                                                 ),
                                                 ElevatedButton(
-                                                    onPressed: (){
-                                                      context.pop({
-                                                        "postType" :selectedPostType,
-                                                        "location": locationController.text,
-                                                        "radius": radiusValue,
-                                                        "animal": selectedAnimal,
-                                                        "breed": selectedBreed,
-                                                      });
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: AppColors.primary,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(30),
-                                                      ),
-                                                      padding: const EdgeInsets.symmetric(
-                                                        horizontal: 24, vertical: 12
-                                                      ),
+                                                  onPressed: () {
+                                                    context.pop({
+                                                      "postType":
+                                                          selectedPostType,
+                                                      "location":
+                                                          locationController
+                                                              .text,
+                                                      "radius": radiusValue,
+                                                      "animal": selectedAnimal,
+                                                      "breed": selectedBreed,
+                                                    });
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.primary,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
                                                     ),
-                                                    child: const Text("Apply Filters", style: TextStyle(color: Colors.white),),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 24,
+                                                        vertical: 12),
+                                                  ),
+                                                  child: const Text(
+                                                    "Apply Filters",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ],
-
                                             ),
-
-
-
                                           ],
                                         ),
                                       ),
@@ -726,60 +723,94 @@ class _PostPageState extends State<PostPage> {
                 ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 2),
-                child: const Column(
-                  children: [
-                    PostCardComponent(
-                        imageUrl:
-                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-                        name: "Buddy",
-                        location: "Near Central Park, NYC",
-                        description:
-                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
-                        status: "Lost",
-                        timeAgoText: "Posted 3 hours ago"),
-                    PostCardComponent(
-                        imageUrl:
-                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-                        name: "Buddy",
-                        location: "Near Central Park, NYC",
-                        description:
-                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
-                        status: "Found",
-                        timeAgoText: "Posted 3 hours ago"),
-                    PostCardComponent(
-                        imageUrl:
-                            "https://images.unsplash.com/photo-1558788353-f76d92427f16",
-                        name: "Buddy",
-                        location: "Near Central Park, NYC",
-                        description:
-                            "Friendly Golden Retriever, last seen near Prospect Park. Has a blue collar.",
-                        status: "Adoption",
-                        timeAgoText: "Posted 3 hours ago"),
-                  ],
+                padding: EdgeInsets.symmetric(horizontal: width * 0.07),
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<PostListCubit>().load(
+                      newestFirst: _newestFirst,
+                    );
+                  },
+
+                  child: BlocBuilder<PostListCubit, PostListState>(
+                    builder: (context, state) {
+                      if (state is PostListLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 40),
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (state is PostListError) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 40),
+                          child: Text(
+                            state.message,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }
+
+                      if (state is PostListLoaded) {
+                        final posts = state.posts;
+
+                        if (posts.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 40),
+                            child: Text("No posts found"),
+                          );
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index];
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: PostCardComponent(
+                                imageUrl: post.images.isNotEmpty
+                                    ? post.images.first
+                                    : '',
+                                name: post.name ?? 'Unknown',
+                                location: post.location,
+                                description: post.description,
+                                status: post.postType ?? 'Lost',
+                                timeAgoText: timeAgo(post.eventDate),
+                                onTap: () {
+                                  context.push('/post-detail/${post.id}');
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ),
               ),
-
-
             ],
           ),
         ),
-
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: height * 0.09),
         child: FloatingActionButton(
-          onPressed: (){
+          onPressed: () {
             context.push('/map');
           },
           backgroundColor: AppColors.primary,
           shape: const CircleBorder(),
-          child: const Icon(Icons.map_outlined, color: Colors.white,),
+          child: const Icon(
+            Icons.map_outlined,
+            color: Colors.white,
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
     );
   }
 }

@@ -1,10 +1,10 @@
 import 'package:pawnav/features/account/data/models/post_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class PostRemoteDataSource{
+class AccountPostRemoteDataSource {
   final SupabaseClient client;
 
-  PostRemoteDataSource(this.client);
+  AccountPostRemoteDataSource (this.client);
 
   Future<List<PostModel>> getMyPosts(String userId) async{
     final response = await client

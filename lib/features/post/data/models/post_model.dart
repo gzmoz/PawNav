@@ -50,24 +50,6 @@ class PostModel extends Post {
     );
   }
 
-  /*factory PostModel.fromMap(Map<String, dynamic> map) {
-    return PostModel(
-      id: map['id'],
-      userId: map['user_id'],
-      species: map['species'] ?? '',
-      breed: map['breed'] ?? '',
-      color: map['color'] ?? '',
-      gender: map['gender'] ?? 'unknown',
-      name: map['name'],
-      description: map['description'] ?? '',
-      location: map['location'] ?? '',
-      eventDate: DateTime.parse(map['event_date']),
-      images: map['images'] != null
-          ? List<String>.from(map['images'])
-          : [],
-      postType: map['post_type'] ?? '',
-      views: map['views'] ?? 0,
-    );
-  }*/
+
 
 }

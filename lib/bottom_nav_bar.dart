@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawnav/MessagePage.dart';
 import 'package:pawnav/app/theme/colors.dart';
-import 'package:pawnav/features/account/data/datasources/post_remote_datasource.dart';
+import 'package:pawnav/features/account/data/datasources/account_post_remote_datasource.dart';
 import 'package:pawnav/features/account/data/datasources/profile_remote_datasource.dart';
 import 'package:pawnav/features/account/data/repositories/account_status_repository_impl.dart';
 import 'package:pawnav/features/account/data/repositories/post_repository.dart';
@@ -24,6 +24,10 @@ import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.d
 import 'package:pawnav/features/home/presentations/screens/HomePage.dart';
 import 'package:pawnav/features/home/success_stories/data/home_success_story_remote_ds.dart';
 import 'package:pawnav/features/home/success_stories/presentation/cubit/home_success_stories_cubit.dart';
+import 'package:pawnav/features/post/data/datasources/post_remote_datasource.dart';
+import 'package:pawnav/features/post/data/repositories/post_repository_impl.dart';
+import 'package:pawnav/features/post/domain/usecases/get_posts.dart';
+import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
@@ -143,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
             create: (_) => MyPostsCubit(
               client: Supabase.instance.client,
               repository: PostRepository(
-                PostRemoteDataSource(Supabase.instance.client),
+                AccountPostRemoteDataSource(Supabase.instance.client),
               ),
             ),
           ),
@@ -190,6 +194,17 @@ class _HomeScreenState extends State<HomeScreen> {
               HomeSuccessStoryRemoteDS(Supabase.instance.client),
             ),
           ),
+
+          BlocProvider(
+            create: (_) => PostListCubit(
+              GetPosts(
+                PostRepositoryImpl(
+                  PostRemoteDataSource(Supabase.instance.client),
+                ),
+              ),
+            )..load(),
+          ),
+
         ],
         child: SafeArea(
           top: false,
