@@ -1,9 +1,30 @@
-import '../../domain/entities/post.dart';
-import '../../domain/repositories/post_repository.dart';
-import '../datasources/post_remote_datasource.dart';
-import '../models/post_model.dart';
+import 'package:pawnav/features/post/domain/entities/post.dart';
+import 'package:pawnav/features/post/domain/entities/post_filter.dart';
+import 'package:pawnav/features/post/domain/repositories/post_repository.dart';
+import 'package:pawnav/features/post/data/datasources/post_remote_datasource.dart';
+import 'package:pawnav/features/post/data/models/post_model.dart';
 
 class PostRepositoryImpl implements PostRepository {
+  final PostRemoteDataSource remote;
+
+  PostRepositoryImpl(this.remote);
+
+  @override
+  Future<List<Post>> getPosts({
+    PostFilter filter = PostFilter.empty,
+  }) async {
+    final data = await remote.getPosts(filter: filter);
+
+    return data
+        .map((map) => PostModel.fromMap(map))
+        .toList();
+  }
+}
+
+
+
+
+/*class PostRepositoryImpl implements PostRepository {
   final PostRemoteDataSource remote;
 
   PostRepositoryImpl(this.remote);
@@ -18,4 +39,4 @@ class PostRepositoryImpl implements PostRepository {
 
   }
 
-}
+}*/

@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/animal_breeds_loader.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/addPost/presentation/screen/select_location_screen.dart';
+import 'package:pawnav/features/post/domain/entities/post_filter.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_list_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/post_card.dart';
@@ -17,16 +20,31 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   bool _newestFirst = true;
+  PostFilter _currentFilter = PostFilter.empty;
+  double? _selectedLat;
+  double? _selectedLon;
+
+
+  static const List<String> animalTypes = [
+    "Any",
+    "Dog",
+    "Cat",
+    "Bird",
+    "Rabbit",
+    "Rodent",
+    "Reptile",
+    "Other",
+  ];
 
   @override
   void initState() {
     super.initState();
 
     context.read<PostListCubit>().load(
-      newestFirst: _newestFirst,
-    );
+          newestFirst: _newestFirst,
+          filter: _currentFilter,
+        );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +244,7 @@ class _PostPageState extends State<PostPage> {
                             //  Cubit çağrılıyor
                             context.read<PostListCubit>().load(
                                   newestFirst: newest,
+                                  filter: _currentFilter,
                                 );
                           }
                         },
@@ -254,8 +273,9 @@ class _PostPageState extends State<PostPage> {
                         ],
                       ),
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          showModalBottomSheet(
+                        onPressed: () async {
+                          final result =
+                              await showModalBottomSheet<Map<String, dynamic>>(
                             context: context,
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
@@ -266,12 +286,26 @@ class _PostPageState extends State<PostPage> {
                               ),
                             ),
                             builder: (BuildContext context) {
-                              String selectedPostType = "Lost";
-                              double radiusValue = 10;
-                              String selectedAnimal = "Dog";
-                              String selectedBreed = "Any";
+                              String selectedPostType =
+                                  _currentFilter.postType ?? "Lost";
+
+                              double radiusValue =
+                                  _currentFilter.radiusKm ?? 10;
+
+                              String selectedAnimal =
+                                  _currentFilter.animal ?? "Any";
+
+                              String selectedBreed =
+                                  _currentFilter.breed ?? "Any";
+
+                              double? selectedLat = _currentFilter.lat;
+                              double? selectedLon = _currentFilter.lon;
+
+
                               final TextEditingController locationController =
-                                  TextEditingController();
+                                  TextEditingController(
+                                text: _currentFilter.location ?? '',
+                              );
 
                               return Padding(
                                 padding: EdgeInsets.only(
@@ -428,26 +462,64 @@ class _PostPageState extends State<PostPage> {
 
                                             const SizedBox(height: 8),
 
-                                            TextField(
-                                              controller: locationController,
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    "Enter city or postcode",
-                                                prefixIcon:
-                                                    const Icon(Icons.search),
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12,
-                                                        horizontal: 23),
-                                                filled: true,
-                                                fillColor: Colors.grey.shade100,
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  borderSide: BorderSide.none,
+                                            // TextField(
+                                            //   controller: locationController,
+                                            //   decoration: InputDecoration(
+                                            //     hintText:
+                                            //         "Enter city or postcode",
+                                            //     prefixIcon:
+                                            //         const Icon(Icons.search),
+                                            //     contentPadding:
+                                            //         const EdgeInsets.symmetric(
+                                            //             vertical: 12,
+                                            //             horizontal: 23),
+                                            //     filled: true,
+                                            //     fillColor: Colors.grey.shade100,
+                                            //     border: OutlineInputBorder(
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(12),
+                                            //       borderSide: BorderSide.none,
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                final result = await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) => const SelectLocationScreen(),
+                                                  ),
+                                                );
+
+                                                if (result != null) {
+                                                  setState(() {
+                                                    locationController.text = result["address"];
+                                                    _selectedLat = result["lat"];
+                                                    _selectedLon = result["lon"];
+                                                  });
+                                                }
+                                              },
+                                              child: AbsorbPointer(
+                                                child: TextField(
+                                                  controller: locationController,
+                                                  decoration: InputDecoration(
+                                                    hintText: "Select area from map",
+                                                    prefixIcon: const Icon(Icons.location_on),
+                                                    contentPadding: const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 23,
+                                                    ),
+                                                    filled: true,
+                                                    fillColor: Colors.grey.shade100,
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide.none,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
+
 
                                             const SizedBox(height: 20),
 
@@ -532,7 +604,104 @@ class _PostPageState extends State<PostPage> {
                                                     ],
                                                   ),
                                                   GestureDetector(
-                                                    onTap: () {},
+                                                    onTap: () async {
+                                                      final selected =
+                                                          await showModalBottomSheet<
+                                                              String>(
+                                                        context: context,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        shape:
+                                                            const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.vertical(
+                                                                  top: Radius
+                                                                      .circular(
+                                                                          24)),
+                                                        ),
+                                                        builder: (_) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    16,
+                                                                    12,
+                                                                    16,
+                                                                    24),
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                // drag indicator
+                                                                Container(
+                                                                  width: 40,
+                                                                  height: 4,
+                                                                  margin:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          bottom:
+                                                                              16),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                ),
+
+                                                                const Text(
+                                                                  "Select Animal Type",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(
+                                                                    height: 16),
+
+                                                                Expanded(
+                                                                  child:
+                                                                      ListView(
+                                                                    children:
+                                                                        animalTypes
+                                                                            .map((animal) {
+                                                                      return _AnimalTile(
+                                                                        label:
+                                                                            animal,
+                                                                        isSelected:
+                                                                            selectedAnimal ==
+                                                                                animal,
+                                                                        onTap: () => Navigator.pop(
+                                                                            context,
+                                                                            animal),
+                                                                      );
+                                                                    }).toList(),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+
+                                                      if (selected != null) {
+                                                        setState(() {
+                                                          selectedAnimal =
+                                                              selected;
+                                                          selectedBreed =
+                                                              "Any"; // 🔥 animal değişince breed reset
+                                                        });
+                                                      }
+                                                    },
                                                     child: Row(
                                                       children: [
                                                         Text(
@@ -589,7 +758,119 @@ class _PostPageState extends State<PostPage> {
                                                     ],
                                                   ),
                                                   GestureDetector(
-                                                    onTap: () {},
+                                                    onTap: () async {
+                                                      final breedsMap =
+                                                          await AnimalBreedsLoader
+                                                              .load();
+                                                      final breeds = breedsMap[
+                                                              selectedAnimal] ??
+                                                          [];
+
+                                                      final selected =
+                                                          await showModalBottomSheet<
+                                                              String>(
+                                                        context: context,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        shape:
+                                                            const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.vertical(
+                                                                  top: Radius
+                                                                      .circular(
+                                                                          24)),
+                                                        ),
+                                                        builder: (_) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    16,
+                                                                    12,
+                                                                    16,
+                                                                    24),
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                // drag indicator
+                                                                Container(
+                                                                  width: 40,
+                                                                  height: 4,
+                                                                  margin:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          bottom:
+                                                                              16),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                ),
+
+                                                                const Text(
+                                                                  "Select Breed",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(
+                                                                    height: 16),
+
+                                                                Expanded(
+                                                                  child:
+                                                                      ListView(
+                                                                    children: [
+                                                                      _BreedTile(
+                                                                        label:
+                                                                            "Any",
+                                                                        isSelected:
+                                                                            selectedBreed ==
+                                                                                "Any",
+                                                                        onTap: () => Navigator.pop(
+                                                                            context,
+                                                                            "Any"),
+                                                                      ),
+                                                                      ...breeds.map(
+                                                                          (breed) {
+                                                                        return _BreedTile(
+                                                                          label:
+                                                                              breed,
+                                                                          isSelected:
+                                                                              selectedBreed == breed,
+                                                                          onTap: () => Navigator.pop(
+                                                                              context,
+                                                                              breed),
+                                                                        );
+                                                                      }),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+
+                                                      if (selected != null) {
+                                                        setState(() {
+                                                          selectedBreed =
+                                                              selected;
+                                                        });
+                                                      }
+                                                    },
                                                     child: Row(
                                                       children: [
                                                         Text(
@@ -627,14 +908,16 @@ class _PostPageState extends State<PostPage> {
                                                 OutlinedButton(
                                                   onPressed: () {
                                                     setState(() {
-                                                      selectedPostType = "";
-                                                      selectedAnimal = "";
-                                                      selectedBreed = "";
-                                                      locationController
-                                                          .clear();
+                                                      selectedPostType = "Lost";
+                                                      selectedAnimal = "Any";
+                                                      selectedBreed = "Any";
+                                                      locationController.clear();
                                                       radiusValue = 10;
+                                                      selectedLat = null;
+                                                      selectedLon = null;
                                                     });
                                                   },
+
                                                   style:
                                                       OutlinedButton.styleFrom(
                                                     shape:
@@ -669,6 +952,8 @@ class _PostPageState extends State<PostPage> {
                                                       "radius": radiusValue,
                                                       "animal": selectedAnimal,
                                                       "breed": selectedBreed,
+                                                      "lat": selectedLat,
+                                                      "lon": selectedLon,
                                                     });
                                                   },
                                                   style:
@@ -703,14 +988,39 @@ class _PostPageState extends State<PostPage> {
                               );
                             },
                           );
+
+                          if (result != null) {
+                            final filter = PostFilter(
+                              postType: result["postType"]?.isEmpty == true
+                                  ? null
+                                  : result["postType"],
+                              location: result["location"]?.isEmpty == true
+                                  ? null
+                                  : result["location"],
+                              radiusKm: result["radius"],
+                              animal: result["animal"]?.isEmpty == true
+                                  ? null
+                                  : result["animal"],
+                              breed: result["breed"] == "Any"
+                                  ? null
+                                  : result["breed"],
+                              lat: result["lat"],
+                              lon: result["lon"],
+                            );
+
+                            setState(() {
+                              _currentFilter = filter;
+                            });
+
+                            context.read<PostListCubit>().load(
+                                  newestFirst: _newestFirst,
+                                  filter: filter,
+                                );
+                          }
                         },
-                        icon: const Icon(
-                          Icons.filter_list,
-                          size: 18,
-                        ),
+                        icon: const Icon(Icons.filter_list, size: 18),
                         label: const Text("Filters"),
                         style: ElevatedButton.styleFrom(
-                          // backgroundColor: Colors.grey.shade200,
                           backgroundColor: Colors.white,
                           foregroundColor: AppColors.primary,
                           elevation: 0,
@@ -727,10 +1037,10 @@ class _PostPageState extends State<PostPage> {
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<PostListCubit>().load(
-                      newestFirst: _newestFirst,
-                    );
+                          newestFirst: _newestFirst,
+                          filter: _currentFilter,
+                        );
                   },
-
                   child: BlocBuilder<PostListCubit, PostListState>(
                     builder: (context, state) {
                       if (state is PostListLoading) {
@@ -879,6 +1189,84 @@ class CustomSearchDelegate extends SearchDelegate {
             title: Text(matchQuery[index]),
           );
         },
+      ),
+    );
+  }
+}
+
+class _BreedTile extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _BreedTile({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: isSelected ? Colors.blueAccent.withOpacity(0.12) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          title: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.blueAccent : Colors.black87,
+            ),
+          ),
+          trailing: isSelected
+              ? const Icon(Icons.check, color: Colors.blueAccent)
+              : null,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onTap: onTap,
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimalTile extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _AnimalTile({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: isSelected ? Colors.blueAccent.withOpacity(0.12) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          title: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.blueAccent : Colors.black87,
+            ),
+          ),
+          trailing: isSelected
+              ? const Icon(Icons.check, color: Colors.blueAccent)
+              : null,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onTap: onTap,
+        ),
       ),
     );
   }
