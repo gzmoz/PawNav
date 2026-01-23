@@ -1,9 +1,5 @@
-import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/badge_entity.dart';
-
-import '../../domain/entities/badge_entity.dart';
-import '../../domain/entities/user_rank.dart';
 
 
 class BadgesState {

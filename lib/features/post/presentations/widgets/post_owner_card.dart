@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pawnav/app/theme/colors.dart';
 
 class PostOwnerCard extends StatelessWidget {
   final String name;

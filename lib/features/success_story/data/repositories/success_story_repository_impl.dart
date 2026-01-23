@@ -1,6 +1,4 @@
-import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
 import 'package:pawnav/features/success_story/domain/entities/success_story_detail_entity.dart';
-
 import '../../domain/repositories/success_story_repository.dart';
 import '../datasources/success_story_remote_datasource.dart';
 import '../models/profile_model.dart';

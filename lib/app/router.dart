@@ -1,4 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, ReadContext, RepositoryProvider;
+import 'package:flutter_bloc/flutter_bloc.dart'
+    show BlocProvider, ReadContext, RepositoryProvider;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
 import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
@@ -36,6 +37,10 @@ import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.da
 import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/home/presentations/screens/most_viewed_pets_page.dart';
 import 'package:pawnav/features/home/presentations/screens/recent_activity_page.dart';
+import 'package:pawnav/features/map/data/datasources/map_remote_datasource.dart';
+import 'package:pawnav/features/map/domain/repositories/map_repository.dart';
+import 'package:pawnav/features/map/presentation/cubit/map_cubit.dart';
+import 'package:pawnav/features/map/presentation/screen/MapScreen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
@@ -45,7 +50,6 @@ import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
 import 'package:pawnav/features/post/domain/usecases/is_post_saved.dart';
 import 'package:pawnav/features/post/domain/usecases/toggle_save_post.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
-import 'package:pawnav/features/post/presentations/screens/MapScreen.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/post/presentations/screens/my_post_detail_page.dart';
 import 'package:pawnav/features/post/presentations/screens/post_detail_page.dart';
@@ -59,7 +63,6 @@ import 'package:pawnav/features/success_story/presentation/cubit/write_success_s
 import 'package:pawnav/features/success_story/presentation/screen/success_story_detail_page.dart';
 import 'package:pawnav/features/success_story/presentation/screen/write_success_story_page.dart';
 import 'package:pawnav/features/success_story/view_more/presentation/screens/success_stories_list_page.dart';
-import 'package:pawnav/main.dart';
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -86,10 +89,6 @@ final router = GoRouter(
       path: '/verify_email_screen',
       builder: (context, state) => const VerifyEmailScreen(),
     ),
-    /*GoRoute(
-      path: '/home',
-      builder: (context, state) => const HomeScreen(),
-    ),*/
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -97,10 +96,6 @@ final router = GoRouter(
     GoRoute(
       path: '/menuProfile',
       builder: (context, state) => const MenuProfile(),
-    ),
-    GoRoute(
-      path: '/map',
-      builder: (context, state) => const MapScreen(),
     ),
     GoRoute(
       path: '/post',
@@ -119,13 +114,10 @@ final router = GoRouter(
           Supabase.instance.client,
         );
 
-        //final repository = PostDetailRepositoryImpl(remote);
-
         final repository = PostDetailRepositoryImpl(
           remote,
           Supabase.instance.client,
         );
-
 
         return BlocProvider(
           create: (_) => PostDetailCubit(
@@ -223,9 +215,6 @@ final router = GoRouter(
           Supabase.instance.client,
         );
 
-
-        //final repository = PostDetailRepositoryImpl(remote);
-
         return BlocProvider(
           create: (_) => PostDetailCubit(
             GetPostById(repository),
@@ -234,7 +223,6 @@ final router = GoRouter(
             ToggleSavePost(repository),
             IsPostSaved(repository),
             Supabase.instance.client,
-
           )..loadPost(postId),
           child: DetailPage(postId: postId),
         );
@@ -256,7 +244,6 @@ final router = GoRouter(
         );
       },
     ),
-
     GoRoute(
       path: '/write-success-story/:postId',
       builder: (context, state) {
@@ -287,14 +274,6 @@ final router = GoRouter(
         return HomeScreen(initialIndex: tab);
       },
     ),
-
-    /*GoRoute(
-      path: '/home',
-      builder: (context, state) {
-        final tab = state.extra as int?;
-        return HomeScreen(initialIndex: tab ?? 0);
-      },
-    ),*/
     GoRoute(
       path: '/recent-activity',
       builder: (context, state) {
@@ -307,7 +286,6 @@ final router = GoRouter(
         );
       },
     ),
-
     GoRoute(
       path: '/success-story/:storyId',
       builder: (context, state) {
@@ -327,20 +305,24 @@ final router = GoRouter(
         );
       },
     ),
-
     GoRoute(
       path: '/success-stories',
       builder: (context, state) {
         return const SuccessStoriesListPage();
       },
     ),
-
-
-
-
-
-
-
-
+    GoRoute(
+      path: '/map',
+      builder: (context, state) {
+        return BlocProvider(
+          create: (_) => MapCubit(
+            MapRepositoryImpl(
+              MapRemoteDataSource(Supabase.instance.client),
+            ),
+          ),
+          child: const MapScreen(),
+        );
+      },
+    ),
   ],
 );

@@ -5,8 +5,6 @@ import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_state.dart';
-import 'package:pawnav/features/editPost/domain/entities/edit_post_entity.dart';
-import 'package:pawnav/features/editPost/presentation/cubit/edit_post_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 
 class MyPostsGrid extends StatelessWidget {

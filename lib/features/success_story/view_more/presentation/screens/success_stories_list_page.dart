@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../data/success_stories_list_remote_ds.dart';
-import '../../domain/success_story_filter.dart';
 import '../cubit/success_stories_list_cubit.dart';
 import '../cubit/success_stories_list_state.dart';
 import '../widgets/success_story_filter_chips.dart';

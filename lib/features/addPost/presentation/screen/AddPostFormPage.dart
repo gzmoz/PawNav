@@ -17,11 +17,9 @@ import 'package:pawnav/core/widgets/custom_bottomsheet_select.dart';
 import 'package:pawnav/core/widgets/date_picker_select.dart';
 import 'package:pawnav/core/widgets/photo_picker.dart';
 import 'package:pawnav/core/widgets/photo_source_sheet.dart';
-import 'package:pawnav/features/addPost/data/datasources/state_service_typeahead.dart';
 import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_cubit.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_state.dart';
-import 'package:pawnav/features/addPost/presentation/widget/custom_rounded_input.dart';
 import 'package:pawnav/features/badges/presentation/widget/badge_unlocked_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

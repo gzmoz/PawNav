@@ -76,19 +76,6 @@ class ButtonComponent extends StatelessWidget {
                   suffix!,
                 ],
               ),
-            /*if (prefix != null) ...[
-              //... -> spread operator
-              prefix!,
-              SizedBox(width: width * 0.015),
-            ],
-            Text(
-              buttonText,
-              style: TextStyle(fontSize: width * 0.042, color: textColor),
-            ),
-            if (suffix != null) ...[
-              SizedBox(width: width * 0.015),
-              suffix!,
-            ],*/
           ],
         ),
       ),

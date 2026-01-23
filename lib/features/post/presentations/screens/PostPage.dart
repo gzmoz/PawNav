@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/services/animal_breeds_loader.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
@@ -23,7 +22,6 @@ class _PostPageState extends State<PostPage> {
   PostFilter _currentFilter = PostFilter.empty;
   double? _selectedLat;
   double? _selectedLon;
-
 
   static const List<String> animalTypes = [
     "Any",
@@ -485,42 +483,56 @@ class _PostPageState extends State<PostPage> {
                                             // ),
                                             GestureDetector(
                                               onTap: () async {
-                                                final result = await Navigator.push(
+                                                final result =
+                                                    await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (_) => const SelectLocationScreen(),
+                                                    builder: (_) =>
+                                                        const SelectLocationScreen(),
                                                   ),
                                                 );
 
                                                 if (result != null) {
                                                   setState(() {
-                                                    locationController.text = result["address"];
-                                                    _selectedLat = result["lat"];
-                                                    _selectedLon = result["lon"];
+                                                    locationController.text =
+                                                        result["address"];
+                                                    _selectedLat =
+                                                        result["lat"];
+                                                    _selectedLon =
+                                                        result["lon"];
                                                   });
                                                 }
                                               },
                                               child: AbsorbPointer(
                                                 child: TextField(
-                                                  controller: locationController,
+                                                  controller:
+                                                      locationController,
                                                   decoration: InputDecoration(
-                                                    hintText: "Select area from map",
-                                                    prefixIcon: const Icon(Icons.location_on,color: Colors.grey),
-                                                    contentPadding: const EdgeInsets.symmetric(
+                                                    hintText:
+                                                        "Select area from map",
+                                                    prefixIcon: const Icon(
+                                                        Icons.location_on,
+                                                        color: Colors.grey),
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
                                                       vertical: 12,
                                                       horizontal: 23,
                                                     ),
                                                     filled: true,
-                                                    fillColor: Colors.grey.shade100,
+                                                    fillColor:
+                                                        Colors.grey.shade100,
                                                     border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      borderSide: BorderSide.none,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                      borderSide:
+                                                          BorderSide.none,
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-
 
                                             const SizedBox(height: 20),
 
@@ -554,9 +566,12 @@ class _PostPageState extends State<PostPage> {
                                               min: 1,
                                               max: 100,
                                               activeColor: Colors.blueAccent,
-                                              onChanged: _selectedLat == null ? null : (val) {
-                                                setState(() => radiusValue = val);
-                                              },
+                                              onChanged: _selectedLat == null
+                                                  ? null
+                                                  : (val) {
+                                                      setState(() =>
+                                                          radiusValue = val);
+                                                    },
                                             ),
 
                                             /*Slider(
@@ -922,12 +937,11 @@ class _PostPageState extends State<PostPage> {
                                                       selectedPostType = "Lost";
                                                       selectedAnimal = "Any";
                                                       selectedBreed = "Any";
-                                                      locationController.clear();
+                                                      locationController
+                                                          .clear();
                                                       radiusValue = 10;
-
                                                     });
                                                   },
-
                                                   style:
                                                       OutlinedButton.styleFrom(
                                                     shape:
@@ -1122,7 +1136,8 @@ class _PostPageState extends State<PostPage> {
           onPressed: () {
             context.push('/map');
           },
-          backgroundColor: Colors.transparent, // ÖNEMLİ
+          backgroundColor: Colors.transparent,
+          // ÖNEMLİ
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
@@ -1149,22 +1164,6 @@ class _PostPageState extends State<PostPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
-      /*floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: height * 0.09),
-        child: FloatingActionButton(
-          onPressed: () {
-            context.push('/map');
-          },
-          backgroundColor: AppColors.primary,
-          shape: const CircleBorder(),
-          child: const Icon(
-            Icons.map_outlined,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,*/
     );
   }
 }
@@ -1182,8 +1181,6 @@ class CustomSearchDelegate extends SearchDelegate {
           },
           icon: const Icon(Icons.clear))
     ];
-
-    throw UnimplementedError();
   }
 
   @override

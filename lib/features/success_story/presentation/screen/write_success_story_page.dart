@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pawnav/core/utils/custom_snack.dart';
-import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
-
 import '../cubit/write_success_story_cubit.dart';
 import '../cubit/write_success_story_state.dart';
 import '../widgets/pet_context_card.dart';

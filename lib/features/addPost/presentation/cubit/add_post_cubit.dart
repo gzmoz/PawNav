@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
 import 'package:pawnav/features/addPost/domain/usecases/create_post_usecase.dart';
 import 'package:pawnav/features/addPost/presentation/cubit/add_post_state.dart';
-import 'package:pawnav/features/post/domain/usecases/get_post_by_id.dart';
 
 /*UI’den gelen Post’u alır.
 Doğru sırayla state değiştirir.

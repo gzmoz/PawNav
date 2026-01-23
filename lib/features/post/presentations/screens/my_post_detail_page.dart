@@ -16,8 +16,6 @@ import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
 import 'package:pawnav/features/post/presentations/widgets/section_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
-import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
-import 'package:share_plus/share_plus.dart';
 
 class MyPostDetailPage extends StatefulWidget {
   final String postId;
@@ -47,22 +45,9 @@ class _MyPostDetailPageState extends State<MyPostDetailPage> {
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
-    final double height = screenInfo.size.height;
+    // final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
 
-    String buildShareText(post) {
-      return '''
-      🐾 ${post.name ?? 'Pet'} - ${post.breed}
-      
-      📍 Last seen: ${post.location}
-      🗓️ ${formatDate(post.eventDate)} (${timeAgo(post.eventDate)})
-      
-      ℹ️ ${post.description}
-      
-      🔗 PawNav App
-      Help us reunite!
-      ''';
-    }
 
     return Scaffold(
       backgroundColor: AppColors.white5,

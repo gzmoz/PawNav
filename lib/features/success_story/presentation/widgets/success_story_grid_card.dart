@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../data/models/success_story_model.dart';
 
 class SuccessStoryGridCard extends StatelessWidget {
   final String imageUrl;

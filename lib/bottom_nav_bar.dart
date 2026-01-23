@@ -8,7 +8,6 @@ import 'package:pawnav/features/account/data/datasources/profile_remote_datasour
 import 'package:pawnav/features/account/data/repositories/account_status_repository_impl.dart';
 import 'package:pawnav/features/account/data/repositories/post_repository.dart';
 import 'package:pawnav/features/account/data/repositories/profile_repository_impl.dart';
-import 'package:pawnav/features/account/domain/repositories/profile_repository.dart';
 import 'package:pawnav/features/account/domain/usecases/get_current_profile.dart';
 import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/my_posts_cubit.dart';
@@ -29,17 +28,9 @@ import 'package:pawnav/features/post/data/repositories/post_repository_impl.dart
 import 'package:pawnav/features/post/domain/usecases/get_posts.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
-import 'package:pawnav/features/success_story/data/repositories/success_story_repository_impl.dart';
-import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
 

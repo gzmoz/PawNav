@@ -1,5 +1,4 @@
 import 'package:pawnav/features/account/data/models/post_model.dart';
-import 'package:pawnav/features/post/domain/entities/post.dart';
 
 abstract class SavedPostsState {}
 

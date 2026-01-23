@@ -17,7 +17,7 @@ class TopInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
-    final double height = screenInfo.size.height;
+    // final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
     return Container(
       padding: const EdgeInsets.all(16),
