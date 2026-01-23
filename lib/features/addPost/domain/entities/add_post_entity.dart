@@ -14,6 +14,9 @@ class Post{
   final DateTime eventDate;
   final List<String> images;
   final String postType;
+  final double? lat;
+  final double? lon;
+
 
   Post({
     required this.id,
@@ -28,5 +31,7 @@ class Post{
     required this.eventDate,
     required this.images,
     required this.postType,
+    required this.lat,
+    required this.lon,
   });
 }

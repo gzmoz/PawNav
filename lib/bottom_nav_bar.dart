@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 end: Alignment.bottomRight,
               )
             : null,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Icon(
         icon,

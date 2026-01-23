@@ -27,6 +27,8 @@ class PostRepositoryImpl implements AddPostRepository{
       eventDate: post.eventDate,
       images: post.images,
       postType: post.postType,
+      lat: post.lat,
+      lon: post.lon,
     );
 
     await remoteDataSource.addPost(model);

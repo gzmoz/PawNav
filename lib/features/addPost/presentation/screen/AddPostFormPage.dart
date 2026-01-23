@@ -44,6 +44,9 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
   String selectedGender = "Male";
   String? selectedLocation;
   DateTime? eventDate;
+  double? selectedLat;
+  double? selectedLon;
+
 
   Map<String, List<String>> breedMap = {};
   Map<String, List<String>> colorMap = {};
@@ -306,14 +309,25 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                                     final result =
                                         await context.push('/select-location');
 
-                                    if (result != null &&
+                                    if (result != null && result is Map<String, dynamic>) {
+                                      setState(() {
+                                        selectedLocation = result['address'];
+                                        selectedLat = result['lat'];
+                                        selectedLon = result['lon'];
+
+                                        locationController.text = result['address'];
+                                      });
+                                    }
+
+
+                                    /*if (result != null &&
                                         result is Map<String, dynamic>) {
                                       setState(() {
                                         selectedLocation = result['address'];
                                         locationController.text =
                                             result['address'];
                                       });
-                                    }
+                                    }*/
                                   },
 
                                   // map'ten seçtireceksen önerilir
@@ -724,6 +738,8 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
       name: normalizedName,
       description: description,
       location: location,
+      lat: selectedLat,
+      lon: selectedLon,
       eventDate: eventDate,
       images: uploadedUrls,
       postType: postType,

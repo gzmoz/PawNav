@@ -1,7 +1,7 @@
 import 'package:pawnav/features/addPost/domain/entities/add_post_entity.dart';
 
 //PostModel, Domain’deki Post nesnesini Supabase’in anlayacağı forma çeviren adapter
-class PostModel extends Post{
+class PostModel extends Post {
   PostModel({
     required super.id,
     required super.userId,
@@ -15,12 +15,15 @@ class PostModel extends Post{
     required super.eventDate,
     required super.images,
     required super.postType,
+    required super.lat,
+    required super.lon,
   });
 
   //bir nesneyi JSON formatına dönüştürmek için kullanılır.
   //dynamic -> Herhangi bir tür olabilir. Type check derleme zamanında değil, çalışma zamanında yapılır.
-  Map<String, dynamic> toJson(){ //Bu metot, Supabase’e insert atarken kullanacağın Map (JSON) veriyi hazırlar.
-    return{
+  Map<String, dynamic> toJson() {
+    //Bu metot, Supabase’e insert atarken kullanacağın Map (JSON) veriyi hazırlar.
+    return {
       "user_id": userId,
       "species": species,
       "breed": breed,
@@ -29,9 +32,13 @@ class PostModel extends Post{
       "name": name,
       "description": description,
       "location": location,
-      "event_date": eventDate.toIso8601String(), //ISO string, tarih–saat bilgisinin dünyada standart kabul edilen tek bir metin (String) formatında yazılmasıdır.
+      "event_date": eventDate.toIso8601String(),
+      //ISO string, tarih–saat bilgisinin dünyada standart kabul edilen tek bir metin (String) formatında yazılmasıdır.
       "images": images,
       "post_type": postType,
+      "lat": lat,
+      "lon": lon,
+
     };
   }
 }

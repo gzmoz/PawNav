@@ -252,7 +252,7 @@ class _PostPageState extends State<PostPage> {
                         label: const Text("Sort"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
+                          foregroundColor: Colors.black54,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -298,9 +298,9 @@ class _PostPageState extends State<PostPage> {
                               String selectedBreed =
                                   _currentFilter.breed ?? "Any";
 
-                              double? selectedLat = _currentFilter.lat;
+                              /*double? selectedLat = _currentFilter.lat;
                               double? selectedLon = _currentFilter.lon;
-
+*/
 
                               final TextEditingController locationController =
                                   TextEditingController(
@@ -349,6 +349,7 @@ class _PostPageState extends State<PostPage> {
                                                   style: TextStyle(
                                                     fontSize: width * 0.05,
                                                     fontWeight: FontWeight.w700,
+                                                    color: Colors.black54,
                                                   ),
                                                 ),
                                                 IconButton(
@@ -504,7 +505,7 @@ class _PostPageState extends State<PostPage> {
                                                   controller: locationController,
                                                   decoration: InputDecoration(
                                                     hintText: "Select area from map",
-                                                    prefixIcon: const Icon(Icons.location_on),
+                                                    prefixIcon: const Icon(Icons.location_on,color: Colors.grey),
                                                     contentPadding: const EdgeInsets.symmetric(
                                                       vertical: 12,
                                                       horizontal: 23,
@@ -553,12 +554,22 @@ class _PostPageState extends State<PostPage> {
                                               min: 1,
                                               max: 100,
                                               activeColor: Colors.blueAccent,
+                                              onChanged: _selectedLat == null ? null : (val) {
+                                                setState(() => radiusValue = val);
+                                              },
+                                            ),
+
+                                            /*Slider(
+                                              value: radiusValue,
+                                              min: 1,
+                                              max: 100,
+                                              activeColor: Colors.blueAccent,
                                               onChanged: (val) {
                                                 setState(() {
                                                   radiusValue = val;
                                                 });
                                               },
-                                            ),
+                                            ),*/
 
                                             const SizedBox(height: 10),
 
@@ -913,8 +924,7 @@ class _PostPageState extends State<PostPage> {
                                                       selectedBreed = "Any";
                                                       locationController.clear();
                                                       radiusValue = 10;
-                                                      selectedLat = null;
-                                                      selectedLon = null;
+
                                                     });
                                                   },
 
@@ -952,8 +962,8 @@ class _PostPageState extends State<PostPage> {
                                                       "radius": radiusValue,
                                                       "animal": selectedAnimal,
                                                       "breed": selectedBreed,
-                                                      "lat": selectedLat,
-                                                      "lon": selectedLon,
+                                                      "lat": _selectedLat,
+                                                      "lon": _selectedLon,
                                                     });
                                                   },
                                                   style:
@@ -1022,7 +1032,7 @@ class _PostPageState extends State<PostPage> {
                         label: const Text("Filters"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
+                          foregroundColor: Colors.black54,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -1107,6 +1117,40 @@ class _PostPageState extends State<PostPage> {
         ),
       ),
       floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: height * 0.1),
+        child: FloatingActionButton(
+          onPressed: () {
+            context.push('/map');
+          },
+          backgroundColor: Colors.transparent, // ÖNEMLİ
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Container(
+            width: 56, // FAB standard size
+            height: 56,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF233E96),
+                  Color(0xFF3C59C7),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(
+              Icons.map_outlined,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+      /*floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: height * 0.09),
         child: FloatingActionButton(
           onPressed: () {
@@ -1120,7 +1164,7 @@ class _PostPageState extends State<PostPage> {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,*/
     );
   }
 }

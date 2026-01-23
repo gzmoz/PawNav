@@ -6,9 +6,3 @@ abstract class PostRepository {
     PostFilter filter = PostFilter.empty,
   });
 }
-
-
-
-/*abstract class PostRepository {
-  Future<List<Post>> getPosts();
-}*/
