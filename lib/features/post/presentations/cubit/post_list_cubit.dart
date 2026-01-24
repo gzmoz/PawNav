@@ -31,4 +31,3 @@ class PostListCubit extends Cubit<PostListState> {
   }
 }
 
-

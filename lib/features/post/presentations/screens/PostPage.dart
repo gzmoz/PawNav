@@ -39,9 +39,9 @@ class _PostPageState extends State<PostPage> {
     super.initState();
 
     context.read<PostListCubit>().load(
-          newestFirst: _newestFirst,
-          filter: _currentFilter,
-        );
+      newestFirst: _newestFirst,
+      filter: _currentFilter,
+    );
   }
 
   @override
@@ -89,7 +89,7 @@ class _PostPageState extends State<PostPage> {
             children: [
               Padding(
                 padding:
-                    EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
+                EdgeInsets.symmetric(horizontal: width * 0.07, vertical: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -118,13 +118,13 @@ class _PostPageState extends State<PostPage> {
                             ),
                             builder: (BuildContext context) {
                               String selectedOption =
-                                  _newestFirst ? "Newest" : "Oldest";
+                              _newestFirst ? "Newest" : "Oldest";
 
                               return Padding(
                                 padding: EdgeInsets.only(
                                   bottom:
-                                      MediaQuery.of(context).viewInsets.bottom +
-                                          50,
+                                  MediaQuery.of(context).viewInsets.bottom +
+                                      50,
                                   top: 10,
                                 ),
                                 child: StatefulBuilder(
@@ -135,7 +135,7 @@ class _PostPageState extends State<PostPage> {
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Center(
                                             child: Container(
@@ -144,7 +144,7 @@ class _PostPageState extends State<PostPage> {
                                               decoration: BoxDecoration(
                                                 color: Colors.grey.shade400,
                                                 borderRadius:
-                                                    BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                               ),
                                             ),
                                           ),
@@ -152,7 +152,7 @@ class _PostPageState extends State<PostPage> {
 
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "Sort by Date",
@@ -173,26 +173,26 @@ class _PostPageState extends State<PostPage> {
                                           // Newest
                                           RadioListTile<String>(
                                             title:
-                                                const Text("Newest to Oldest"),
+                                            const Text("Newest to Oldest"),
                                             value: "Newest",
                                             activeColor: Colors.blueAccent,
                                             groupValue: selectedOption,
                                             onChanged: (value) {
                                               setState(() =>
-                                                  selectedOption = value!);
+                                              selectedOption = value!);
                                             },
                                           ),
 
                                           // Oldest
                                           RadioListTile<String>(
                                             title:
-                                                const Text("Oldest to Newest"),
+                                            const Text("Oldest to Newest"),
                                             value: "Oldest",
                                             groupValue: selectedOption,
                                             activeColor: Colors.blueAccent,
                                             onChanged: (value) {
                                               setState(() =>
-                                                  selectedOption = value!);
+                                              selectedOption = value!);
                                             },
                                           ),
 
@@ -206,10 +206,10 @@ class _PostPageState extends State<PostPage> {
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
-                                                    AppColors.primary,
+                                                AppColors.primary,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(30),
+                                                  BorderRadius.circular(30),
                                                 ),
                                                 minimumSize: Size(
                                                     width * 0.4, height * 0.05),
@@ -241,9 +241,9 @@ class _PostPageState extends State<PostPage> {
 
                             //  Cubit çağrılıyor
                             context.read<PostListCubit>().load(
-                                  newestFirst: newest,
-                                  filter: _currentFilter,
-                                );
+                              newestFirst: newest,
+                              filter: _currentFilter,
+                            );
                           }
                         },
                         icon: const Icon(Icons.swap_vert, size: 18),
@@ -273,7 +273,7 @@ class _PostPageState extends State<PostPage> {
                       child: ElevatedButton.icon(
                         onPressed: () async {
                           final result =
-                              await showModalBottomSheet<Map<String, dynamic>>(
+                          await showModalBottomSheet<Map<String, dynamic>>(
                             context: context,
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
@@ -296,20 +296,19 @@ class _PostPageState extends State<PostPage> {
                               String selectedBreed =
                                   _currentFilter.breed ?? "Any";
 
-                              /*double? selectedLat = _currentFilter.lat;
+                              double? selectedLat = _currentFilter.lat;
                               double? selectedLon = _currentFilter.lon;
-*/
 
                               final TextEditingController locationController =
-                                  TextEditingController(
+                              TextEditingController(
                                 text: _currentFilter.location ?? '',
                               );
 
                               return Padding(
                                 padding: EdgeInsets.only(
                                   bottom:
-                                      MediaQuery.of(context).viewInsets.bottom +
-                                          50,
+                                  MediaQuery.of(context).viewInsets.bottom +
+                                      50,
                                   top: 10,
                                 ),
                                 child: StatefulBuilder(
@@ -320,7 +319,7 @@ class _PostPageState extends State<PostPage> {
                                       child: SingleChildScrollView(
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             //drag indicator
@@ -331,7 +330,7 @@ class _PostPageState extends State<PostPage> {
                                                 decoration: BoxDecoration(
                                                   color: Colors.grey.shade400,
                                                   borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  BorderRadius.circular(12),
                                                 ),
                                               ),
                                             ),
@@ -339,8 +338,8 @@ class _PostPageState extends State<PostPage> {
 
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Filters",
@@ -413,23 +412,23 @@ class _PostPageState extends State<PostPage> {
                                                         color: isSelected
                                                             ? Colors.blueAccent
                                                             : const Color(
-                                                                0xFFF3F4F6),
+                                                            0xFFF3F4F6),
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(30),
+                                                        BorderRadius
+                                                            .circular(30),
                                                         boxShadow: isSelected
                                                             ? [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .blue
-                                                                      .withOpacity(
-                                                                          0.25),
-                                                                  blurRadius: 6,
-                                                                  offset:
-                                                                      const Offset(
-                                                                          0, 2),
-                                                                )
-                                                              ]
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .blue
+                                                                .withOpacity(
+                                                                0.25),
+                                                            blurRadius: 6,
+                                                            offset:
+                                                            const Offset(
+                                                                0, 2),
+                                                          )
+                                                        ]
                                                             : [],
                                                       ),
                                                       child: Text(
@@ -439,7 +438,7 @@ class _PostPageState extends State<PostPage> {
                                                               ? Colors.white
                                                               : Colors.black87,
                                                           fontWeight:
-                                                              FontWeight.w600,
+                                                          FontWeight.w600,
                                                           fontSize: 15,
                                                         ),
                                                       ),
@@ -484,50 +483,59 @@ class _PostPageState extends State<PostPage> {
                                             GestureDetector(
                                               onTap: () async {
                                                 final result =
-                                                    await Navigator.push(
+                                                await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (_) =>
-                                                        const SelectLocationScreen(),
+                                                    const SelectLocationScreen(),
                                                   ),
                                                 );
 
                                                 if (result != null) {
                                                   setState(() {
-                                                    locationController.text =
-                                                        result["address"];
-                                                    _selectedLat =
-                                                        result["lat"];
-                                                    _selectedLon =
-                                                        result["lon"];
+                                                    locationController.text = result["address"];
+                                                    selectedLat = result["lat"];
+                                                    selectedLon = result["lon"];
                                                   });
                                                 }
+
+
+                                                /*if (result != null) {
+                                                  setState(() {
+                                                    locationController.text =
+                                                    result["address"];
+                                                    _selectedLat =
+                                                    result["lat"];
+                                                    _selectedLon =
+                                                    result["lon"];
+                                                  });
+                                                }*/
                                               },
                                               child: AbsorbPointer(
                                                 child: TextField(
                                                   controller:
-                                                      locationController,
+                                                  locationController,
                                                   decoration: InputDecoration(
                                                     hintText:
-                                                        "Select area from map",
+                                                    "Select area from map",
                                                     prefixIcon: const Icon(
                                                         Icons.location_on,
                                                         color: Colors.grey),
                                                     contentPadding:
-                                                        const EdgeInsets
-                                                            .symmetric(
+                                                    const EdgeInsets
+                                                        .symmetric(
                                                       vertical: 12,
                                                       horizontal: 23,
                                                     ),
                                                     filled: true,
                                                     fillColor:
-                                                        Colors.grey.shade100,
+                                                    Colors.grey.shade100,
                                                     border: OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
+                                                      BorderRadius.circular(
+                                                          12),
                                                       borderSide:
-                                                          BorderSide.none,
+                                                      BorderSide.none,
                                                     ),
                                                   ),
                                                 ),
@@ -544,19 +552,19 @@ class _PostPageState extends State<PostPage> {
                                                     style: TextStyle(
                                                       fontSize: width * 0.042,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Colors.black,
                                                     ),
                                                   ),
                                                   TextSpan(
                                                     text:
-                                                        '${radiusValue.toStringAsFixed(0)} km',
+                                                    '${radiusValue.toStringAsFixed(0)} km',
                                                     style: TextStyle(
                                                         fontSize: width * 0.042,
                                                         fontWeight:
-                                                            FontWeight.w600,
+                                                        FontWeight.w600,
                                                         color:
-                                                            Colors.blueAccent),
+                                                        Colors.blueAccent),
                                                   ),
                                                 ],
                                               ),
@@ -566,12 +574,12 @@ class _PostPageState extends State<PostPage> {
                                               min: 1,
                                               max: 100,
                                               activeColor: Colors.blueAccent,
-                                              onChanged: _selectedLat == null
+                                              onChanged:selectedLat == null
                                                   ? null
                                                   : (val) {
-                                                      setState(() =>
-                                                          radiusValue = val);
-                                                    },
+                                                setState(() =>
+                                                radiusValue = val);
+                                              },
                                             ),
 
                                             /*Slider(
@@ -601,20 +609,20 @@ class _PostPageState extends State<PostPage> {
                                             //animal type
                                             Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 14,
-                                                      vertical: 14),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 14,
+                                                  vertical: 14),
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       color:
-                                                          Colors.grey.shade300),
+                                                      Colors.grey.shade300),
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
+                                                  BorderRadius.circular(
+                                                      12)),
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                MainAxisAlignment
+                                                    .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -625,69 +633,69 @@ class _PostPageState extends State<PostPage> {
                                                         "Animal Type",
                                                         style: TextStyle(
                                                             fontSize:
-                                                                width * 0.035),
+                                                            width * 0.035),
                                                       ),
                                                     ],
                                                   ),
                                                   GestureDetector(
                                                     onTap: () async {
                                                       final selected =
-                                                          await showModalBottomSheet<
-                                                              String>(
+                                                      await showModalBottomSheet<
+                                                          String>(
                                                         context: context,
                                                         backgroundColor:
-                                                            Colors.white,
+                                                        Colors.white,
                                                         shape:
-                                                            const RoundedRectangleBorder(
+                                                        const RoundedRectangleBorder(
                                                           borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          24)),
+                                                          BorderRadius.vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                  24)),
                                                         ),
                                                         builder: (_) {
                                                           return Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                    .fromLTRB(
-                                                                    16,
-                                                                    12,
-                                                                    16,
-                                                                    24),
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                16,
+                                                                12,
+                                                                16,
+                                                                24),
                                                             child: Column(
                                                               mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
+                                                              MainAxisSize
+                                                                  .min,
                                                               children: [
                                                                 // drag indicator
                                                                 Container(
                                                                   width: 40,
                                                                   height: 4,
                                                                   margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          bottom:
-                                                                              16),
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                      16),
                                                                   decoration:
-                                                                      BoxDecoration(
+                                                                  BoxDecoration(
                                                                     color: Colors
                                                                         .grey
                                                                         .shade300,
                                                                     borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
+                                                                    BorderRadius.circular(
+                                                                        10),
                                                                   ),
                                                                 ),
 
                                                                 const Text(
                                                                   "Select Animal Type",
                                                                   style:
-                                                                      TextStyle(
+                                                                  TextStyle(
                                                                     fontSize:
-                                                                        18,
+                                                                    18,
                                                                     fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
+                                                                    FontWeight
+                                                                        .w700,
                                                                   ),
                                                                 ),
 
@@ -696,16 +704,16 @@ class _PostPageState extends State<PostPage> {
 
                                                                 Expanded(
                                                                   child:
-                                                                      ListView(
+                                                                  ListView(
                                                                     children:
-                                                                        animalTypes
-                                                                            .map((animal) {
+                                                                    animalTypes
+                                                                        .map((animal) {
                                                                       return _AnimalTile(
                                                                         label:
-                                                                            animal,
+                                                                        animal,
                                                                         isSelected:
-                                                                            selectedAnimal ==
-                                                                                animal,
+                                                                        selectedAnimal ==
+                                                                            animal,
                                                                         onTap: () => Navigator.pop(
                                                                             context,
                                                                             animal),
@@ -724,7 +732,7 @@ class _PostPageState extends State<PostPage> {
                                                           selectedAnimal =
                                                               selected;
                                                           selectedBreed =
-                                                              "Any"; // 🔥 animal değişince breed reset
+                                                          "Any"; // 🔥 animal değişince breed reset
                                                         });
                                                       }
                                                     },
@@ -733,9 +741,9 @@ class _PostPageState extends State<PostPage> {
                                                         Text(
                                                           selectedAnimal,
                                                           style:
-                                                              const TextStyle(
+                                                          const TextStyle(
                                                             fontWeight:
-                                                                FontWeight.w500,
+                                                            FontWeight.w500,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -755,20 +763,20 @@ class _PostPageState extends State<PostPage> {
                                             //BREED
                                             Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 14,
-                                                      vertical: 14),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 14,
+                                                  vertical: 14),
                                               decoration: BoxDecoration(
                                                   border: Border.all(
                                                       color:
-                                                          Colors.grey.shade300),
+                                                      Colors.grey.shade300),
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
+                                                  BorderRadius.circular(
+                                                      12)),
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                MainAxisAlignment
+                                                    .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -779,76 +787,76 @@ class _PostPageState extends State<PostPage> {
                                                         "Breed",
                                                         style: TextStyle(
                                                             fontSize:
-                                                                width * 0.035),
+                                                            width * 0.035),
                                                       ),
                                                     ],
                                                   ),
                                                   GestureDetector(
                                                     onTap: () async {
                                                       final breedsMap =
-                                                          await AnimalBreedsLoader
-                                                              .load();
+                                                      await AnimalBreedsLoader
+                                                          .load();
                                                       final breeds = breedsMap[
-                                                              selectedAnimal] ??
+                                                      selectedAnimal] ??
                                                           [];
 
                                                       final selected =
-                                                          await showModalBottomSheet<
-                                                              String>(
+                                                      await showModalBottomSheet<
+                                                          String>(
                                                         context: context,
                                                         backgroundColor:
-                                                            Colors.white,
+                                                        Colors.white,
                                                         shape:
-                                                            const RoundedRectangleBorder(
+                                                        const RoundedRectangleBorder(
                                                           borderRadius:
-                                                              BorderRadius.vertical(
-                                                                  top: Radius
-                                                                      .circular(
-                                                                          24)),
+                                                          BorderRadius.vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                  24)),
                                                         ),
                                                         builder: (_) {
                                                           return Padding(
                                                             padding:
-                                                                const EdgeInsets
-                                                                    .fromLTRB(
-                                                                    16,
-                                                                    12,
-                                                                    16,
-                                                                    24),
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                16,
+                                                                12,
+                                                                16,
+                                                                24),
                                                             child: Column(
                                                               mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
+                                                              MainAxisSize
+                                                                  .min,
                                                               children: [
                                                                 // drag indicator
                                                                 Container(
                                                                   width: 40,
                                                                   height: 4,
                                                                   margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          bottom:
-                                                                              16),
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                      16),
                                                                   decoration:
-                                                                      BoxDecoration(
+                                                                  BoxDecoration(
                                                                     color: Colors
                                                                         .grey
                                                                         .shade300,
                                                                     borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
+                                                                    BorderRadius.circular(
+                                                                        10),
                                                                   ),
                                                                 ),
 
                                                                 const Text(
                                                                   "Select Breed",
                                                                   style:
-                                                                      TextStyle(
+                                                                  TextStyle(
                                                                     fontSize:
-                                                                        18,
+                                                                    18,
                                                                     fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
+                                                                    FontWeight
+                                                                        .w700,
                                                                   ),
                                                                 ),
 
@@ -857,30 +865,30 @@ class _PostPageState extends State<PostPage> {
 
                                                                 Expanded(
                                                                   child:
-                                                                      ListView(
+                                                                  ListView(
                                                                     children: [
                                                                       _BreedTile(
                                                                         label:
-                                                                            "Any",
+                                                                        "Any",
                                                                         isSelected:
-                                                                            selectedBreed ==
-                                                                                "Any",
+                                                                        selectedBreed ==
+                                                                            "Any",
                                                                         onTap: () => Navigator.pop(
                                                                             context,
                                                                             "Any"),
                                                                       ),
                                                                       ...breeds.map(
-                                                                          (breed) {
-                                                                        return _BreedTile(
-                                                                          label:
+                                                                              (breed) {
+                                                                            return _BreedTile(
+                                                                              label:
                                                                               breed,
-                                                                          isSelected:
+                                                                              isSelected:
                                                                               selectedBreed == breed,
-                                                                          onTap: () => Navigator.pop(
-                                                                              context,
-                                                                              breed),
-                                                                        );
-                                                                      }),
+                                                                              onTap: () => Navigator.pop(
+                                                                                  context,
+                                                                                  breed),
+                                                                            );
+                                                                          }),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -902,9 +910,9 @@ class _PostPageState extends State<PostPage> {
                                                         Text(
                                                           selectedBreed,
                                                           style:
-                                                              const TextStyle(
+                                                          const TextStyle(
                                                             fontWeight:
-                                                                FontWeight.w500,
+                                                            FontWeight.w500,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -929,7 +937,7 @@ class _PostPageState extends State<PostPage> {
                                             //bottom buttons
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 OutlinedButton(
                                                   onPressed: () {
@@ -943,16 +951,16 @@ class _PostPageState extends State<PostPage> {
                                                     });
                                                   },
                                                   style:
-                                                      OutlinedButton.styleFrom(
+                                                  OutlinedButton.styleFrom(
                                                     shape:
-                                                        RoundedRectangleBorder(
+                                                    RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              30),
+                                                      BorderRadius.circular(
+                                                          30),
                                                     ),
                                                     side: const BorderSide(
                                                         color:
-                                                            AppColors.primary),
+                                                        AppColors.primary),
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 24,
@@ -962,33 +970,33 @@ class _PostPageState extends State<PostPage> {
                                                     "Reset Filters",
                                                     style: TextStyle(
                                                         color:
-                                                            AppColors.primary),
+                                                        AppColors.primary),
                                                   ),
                                                 ),
                                                 ElevatedButton(
                                                   onPressed: () {
                                                     context.pop({
                                                       "postType":
-                                                          selectedPostType,
+                                                      selectedPostType,
                                                       "location":
-                                                          locationController
-                                                              .text,
+                                                      locationController
+                                                          .text,
                                                       "radius": radiusValue,
                                                       "animal": selectedAnimal,
                                                       "breed": selectedBreed,
-                                                      "lat": _selectedLat,
-                                                      "lon": _selectedLon,
+                                                      "lat": selectedLat,
+                                                      "lon": selectedLon,
                                                     });
                                                   },
                                                   style:
-                                                      ElevatedButton.styleFrom(
+                                                  ElevatedButton.styleFrom(
                                                     backgroundColor:
-                                                        AppColors.primary,
+                                                    AppColors.primary,
                                                     shape:
-                                                        RoundedRectangleBorder(
+                                                    RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              30),
+                                                      BorderRadius.circular(
+                                                          30),
                                                     ),
                                                     padding: const EdgeInsets
                                                         .symmetric(
@@ -1015,6 +1023,22 @@ class _PostPageState extends State<PostPage> {
 
                           if (result != null) {
                             final filter = PostFilter(
+                              postType: result["postType"],
+                              location: result["location"]?.isEmpty == true
+                                  ? null
+                                  : result["location"],
+                              radiusKm: result["radius"],
+                              animal: result["animal"] == "Any"
+                                  ? null
+                                  : result["animal"],
+                              breed: result["breed"] == "Any"
+                                  ? null
+                                  : result["breed"],
+                              lat: result["lat"],
+                              lon: result["lon"],
+                            );
+
+                            /*final filter = PostFilter(
                               postType: result["postType"]?.isEmpty == true
                                   ? null
                                   : result["postType"],
@@ -1030,16 +1054,16 @@ class _PostPageState extends State<PostPage> {
                                   : result["breed"],
                               lat: result["lat"],
                               lon: result["lon"],
-                            );
+                            );*/
 
                             setState(() {
                               _currentFilter = filter;
                             });
 
                             context.read<PostListCubit>().load(
-                                  newestFirst: _newestFirst,
-                                  filter: filter,
-                                );
+                              newestFirst: _newestFirst,
+                              filter: filter,
+                            );
                           }
                         },
                         icon: const Icon(Icons.filter_list, size: 18),
@@ -1061,9 +1085,9 @@ class _PostPageState extends State<PostPage> {
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<PostListCubit>().load(
-                          newestFirst: _newestFirst,
-                          filter: _currentFilter,
-                        );
+                      newestFirst: _newestFirst,
+                      filter: _currentFilter,
+                    );
                   },
                   child: BlocBuilder<PostListCubit, PostListState>(
                     builder: (context, state) {

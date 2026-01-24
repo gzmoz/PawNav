@@ -22,8 +22,14 @@ class PostRemoteDataSource {
           'user_lat': filter.lat,
           'user_lon': filter.lon,
           'radius_km': filter.radiusKm,
+          'post_type_filter': filter.postType,
+          'species_filter': filter.animal,
+          'breed_filter': filter.breed,
         },
       );
+
+
+
 
       return (res as List).cast<Map<String, dynamic>>();
     }
@@ -74,6 +80,14 @@ class PostRemoteDataSource {
     return (res as List).cast<Map<String, dynamic>>();
   }
 }
+/*final res = await client.rpc(
+        'get_posts_within_radius',
+        params: {
+          'user_lat': filter.lat,
+          'user_lon': filter.lon,
+          'radius_km': filter.radiusKm,
+        },
+      );*/
 
 
 

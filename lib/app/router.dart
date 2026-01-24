@@ -142,7 +142,7 @@ final router = GoRouter(
         );
 
         final repository =
-            EditPostRepositoryImpl(remote, Supabase.instance.client);
+        EditPostRepositoryImpl(remote, Supabase.instance.client);
 
         return BlocProvider(
           create: (_) => EditPostCubit(
