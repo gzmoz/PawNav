@@ -9,6 +9,7 @@ import 'package:pawnav/core/services/animal_breeds_loader.dart';
 import 'package:pawnav/core/services/location_service.dart';
 import 'package:pawnav/core/services/permission_service.dart';
 import 'package:pawnav/features/badges/presentation/widget/badge_unlocked_modal.dart';
+import 'package:pawnav/features/map/domain/entities/map_filter.dart';
 import 'package:pawnav/features/map/presentation/widgets/create_marker_icon.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -57,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
 
   List<dynamic> placeResults = [];
 
-  String _selectedPostType = "Lost";
+  String _selectedPostType = "Any";
   double _radiusKm = 10;
   String _selectedAnimal = "Any";
   String _selectedBreed = "Any";
@@ -202,14 +203,14 @@ class _MapScreenState extends State<MapScreen> {
       await handleExplorerBadge(context);
 
       context.read<MapCubit>().loadNearby(
-            lat: _initialCenter.latitude,
-            lon: _initialCenter.longitude,
-            radiusKm: _radiusKm,
-            // TODO: MapCubit'in loadNearby'sine filter parametresi eklediysen burada gönder.
-            // postType: _selectedPostType,
-            // animal: _selectedAnimal,
-            // breed: _selectedBreed == "Any" ? null : _selectedBreed,
-          );
+        lat: _initialCenter.latitude,
+        lon: _initialCenter.longitude,
+        radiusKm: _radiusKm,
+        // TODO: MapCubit'in loadNearby'sine filter parametresi eklediysen burada gönder.
+        // postType: _selectedPostType,
+        // animal: _selectedAnimal,
+        // breed: _selectedBreed == "Any" ? null : _selectedBreed,
+      );
     });
 
     _initMarker();
@@ -231,19 +232,37 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  LatLng? _lastFetchCenter;
+
   void _reloadPostsFromCenter() {
     final center = _cameraTarget ?? selectedPoint ?? _initialCenter;
 
+    if (_lastFetchCenter != null) {
+      final distance = Geolocator.distanceBetween(
+        _lastFetchCenter!.latitude,
+        _lastFetchCenter!.longitude,
+        center.latitude,
+        center.longitude,
+      );
+
+      // 300 metreden az hareket → reload yok
+      if (distance < 300) return;
+    }
+
+    _lastFetchCenter = center;
+
     context.read<MapCubit>().loadNearby(
-          lat: center.latitude,
-          lon: center.longitude,
-          radiusKm: _radiusKm,
-          // TODO: MapCubit'e filter desteği eklediysen buraya ekle
-          // postType: _selectedPostType,
-          // animal: _selectedAnimal,
-          // breed: _selectedBreed == "Any" ? null : _selectedBreed,
-        );
+      lat: center.latitude,
+      lon: center.longitude,
+      radiusKm: _radiusKm,
+      filter: MapFilter(
+        postType: _selectedPostType == "Any" ? null : _selectedPostType,
+        animal: _selectedAnimal == "Any" ? null : _selectedAnimal,
+        breed: _selectedBreed == "Any" ? null : _selectedBreed,
+      ),
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +308,7 @@ class _MapScreenState extends State<MapScreen> {
                 child: GoogleMap(
                   markers: cubitMarkers,
                   padding:
-                      const EdgeInsets.only(bottom: 150, right: 10, left: 10),
+                  const EdgeInsets.only(bottom: 150, right: 10, left: 10),
                   initialCameraPosition: CameraPosition(
                     target: _initialCenter,
                     zoom: 12,
@@ -303,7 +322,7 @@ class _MapScreenState extends State<MapScreen> {
                     _cameraTarget = position.target;
                   },
                   onCameraIdle: () {
-                    _reloadPostsFromCenter();
+                    //_reloadPostsFromCenter();
                   },
                 ),
               );
@@ -320,7 +339,7 @@ class _MapScreenState extends State<MapScreen> {
                   child: TextField(
                     onChanged: (value) async {
                       final results =
-                          await LocationService.placeAutoComplete(value);
+                      await LocationService.placeAutoComplete(value);
                       setState(() => placeResults = results);
                     },
                     controller: _searchController,
@@ -389,13 +408,13 @@ class _MapScreenState extends State<MapScreen> {
 
                     return ListTile(
                       leading:
-                          const Icon(Icons.location_on, color: Colors.grey),
+                      const Icon(Icons.location_on, color: Colors.grey),
                       title: Text(item["description"]),
                       onTap: () async {
                         FocusScope.of(context).unfocus();
 
                         final coords =
-                            await LocationService.placeDetailsToLatLng(
+                        await LocationService.placeDetailsToLatLng(
                           item["place_id"],
                         );
                         if (coords == null) return;
@@ -546,7 +565,7 @@ class _MapScreenState extends State<MapScreen> {
             builder: (context, setModalState) {
               return Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -626,13 +645,13 @@ class _MapScreenState extends State<MapScreen> {
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: isSelected
                                       ? [
-                                          BoxShadow(
-                                            color:
-                                                Colors.blue.withOpacity(0.25),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 2),
-                                          )
-                                        ]
+                                    BoxShadow(
+                                      color:
+                                      Colors.blue.withOpacity(0.25),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    )
+                                  ]
                                       : [],
                                 ),
                                 child: Text(
@@ -715,10 +734,11 @@ class _MapScreenState extends State<MapScreen> {
                           OutlinedButton(
                             onPressed: () {
                               setModalState(() {
-                                selectedPostType = "Lost";
-                                selectedAnimal = "Dog";
+                                selectedPostType = "Any";
+                                selectedAnimal = "Any";
                                 selectedBreed = "Any";
                                 radiusValue = 10;
+
                               });
                             },
                             style: OutlinedButton.styleFrom(
@@ -738,19 +758,19 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-
                               setState(() {
                                 _selectedPostType = selectedPostType;
                                 _radiusKm = radiusValue;
                                 _selectedAnimal = selectedAnimal;
                                 _selectedBreed = selectedBreed;
+
+                                _lastFetchCenter = null;
                               });
 
                               sheetContext.pop();
-
-
                               _reloadPostsFromCenter();
                             },
+
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
@@ -1118,5 +1138,4 @@ class _BreedTile extends StatelessWidget {
     );
   }
 }
-
 

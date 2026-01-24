@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:pawnav/features/map/domain/entities/map_filter.dart';
 import 'package:pawnav/features/map/domain/entities/map_post.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -10,15 +12,23 @@ class MapRemoteDataSource {
     required double lat,
     required double lon,
     required double radiusKm,
+    MapFilter filter = MapFilter.empty,
   }) async {
     final res = await client.rpc(
-      'get_posts_within_radius',
+      'get_map_posts_within_radius',
       params: {
         'user_lat': lat,
         'user_lon': lon,
         'radius_km': radiusKm,
+        'post_type_filter': filter.postType,
+        'animal_filter': filter.animal,
+        'breed_filter': filter.breed,
       },
     );
+
+    debugPrint('MAP RPC RAW RESPONSE: $res');
+
+
 
     final List data = res as List;
 
