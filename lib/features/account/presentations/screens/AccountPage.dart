@@ -103,9 +103,21 @@ class _AccountPageState extends State<AccountPage> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.menu),
-                onPressed: () {
-                  context.push('/menuProfile');
+                onPressed: () async {
+                  final result = await context.push('/menuProfile');
+
+                  if (result == true) {
+                    // Edit Profile başarılı
+                    context.read<ProfileCubit>().loadProfile();
+
+                    // İstersen ekstra şeyler:
+                    // ScaffoldMessenger.of(context).showSnackBar(...)
+                  }
                 },
+
+                /*onPressed: () {
+                  context.push('/menuProfile');
+                },*/
               ),
             ],
           ),

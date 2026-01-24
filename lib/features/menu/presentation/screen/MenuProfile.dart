@@ -68,13 +68,16 @@ class _MenuProfileState extends State<MenuProfile> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
                           AccountMenuComponent(
                             icon: Icons.person_outline,
                             title: 'My Profile',
+                            onTap: () {
+                              context.push('/edit-profile');
+                            },
                           ),
-                          AccountMenuComponent(
+                          /*AccountMenuComponent(
                             icon: Icons.list_alt,
                             title: 'My Posts',
                           ),
@@ -85,7 +88,7 @@ class _MenuProfileState extends State<MenuProfile> {
                           AccountMenuComponent(
                             icon: Icons.emoji_events_outlined,
                             title: 'Success Stories',
-                          ),
+                          ),*/
                         ],
                       ),
                     ),
@@ -119,8 +122,8 @@ class _MenuProfileState extends State<MenuProfile> {
                               title: 'Login & Security',
                             ),
                             AccountMenuComponent(
-                              icon: Icons.location_on_outlined,
-                              title: 'Location Permissions',
+                              icon: Icons.tune_outlined,
+                              title: 'Permissions',
                             ),
                             AccountMenuComponent(
                               icon: Icons.notifications_on_outlined,
@@ -203,6 +206,14 @@ class _MenuProfileState extends State<MenuProfile> {
                             const AccountMenuComponent(
                               icon: Icons.info_outline,
                               title: 'About PawNav',
+                            ),
+                            const AccountMenuComponent(
+                              icon: Icons.privacy_tip_outlined,
+                              title: 'Privacy Policy',
+                            ),
+                            const AccountMenuComponent(
+                              icon: Icons.article_outlined,
+                              title: 'Terms of Service',
                             ),
                             // LOG OUT
                             ListTile(

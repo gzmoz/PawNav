@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, ReadContext, RepositoryProvider;
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/bottom_nav_bar.dart';
-import 'package:pawnav/features/account/presentations/screens/MenuProfile.dart';
 import 'package:pawnav/features/addPost/data/datasources/post_remote_datasource.dart'
     show PostRemoteDataSource;
 import 'package:pawnav/features/addPost/data/repositories/post_repository_impl.dart';
@@ -41,6 +40,15 @@ import 'package:pawnav/features/map/data/datasources/map_remote_datasource.dart'
 import 'package:pawnav/features/map/domain/repositories/map_repository.dart';
 import 'package:pawnav/features/map/presentation/cubit/map_cubit.dart';
 import 'package:pawnav/features/map/presentation/screen/MapScreen.dart';
+import 'package:pawnav/features/menu/data/datasources/edit_profile_remote_datasource.dart';
+import 'package:pawnav/features/menu/data/repositories/edit_profile_repository_impl.dart';
+import 'package:pawnav/features/menu/domain/repositories/edit_profile_repository.dart';
+import 'package:pawnav/features/menu/domain/usecases/edit_profile_check_username_usecase.dart';
+import 'package:pawnav/features/menu/domain/usecases/edit_profile_get_usecase.dart';
+import 'package:pawnav/features/menu/domain/usecases/edit_profile_update_usecase.dart';
+import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart';
+import 'package:pawnav/features/menu/presentation/screen/MenuProfile.dart';
+import 'package:pawnav/features/menu/presentation/screen/edit_profile_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
@@ -324,5 +332,31 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) {
+        final supabase = Supabase.instance.client;
+
+        // Remote
+        final editProfileRemote =
+        EditProfileRemoteDataSource(supabase);
+
+        // Repository (INTERFACE TİPİ ÖNEMLİ)
+        final EditProfileRepository editProfileRepository =
+        EditProfileRepositoryImpl(editProfileRemote);
+
+        return BlocProvider(
+          create: (_) => EditProfileMenuCubit(
+            EditProfileGetUseCase(editProfileRepository),
+            EditProfileUpdateUseCase(editProfileRepository),
+            EditProfileCheckUsernameUseCase(supabase),
+
+          )..editProfileLoad(),
+          child: const EditProfileScreen(),
+        );
+      },
+    ),
+
   ],
 );
