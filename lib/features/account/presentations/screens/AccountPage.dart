@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -160,10 +162,20 @@ class _AccountPageState extends State<AccountPage> {
                                     CircleAvatar(
                                       radius: size.width * 0.15,
                                       backgroundImage: user.photoUrl.isNotEmpty
+                                          ? (user.photoUrl.startsWith('http')
                                           ? NetworkImage(user.photoUrl)
+                                          : FileImage(File(user.photoUrl)) as ImageProvider)
                                           : null,
                                       backgroundColor: Colors.grey.shade200,
                                     ),
+
+                                    /*CircleAvatar(
+                                      radius: size.width * 0.15,
+                                      backgroundImage: user.photoUrl.isNotEmpty
+                                          ? NetworkImage(user.photoUrl)
+                                          : null,
+                                      backgroundColor: Colors.grey.shade200,
+                                    ),*/
                                     const SizedBox(width: 20),
                                     Column(
                                       crossAxisAlignment:

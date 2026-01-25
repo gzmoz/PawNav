@@ -42,7 +42,7 @@ class EditProfileScreen extends StatelessWidget {
           //context.read<ProfileCubit>().loadProfile();
 
           // SnackBar görülsün diye küçük delay
-          await Future.delayed(const Duration(milliseconds: 900));
+          await Future.delayed(const Duration(milliseconds: 600));
 
           // GERİ DÖN
           if (context.mounted) {

@@ -73,22 +73,19 @@ class _MenuProfileState extends State<MenuProfile> {
                           AccountMenuComponent(
                             icon: Icons.person_outline,
                             title: 'My Profile',
-                            onTap: () {
-                              context.push('/edit-profile');
+                            onTap: () async {
+                              final updated = await context.push('/edit-profile');
+
+                              if (updated == true && context.mounted) {
+                                context.pop(true);
+                              }
                             },
+
+                            /*onTap: () {
+                              context.push('/edit-profile');
+                            },*/
                           ),
-                          /*AccountMenuComponent(
-                            icon: Icons.list_alt,
-                            title: 'My Posts',
-                          ),
-                          AccountMenuComponent(
-                            icon: Icons.bookmark_border_outlined,
-                            title: 'Saved Posts',
-                          ),
-                          AccountMenuComponent(
-                            icon: Icons.emoji_events_outlined,
-                            title: 'Success Stories',
-                          ),*/
+
                         ],
                       ),
                     ),
