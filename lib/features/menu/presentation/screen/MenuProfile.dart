@@ -112,21 +112,25 @@ class _MenuProfileState extends State<MenuProfile> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Column(
+                        child: Column(
                           children: [
                             AccountMenuComponent(
                               icon: Icons.lock_outlined,
                               title: 'Login & Security',
+                              onTap: () {
+                                context.push('/login-security');
+                              },
                             ),
-                            AccountMenuComponent(
+
+                            const AccountMenuComponent(
                               icon: Icons.tune_outlined,
                               title: 'Permissions',
                             ),
-                            AccountMenuComponent(
+                            const AccountMenuComponent(
                               icon: Icons.notifications_on_outlined,
                               title: 'Notifications Settings',
                             ),
-                            AccountMenuComponent(
+                            const AccountMenuComponent(
                               icon: Icons.settings_outlined,
                               title: 'App Settings',
                             ),

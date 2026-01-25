@@ -49,6 +49,8 @@ import 'package:pawnav/features/menu/domain/usecases/edit_profile_update_usecase
 import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart';
 import 'package:pawnav/features/menu/presentation/screen/MenuProfile.dart';
 import 'package:pawnav/features/menu/presentation/screen/edit_profile_screen.dart';
+import 'package:pawnav/features/menu/presentation/screen/email_address_page.dart';
+import 'package:pawnav/features/menu/presentation/screen/login_security_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
@@ -357,6 +359,18 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/login-security',
+      builder: (_, __) => const LoginSecurityPage(),
+    ),
+
+    GoRoute(
+      path: '/email-address',
+      builder: (_, __) => const EmailAddressPage(),
+    ),
+
+
 
   ],
 );
