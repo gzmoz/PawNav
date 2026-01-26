@@ -66,7 +66,7 @@ class _DetailPageState extends State<DetailPage> {
           }
 
           if (state is PostUnsaved) {
-            context.pop(true); // 🔥 parent’a haber
+            context.pop(true);
           }
 
           if (state is PostDeleted) {

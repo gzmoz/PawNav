@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart';
@@ -18,6 +19,7 @@ class EditProfileScreen extends StatelessWidget {
     final double width = screenInfo.size.width;
 
     return Scaffold(
+      backgroundColor: AppColors.white4,
       appBar: AppBar(
         title: const Text('Edit Profile'),
         leading: IconButton(

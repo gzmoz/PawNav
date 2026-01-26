@@ -48,6 +48,8 @@ import 'package:pawnav/features/menu/domain/usecases/edit_profile_get_usecase.da
 import 'package:pawnav/features/menu/domain/usecases/edit_profile_update_usecase.dart';
 import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart';
 import 'package:pawnav/features/menu/presentation/screen/MenuProfile.dart';
+import 'package:pawnav/features/menu/presentation/screen/app_preferences_screen.dart';
+import 'package:pawnav/features/menu/presentation/screen/community_guidlines_page.dart';
 import 'package:pawnav/features/menu/presentation/screen/edit_profile_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/email_address_page.dart';
 import 'package:pawnav/features/menu/presentation/screen/login_security_screen.dart';
@@ -78,6 +80,26 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
   initialLocation: '/splash',
+  redirect: (context, state) {
+    final session = Supabase.instance.client.auth.currentSession;
+    final location = state.matchedLocation;
+
+    final isAuthRoute = location == '/login' ||
+        location == '/sign_up' ||
+        location == '/splash';
+
+    if (session == null && !isAuthRoute) {
+      return '/login';
+    }
+
+    if (session != null && (location == '/login' || location == '/sign_up')) {
+      return '/home';
+    }
+
+    return null;
+  },
+
+
   routes: [
     GoRoute(
       path: '/splash',
@@ -369,6 +391,26 @@ final router = GoRouter(
       path: '/email-address',
       builder: (_, __) => const EmailAddressPage(),
     ),
+
+    GoRoute(
+      path: '/app-preferences',
+      builder: (context, state) {
+        return const AppPreferencesPage();
+      },
+    ),
+    GoRoute(
+      path: '/community-guidelines',
+      builder: (context, state) {
+        return const CommunityGuidelinesPage();
+      },
+    ),
+
+
+
+
+
+
+
 
 
 

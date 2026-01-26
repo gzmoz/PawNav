@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/services/app_settings.dart';
+import 'package:pawnav/core/services/auth_service.dart';
 import 'package:pawnav/features/account/presentations/widgets/AccountMenuComponent.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MenuProfile extends StatefulWidget {
   const MenuProfile({super.key});
@@ -11,6 +14,10 @@ class MenuProfile extends StatefulWidget {
 }
 
 class _MenuProfileState extends State<MenuProfile> {
+  final settings = SystemSettingsService();
+  final _authService = AuthService();
+
+
   @override
   Widget build(BuildContext context) {
     final screenInfo = MediaQuery.of(context);
@@ -72,7 +79,7 @@ class _MenuProfileState extends State<MenuProfile> {
                         children: [
                           AccountMenuComponent(
                             icon: Icons.person_outline,
-                            title: 'My Profile',
+                            title: 'View & edit your profile',
                             onTap: () async {
                               final updated = await context.push('/edit-profile');
 
@@ -84,6 +91,13 @@ class _MenuProfileState extends State<MenuProfile> {
                             /*onTap: () {
                               context.push('/edit-profile');
                             },*/
+                          ),
+                          AccountMenuComponent(
+                            icon: Icons.lock_outlined,
+                            title: 'Login & Security',
+                            onTap: () {
+                              context.push('/login-security');
+                            },
                           ),
 
                         ],
@@ -98,7 +112,7 @@ class _MenuProfileState extends State<MenuProfile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "SECURITY & PRIVACY",
+                        "APP SETTINGS",
                         style: TextStyle(
                             fontSize: width * 0.035,
                             fontWeight: FontWeight.bold,
@@ -114,25 +128,25 @@ class _MenuProfileState extends State<MenuProfile> {
                         ),
                         child: Column(
                           children: [
-                            AccountMenuComponent(
-                              icon: Icons.lock_outlined,
-                              title: 'Login & Security',
-                              onTap: () {
-                                context.push('/login-security');
-                              },
-                            ),
 
-                            const AccountMenuComponent(
+
+                            AccountMenuComponent(
                               icon: Icons.tune_outlined,
                               title: 'Permissions',
+                              onTap: () => settings.openPermissions(),
                             ),
-                            const AccountMenuComponent(
+
+                            AccountMenuComponent(
                               icon: Icons.notifications_on_outlined,
-                              title: 'Notifications Settings',
+                              title: 'Notifications',
+                              onTap: () => settings.openNotifications(),
                             ),
-                            const AccountMenuComponent(
+                            AccountMenuComponent(
                               icon: Icons.settings_outlined,
-                              title: 'App Settings',
+                              title: 'App Preferences',
+                              onTap: () {
+                                context.push('/app-preferences');
+                              },
                             ),
                           ],
                         ),
@@ -161,15 +175,21 @@ class _MenuProfileState extends State<MenuProfile> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Column(
+                        child: Column(
                           children: [
                             AccountMenuComponent(
                               icon: Icons.workspace_premium_outlined,
                               title: 'Badges & Achievements',
+                              onTap: () {
+                                context.push('/badges');
+                              },
                             ),
                             AccountMenuComponent(
                               icon: Icons.people_outline,
                               title: 'Community Guidelines',
+                              onTap: () {
+                                context.push('/community-guidelines');
+                              },
                             ),
                           ],
                         ),
@@ -235,9 +255,37 @@ class _MenuProfileState extends State<MenuProfile> {
                                   fontSize: width * 0.04,
                                 ),
                               ),
-                              onTap: () {
-                                // logout logic
+                              onTap: () async {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Log out'),
+                                      content: const Text(
+                                        'Are you sure you want to log out from PawNav?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, true),
+                                          child: const Text(
+                                            'Log out',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+
+                                if (confirmed == true && context.mounted) {
+                                  await _handleLogout(context);
+                                }
                               },
+
                             ),
 
                           ],
@@ -253,4 +301,10 @@ class _MenuProfileState extends State<MenuProfile> {
       ),
     );
   }
+  Future<void> _handleLogout(BuildContext context) async {
+    await _authService.signOut();
+
+    context.go('/login');
+  }
+
 }
