@@ -220,9 +220,13 @@ class _MenuProfileState extends State<MenuProfile> {
                         ),
                         child: Column(
                           children: [
-                            const AccountMenuComponent(
+                            AccountMenuComponent(
                               icon: Icons.help_outline,
                               title: 'Help & Support',
+                              onTap: () {
+                                context.push('/support');
+                              },
+
                             ),
                             const AccountMenuComponent(
                               icon: Icons.info_outline,

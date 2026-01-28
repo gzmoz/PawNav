@@ -82,10 +82,12 @@ class EmailAddressPage extends StatelessWidget {
                             title: userEmail,
                             onTap: null, // read-only
                           ),
-                          const AccountMenuComponent(
-                            icon: Icons.verified_outlined,
-                            title: 'Email verified',
+                          AccountMenuComponent(
+                            icon: getEmailStatusIcon(),
+                            title: getEmailStatusText(),
+                            onTap: null,
                           ),
+
                         ],
                       ),
                     ),
@@ -158,7 +160,7 @@ class EmailAddressPage extends StatelessWidget {
                               icon: Icons.help_outline,
                               title: 'Contact Support',
                               onTap: () {
-                                // ileride support page
+                                context.push('/support');
                               },
                             ),
                           ],
@@ -187,3 +189,44 @@ class EmailAddressPage extends StatelessWidget {
     );
   }
 }
+
+String getEmailStatusText() {
+  final user = Supabase.instance.client.auth.currentUser;
+  if (user == null) return '';
+
+  final identities = user.identities;
+
+  final isSocialLogin = identities != null &&
+      identities.any((id) => id.provider != 'email');
+
+  if (isSocialLogin) {
+    return 'Email not verified';
+  }
+
+  if (user.emailConfirmedAt == null) {
+    return 'Email not verified';
+  }
+
+  return 'Email verified';
+}
+IconData getEmailStatusIcon() {
+  return isEmailVerified()
+      ? Icons.verified_outlined
+      : Icons.info_outline;
+}
+bool isEmailVerified() {
+  final user = Supabase.instance.client.auth.currentUser;
+  if (user == null) return false;
+
+  final identities = user.identities;
+
+  final isSocialLogin = identities != null &&
+      identities.any((id) => id.provider != 'email');
+
+  if (isSocialLogin) return false;
+
+  return user.emailConfirmedAt != null;
+}
+
+
+

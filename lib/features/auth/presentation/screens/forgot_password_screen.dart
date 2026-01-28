@@ -107,9 +107,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     child: const Icon(Icons.arrow_back, size: 28),
                   ),
                 ),
-          
+
                 SizedBox(height: height * 0.04),
-          
+
                 // Paw icon
                 Center(
                   child: Container(
@@ -133,7 +133,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 SizedBox(height: height * 0.035),
-          
+
                 // Title
                 Center(
                   child: Text(
@@ -146,9 +146,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                 ),
-          
+
                 SizedBox(height: height * 0.01),
-          
+
                 // Subtitle
                 Center(
                   child: Text(
@@ -160,9 +160,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                 ),
-          
+
                 SizedBox(height: height * 0.05),
-          
+
                 // Email label
                 Text(
                   "Email Address",
@@ -172,7 +172,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     color: Colors.black87,
                   ),
                 ),
-          
+
                 const SizedBox(height: 8),
                 resetSent
                     ? Container(
@@ -241,7 +241,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                 ),*/
-          
+
                 // const Spacer(),
                 SizedBox(height: height * 0.05),
 
@@ -271,49 +271,49 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 if (!resetSent)
                   GestureDetector(
-                  onTap: () async {
-                    await _sendResetLink();
-                  },
-                  child: Container(
-                    width: width * 0.88,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    onTap: () async {
+                      await _sendResetLink();
+                    },
+                    child: Container(
+                      width: width * 0.88,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Send Reset Link",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: width * 0.035,
-                        fontWeight: FontWeight.bold,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Send Reset Link",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: width * 0.035,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-          
+
                 const SizedBox(height: 15),
 
                 if (!resetSent)
                 // Back to login
-                Center(
-                  child: GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Text(
-                      "Back to Login",
-                      style: TextStyle(
-                        fontSize: width * 0.04,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Text(
+                        "Back to Login",
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
                 SizedBox(height: height * 0.09),
               ],

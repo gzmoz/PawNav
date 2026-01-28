@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+
   // State değişkeni - kedi animasyonu
   Offset catOffset = const Offset(0, 1.0);
 

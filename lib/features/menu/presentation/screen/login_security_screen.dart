@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
+import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/features/account/presentations/widgets/AccountMenuComponent.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginSecurityPage extends StatelessWidget {
   const LoginSecurityPage({super.key});
@@ -11,6 +13,11 @@ class LoginSecurityPage extends StatelessWidget {
     final screenInfo = MediaQuery.of(context);
     final double height = screenInfo.size.height;
     final double width = screenInfo.size.width;
+    final user = Supabase.instance.client.auth.currentUser;
+    final isSocialLogin =
+        user?.appMetadata['provider'] != 'email';
+
+
 
     return Scaffold(
       backgroundColor: AppColors.white4,
@@ -78,17 +85,24 @@ class LoginSecurityPage extends StatelessWidget {
                             icon: Icons.lock_outline,
                             title: 'Change Password',
                             onTap: () {
-                              // mevcut reset password ekranı
-                              context.push('/reset_password');
+                              context.push('/change-password');
                             },
                           ),
                           AccountMenuComponent(
+                            icon: Icons.email_outlined,
+                            title: 'E-mail',
+                            onTap: () {
+                              context.push('/email-address');
+                            },
+                          ),
+
+                          /*AccountMenuComponent(
                             icon: Icons.email_outlined,
                             title: 'Email Address',
                             onTap: () {
                               context.push('/email-address');
                             },
-                          ),
+                          ),*/
 
                         ],
                       ),
@@ -97,51 +111,52 @@ class LoginSecurityPage extends StatelessWidget {
                 ),
 
                 /// SESSIONS
-                Padding(
-                  padding: EdgeInsets.only(top: height * 0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "SESSIONS",
-                        style: TextStyle(
-                          fontSize: width * 0.035,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsetsDirectional.symmetric(
-                          horizontal: width * 0.02,
-                          vertical: height * 0.02,
-                        ),
-                        margin: const EdgeInsets.only(top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            AccountMenuComponent(
-                              icon: Icons.devices_outlined,
-                              title: 'Active Sessions',
-                              onTap: () {
-                                // ileride eklenecek
-                              },
-                            ),
-                            AccountMenuComponent(
-                              icon: Icons.logout,
-                              title: 'Log out from all devices',
-                              onTap: () {
-                                // supabase global sign out
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(top: height * 0.02),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         "SESSIONS",
+                //         style: TextStyle(
+                //           fontSize: width * 0.035,
+                //           fontWeight: FontWeight.bold,
+                //           color: Colors.grey,
+                //         ),
+                //       ),
+                //       Container(
+                //         padding: EdgeInsetsDirectional.symmetric(
+                //           horizontal: width * 0.02,
+                //           vertical: height * 0.02,
+                //         ),
+                //         margin: const EdgeInsets.only(top: 8),
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(12),
+                //         ),
+                //         child: Column(
+                //           children: [
+                //             AccountMenuComponent(
+                //               icon: Icons.devices_outlined,
+                //               title: 'Active Sessions',
+                //               onTap: () {
+                //                 context.push('/active-sessions');
+                //               },
+                //             ),
+                //
+                //             AccountMenuComponent(
+                //               icon: Icons.logout,
+                //               title: 'Log out from all devices',
+                //               onTap: () {
+                //                 _confirmLogoutAll(context);
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
 
                 /// RECOVERY
                 Padding(
@@ -169,20 +184,25 @@ class LoginSecurityPage extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            AccountMenuComponent(
+                            /*AccountMenuComponent(
                               icon: Icons.refresh,
                               title: 'Reset Password',
                               onTap: () {
-                                context.push('/reset_password');
+                                context.push(
+                                  '/menu-reset-password',
+                                );
+
                               },
-                            ),
+                            ),*/
+
                             AccountMenuComponent(
                               icon: Icons.delete_outline,
                               title: 'Delete Account',
                               onTap: () {
-                                // confirm dialog sonra
+                                _confirmDeleteAccount(context);
                               },
                             ),
+
                           ],
                         ),
                       ),
@@ -209,3 +229,56 @@ class LoginSecurityPage extends StatelessWidget {
     );
   }
 }
+
+
+
+Future<void> _confirmDeleteAccount(BuildContext context) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Delete account"),
+        content: const Text(
+          "This action is permanent. All your data will be deleted.\n\nAre you sure?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              "Delete",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirmed == true) {
+    await _deleteAccount(context);
+  }
+}
+Future<void> _deleteAccount(BuildContext context) async {
+  try {
+    await Supabase.instance.client.rpc('delete_my_account');
+
+    await Supabase.instance.client.auth.signOut();
+
+    if (!context.mounted) return;
+    context.go('/login');
+  } catch (e) {
+    AppSnackbar.error(context, "Account deletion failed.");
+  }
+}
+
+
+
+
+
+
+

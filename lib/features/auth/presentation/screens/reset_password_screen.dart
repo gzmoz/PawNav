@@ -65,7 +65,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: Column(
           children: [
 
-            /// 🟦 ÜST KISIM (scrollable)
+            ///  ÜST KISIM (scrollable)
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: width * 0.07),

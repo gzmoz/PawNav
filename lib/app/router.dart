@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, ReadContext, RepositoryProvider;
 import 'package:go_router/go_router.dart';
@@ -50,8 +51,10 @@ import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart'
 import 'package:pawnav/features/menu/presentation/screen/MenuProfile.dart';
 import 'package:pawnav/features/menu/presentation/screen/app_preferences_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/community_guidlines_page.dart';
+import 'package:pawnav/features/menu/presentation/screen/change_password_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/edit_profile_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/email_address_page.dart';
+import 'package:pawnav/features/menu/presentation/screen/help_support_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/login_security_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
@@ -82,6 +85,29 @@ final router = GoRouter(
   initialLocation: '/splash',
   redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;
+
+    final authRoutes = [
+      '/login',
+      '/sign_up',
+      '/forgot_password',
+      '/verify_email_screen',
+    ];
+
+    final isAuthRoute = authRoutes.contains(state.matchedLocation);
+
+    if (session == null && !isAuthRoute) {
+      return '/login';
+    }
+
+    if (session != null && isAuthRoute) {
+      return '/home';
+    }
+
+    return null;
+  },
+
+  /*redirect: (context, state) {
+    final session = Supabase.instance.client.auth.currentSession;
     final location = state.matchedLocation;
 
     final isAuthRoute = location == '/login' ||
@@ -98,7 +124,7 @@ final router = GoRouter(
 
     return null;
   },
-
+*/
 
   routes: [
     GoRoute(
@@ -386,6 +412,15 @@ final router = GoRouter(
       path: '/login-security',
       builder: (_, __) => const LoginSecurityPage(),
     ),
+    GoRoute(
+      path: '/login-callback',
+      builder: (context, state) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    ),
+
 
     GoRoute(
       path: '/email-address',
@@ -404,6 +439,21 @@ final router = GoRouter(
         return const CommunityGuidelinesPage();
       },
     ),
+    GoRoute(
+      path: '/change-password',
+      builder: (context, state) {
+        return const ChangePasswordScreen();
+      },
+    ),
+    GoRoute(
+      path: '/support',
+      builder: (context, state) => const SupportPage(),
+    ),
+
+
+
+
+
 
 
 
