@@ -20,6 +20,7 @@ import 'package:pawnav/features/success_story/data/repositories/success_story_re
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_state.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/widgets/success_stories_grid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -111,6 +112,7 @@ class _AccountPageState extends State<AccountPage> {
                   if (result == true) {
                     // Edit Profile başarılı
                     context.read<ProfileCubit>().loadProfile();
+
 
                     // İstersen ekstra şeyler:
                     // ScaffoldMessenger.of(context).showSnackBar(...)

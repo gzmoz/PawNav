@@ -49,6 +49,7 @@ import 'package:pawnav/features/menu/domain/usecases/edit_profile_get_usecase.da
 import 'package:pawnav/features/menu/domain/usecases/edit_profile_update_usecase.dart';
 import 'package:pawnav/features/menu/presentation/cubit/edit_profile_cubit.dart';
 import 'package:pawnav/features/menu/presentation/screen/MenuProfile.dart';
+import 'package:pawnav/features/menu/presentation/screen/about_pawnav_page.dart';
 import 'package:pawnav/features/menu/presentation/screen/app_preferences_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/community_guidlines_page.dart';
 import 'package:pawnav/features/menu/presentation/screen/change_password_screen.dart';
@@ -56,6 +57,8 @@ import 'package:pawnav/features/menu/presentation/screen/edit_profile_screen.dar
 import 'package:pawnav/features/menu/presentation/screen/email_address_page.dart';
 import 'package:pawnav/features/menu/presentation/screen/help_support_screen.dart';
 import 'package:pawnav/features/menu/presentation/screen/login_security_screen.dart';
+import 'package:pawnav/features/menu/presentation/screen/privacy_policy_screen.dart';
+import 'package:pawnav/features/menu/presentation/screen/terms_of_service_screen.dart';
 import 'package:pawnav/features/onboarding/presentations/screens/onboarding_screen.dart';
 import 'package:pawnav/features/post/data/datasources/post_detail_remote_datasource.dart';
 import 'package:pawnav/features/post/data/repositories/post_detail_repository_impl.dart';
@@ -86,11 +89,14 @@ final router = GoRouter(
   redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;
 
+    //public routes
     final authRoutes = [
       '/login',
       '/sign_up',
       '/forgot_password',
       '/verify_email_screen',
+      '/privacy-policy',
+      '/terms-of-service',
     ];
 
     final isAuthRoute = authRoutes.contains(state.matchedLocation);
@@ -449,6 +455,21 @@ final router = GoRouter(
       path: '/support',
       builder: (context, state) => const SupportPage(),
     ),
+    GoRoute(
+      path: '/about-pawnav',
+      builder: (context, state) => const AboutPawNavPage(),
+    ),
+    GoRoute(
+      path: '/terms-of-service',
+      builder: (context, state) => const TermsOfServicePage(),
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      builder: (context, state) => const PrivacyPolicyPage(),
+    ),
+
+
+
 
 
 

@@ -61,7 +61,6 @@ class MyPostsGrid extends StatelessWidget {
             final post = state.posts[index];
             final img = _firstImage(post.images);
 
-            final statusColor = PostStatusStyle.color(post.postType);
             final statusBgColor = PostStatusStyle.background(post.postType);
 
             return ClipRRect(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/utils/postType_chip_enum.dart';
 import 'package:pawnav/features/home/presentations/cubit/featured_posts_cubit.dart';
 import 'package:pawnav/features/home/presentations/cubit/featured_posts_state.dart';
@@ -65,7 +66,7 @@ class _MostViewedPetsPageState extends State<MostViewedPetsPage> {
             showCheckmark: false,
             side: BorderSide.none,
             shape: const StadiumBorder(),
-            selectedColor: Colors.blueAccent,
+            selectedColor: const Color(0xFF2B6A94),
             backgroundColor: Colors.white,
             labelStyle: TextStyle(
               color: isSelected ? Colors.white : Colors.black,

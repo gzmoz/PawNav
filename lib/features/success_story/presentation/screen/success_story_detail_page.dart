@@ -65,14 +65,14 @@ class SuccessStoryDetailPage extends StatelessWidget {
               /*if (state is SuccessStoryDetailLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
-          
+
               if (state is SuccessStoryDetailError) {
                 return Center(child: Text(state.message));
               }
               final s = state as SuccessStoryDetailLoaded;*/
 
 
-          
+
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,9 +111,9 @@ class SuccessStoryDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-          
+
                     const SizedBox(height: 20),
-          
+
                     /// STORY
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -137,20 +137,20 @@ class SuccessStoryDetailPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 20),
-          
+
                           TimelineWithBackground(
                             lostDate: s.lostDate,
                             reunitedDate: s.reunitedDate,
                             initialText: s.initialTimelineText,
                             finalText: s.finalTimelineText,
                           ),
-          
+
                         ],
                       ),
                     ),
-          
+
                     const SizedBox(height: 30),
-          
+
                     /// HEROES
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -159,9 +159,9 @@ class SuccessStoryDetailPage extends StatelessWidget {
                         hero: s.hero,
                       ),
                     ),
-          
+
                     const SizedBox(height: 30),
-          
+
                     /// EDIT + DELETE
                     if (s.isOwner)
                       Padding(
@@ -421,9 +421,9 @@ class _HeroMiniCard extends StatelessWidget {
           radius: 26,
           backgroundColor: const Color(0xFFF2F2F7),
           backgroundImage:
-              (profile.photoUrl != null && profile.photoUrl!.isNotEmpty)
-                  ? NetworkImage(profile.photoUrl!)
-                  : null,
+          (profile.photoUrl != null && profile.photoUrl!.isNotEmpty)
+              ? NetworkImage(profile.photoUrl!)
+              : null,
           child: (profile.photoUrl == null || profile.photoUrl!.isEmpty)
               ? const Icon(Icons.person, color: Colors.grey)
               : null,
@@ -650,14 +650,16 @@ class StatusBadge extends StatelessWidget {
 
   const StatusBadge({super.key, required this.postType});
 
+
+
   Color get backgroundColor {
     switch (postType) {
       case PostType.lost:
-        return const Color(0xFF2B6A94);
+        return const Color(0xFF3A65C2).withOpacity(0.7);
       case PostType.found:
-        return const Color(0xFF2B6A94);
+        return const Color(0xFF3A65C2).withOpacity(0.7);
       case PostType.adopted:
-        return const Color(0xFF358C5A);
+        return const Color(0xFF358C5A).withOpacity(0.7);
     }
   }
 
@@ -754,6 +756,8 @@ void showDeleteDialog(
     },
   );
 }
+
+
 
 
 

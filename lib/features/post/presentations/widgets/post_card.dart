@@ -28,13 +28,13 @@ class PostCardComponent extends StatelessWidget {
     Color statusColor;
     switch (status) {
       case "Lost":
-        statusColor = Colors.red.shade300;
+        statusColor = const Color(0xFFD9824F);
         break;
       case "Found":
-        statusColor = Colors.green.shade400;
+        statusColor = const Color(0xFF6C8EBF);
         break;
       case "Adoption":
-        statusColor = Colors.orange.shade400;
+        statusColor = const Color(0xFF7FB77E);
         break;
       default:
         statusColor = Colors.grey;

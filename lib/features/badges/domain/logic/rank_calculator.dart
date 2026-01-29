@@ -9,11 +9,11 @@ class RankCalculator {
         level: 4,
         minBadges: 9,
         maxBadges: 999,
-        color: const Color(0xFF8B3A3A),
+        color: const Color(0xFFCD7474),
         iconAsset: 'assets/badges/shelter_hero.png',
         gradientColors: [
-          const Color(0xFFF3E1E1),
-          const Color(0xFFD8A5A5),
+          const Color(0xFFDBAAAA),
+          const Color(0xFFF9FAFB),
         ],
       );
     }
@@ -24,12 +24,13 @@ class RankCalculator {
         level: 3,
         minBadges: 6,
         maxBadges: 8,
-        color: const Color(0xFF4F7F6A),
+        color: const Color(0xFF809E75),
         iconAsset: 'assets/badges/guardian_angel.png',
         gradientColors: [
-          const Color(0xFFE6F1EB),
-          const Color(0xFFB7D3C6),
+          const Color(0xFFB8D7A3),
+          const Color(0xFFF9FAFB),
         ],
+
       );
     }
 
@@ -39,12 +40,15 @@ class RankCalculator {
         level: 2,
         minBadges: 3,
         maxBadges: 5,
-        color: const Color(0xFFC9A227),
+        color: const Color(0xFF9D9B72),
         iconAsset: 'assets/badges/gold_helper.png',
         gradientColors: [
-          const Color(0xFFF7F1D7),
-          const Color(0xFFE6C75F),
+          const Color(0xFFE7DBAC),
+          const Color(0xFFF9FAFB),
         ],
+
+
+
       );
     }
 

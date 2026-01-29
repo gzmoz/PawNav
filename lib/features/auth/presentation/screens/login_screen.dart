@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -261,9 +262,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Forgot Password",
                             style: TextStyle(
                               color: Colors.white,
+                              fontWeight: FontWeight.w600,
                               fontStyle: FontStyle.italic,
                               fontSize: width * 0.03,
-                              decoration: TextDecoration.underline,
+                              //decoration: TextDecoration.underline,
                               decorationColor: Colors.white,
                               decorationThickness: 1.8
                             ),
@@ -271,6 +273,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
+
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.1,
@@ -314,9 +318,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+
+
+                    const SizedBox(height: 10),
                     buildOrDivider(),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     SizedBox(
                       child: Padding(
                         padding: EdgeInsets.only(top: width * 0.02),
@@ -347,7 +353,35 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
 
                       ),
-                    )
+                    ),
+                    const SizedBox(height: 25),
+
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                        children: [
+                          const TextSpan(text: 'By continuing, you agree to our '),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: const TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => context.push('/terms-of-service'),
+                          ),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: const TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => context.push('/privacy-policy'),
+                          ),
+                          const TextSpan(text: '.'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],

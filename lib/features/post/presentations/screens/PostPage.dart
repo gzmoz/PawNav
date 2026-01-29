@@ -732,7 +732,7 @@ class _PostPageState extends State<PostPage> {
                                                           selectedAnimal =
                                                               selected;
                                                           selectedBreed =
-                                                          "Any"; // 🔥 animal değişince breed reset
+                                                          "Any";
                                                         });
                                                       }
                                                     },
@@ -1122,24 +1122,23 @@ class _PostPageState extends State<PostPage> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: posts.length,
+
                           itemBuilder: (context, index) {
                             final post = posts[index];
 
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: PostCardComponent(
-                                imageUrl: post.images.isNotEmpty
-                                    ? post.images.first
-                                    : '',
-                                name: post.name ?? 'Unknown',
-                                location: post.location,
-                                description: post.description,
-                                status: post.postType ?? 'Lost',
-                                timeAgoText: timeAgo(post.eventDate),
-                                onTap: () {
-                                  context.push('/post-detail/${post.id}');
-                                },
-                              ),
+                            return PostCardComponent(
+                              imageUrl: post.images.isNotEmpty
+                                  ? post.images.first
+                                  : '',
+                              name: post.name ?? 'Unknown',
+                              location: post.location,
+
+                              description: post.description,
+                              status: post.postType ?? 'Lost',
+                              timeAgoText: timeAgo(post.eventDate),
+                              onTap: () {
+                                context.push('/post-detail/${post.id}');
+                              },
                             );
                           },
                         );

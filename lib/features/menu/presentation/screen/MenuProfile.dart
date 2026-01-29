@@ -228,17 +228,28 @@ class _MenuProfileState extends State<MenuProfile> {
                               },
 
                             ),
-                            const AccountMenuComponent(
+                            AccountMenuComponent(
                               icon: Icons.info_outline,
                               title: 'About PawNav',
+                              onTap: (){
+                                context.push('/about-pawnav');
+                              },
                             ),
-                            const AccountMenuComponent(
+
+                            AccountMenuComponent(
                               icon: Icons.privacy_tip_outlined,
                               title: 'Privacy Policy',
+                              onTap: () {
+                                context.push('/privacy-policy');
+                              },
+
                             ),
-                            const AccountMenuComponent(
+                            AccountMenuComponent(
                               icon: Icons.article_outlined,
                               title: 'Terms of Service',
+                              onTap: () {
+                                context.push('/terms-of-service');
+                              },
                             ),
                             // LOG OUT
                             ListTile(

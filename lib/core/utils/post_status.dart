@@ -5,17 +5,17 @@ class PostStatusStyle {
   static Color color(String? status) {
     switch (status) {
       case "Lost":
-        return Colors.red.shade300;
+        return const Color(0xFFD9824F);
       case "Found":
-        return AppColors.primary.withOpacity(0.4);
+        return const Color(0xFF6C8EBF);
       case "Adoption":
-        return Colors.green.shade400;
+        return const Color(0xFF7FB77E);
       default:
         return Colors.grey;
     }
   }
 
   static Color background(String? status) {
-    return color(status).withOpacity(0.85);
+    return color(status).withOpacity(0.95);
   }
 }

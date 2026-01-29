@@ -19,8 +19,8 @@ class SuccessStoryListCard extends StatelessWidget {
 
   Color get badgeColor {
     return item.postType == PostType.adopted
-        ? const Color(0xFF2E8B57)
-        : const Color(0xFF2BB673);
+        ? const Color(0xFF358C5A).withOpacity(0.8)
+        :  const Color(0xFF3A65C2).withOpacity(0.8);
   }
 
   String get topCategory {

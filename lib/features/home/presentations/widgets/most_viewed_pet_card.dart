@@ -69,7 +69,7 @@ class MostViewedPetCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_statusIcon(), size: 14, color: Colors.white),
+          //Icon(_statusIcon(), size: 14, color: Colors.white),
           const SizedBox(width: 4),
           Text(
             post.postType!.toUpperCase(),
@@ -88,7 +88,7 @@ class MostViewedPetCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withOpacity(0.35),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -183,18 +183,18 @@ class MostViewedPetCard extends StatelessWidget {
 
   // ---------------- HELPERS ----------------
 
-  IconData _statusIcon() {
-    switch (post.postType) {
-      case 'Lost':
-        return Icons.warning_amber_rounded;
-      case 'Found':
-        return Icons.check_circle;
-      case 'Adoption':
-        return Icons.favorite;
-      default:
-        return Icons.info;
-    }
-  }
+  // IconData _statusIcon() {
+  //   switch (post.postType) {
+  //     case 'Lost':
+  //       return Icons.warning_amber_rounded;
+  //     case 'Found':
+  //       return Icons.check_circle;
+  //     case 'Adoption':
+  //       return Icons.favorite;
+  //     default:
+  //       return Icons.info;
+  //   }
+  // }
 
   String _formatViews(int views) {
     if (views >= 1000) {
