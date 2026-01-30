@@ -354,34 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       ),
                     ),
-                    const SizedBox(height: 25),
 
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                        children: [
-                          const TextSpan(text: 'By continuing, you agree to our '),
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: const TextStyle(decoration: TextDecoration.underline),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => context.push('/terms-of-service'),
-                          ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: const TextStyle(decoration: TextDecoration.underline),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => context.push('/privacy-policy'),
-                          ),
-                          const TextSpan(text: '.'),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -413,6 +386,38 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     ],
                   )),
+            ),
+
+            const SizedBox(height: 25),
+
+            Positioned(
+              bottom: 25,
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                  children: [
+                    const TextSpan(text: 'By continuing, you agree to our '),
+                    TextSpan(
+                      text: 'Terms of Service',
+                      style: const TextStyle(decoration: TextDecoration.underline, color: AppColors.primary),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => context.push('/terms-of-service'),
+                    ),
+                    const TextSpan(text: ' and '),
+                    TextSpan(
+                      text: 'Privacy Policy',
+                      style: const TextStyle(decoration: TextDecoration.underline, color: AppColors.primary),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => context.push('/privacy-policy'),
+                    ),
+                    const TextSpan(text: '.'),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

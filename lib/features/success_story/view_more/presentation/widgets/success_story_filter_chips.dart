@@ -24,65 +24,69 @@ class SuccessStoryFilterChips extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           boxShadow: isSelected
               ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ]
               : [],
         ),
         child: ChoiceChip(
           showCheckmark: false,
-
           side: BorderSide.none,
           label: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon,
-                  size: 16, color: isSelected ? Colors.white : Colors.black54),
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? Colors.white : Colors.black54,
+              ),
               const SizedBox(width: 6),
               Text(label),
             ],
           ),
           selected: isSelected,
           onSelected: (_) => onChanged(value),
-          // selectedColor: const Color(0xFF2B6A94),
           selectedColor: const Color(0xFF2B6A94),
           backgroundColor: Colors.white,
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white :Colors.black54,
+            color: isSelected ? Colors.white : Colors.black54,
             fontWeight: FontWeight.w600,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
-            side: BorderSide.none,
-            /*side: BorderSide(
-              color: isSelected ? Colors.transparent : Colors.black12,
-            ),*/
           ),
         ),
       );
     }
 
-    return Center(
-      child: Wrap(
-        spacing: 10,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
         children: [
           chip(
-              label: 'All Stories',
-              icon: Icons.apps,
-              value: SuccessStoryFilter.all),
+            label: 'All Stories',
+            icon: Icons.apps,
+            value: SuccessStoryFilter.all,
+          ),
+          const SizedBox(width: 10),
           chip(
-              label: 'Reunited',
-              icon: Icons.favorite,
-              value: SuccessStoryFilter.reunited),
+            label: 'Reunited',
+            icon: Icons.favorite,
+            value: SuccessStoryFilter.reunited,
+          ),
+          const SizedBox(width: 10),
           chip(
-              label: 'Adopted',
-              icon: Icons.home,
-              value: SuccessStoryFilter.adopted),
+            label: 'Adopted',
+            icon: Icons.home,
+            value: SuccessStoryFilter.adopted,
+          ),
         ],
       ),
     );
   }
+
 }

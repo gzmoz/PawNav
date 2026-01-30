@@ -7,265 +7,277 @@ import 'package:pawnav/features/success_story/domain/repositories/success_story_
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_state.dart';
 
-class SuccessStoryDetailPage extends StatelessWidget {
+class SuccessStoryDetailPage extends StatefulWidget {
   final String storyId;
-
   const SuccessStoryDetailPage({super.key, required this.storyId});
 
   @override
+  State<SuccessStoryDetailPage> createState() =>
+      _SuccessStoryDetailPageState();
+}
+
+
+
+class _SuccessStoryDetailPageState
+    extends State<SuccessStoryDetailPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<SuccessStoryDetailCubit>()
+        .load(widget.storyId);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SuccessStoryDetailCubit(
-        context.read<SuccessStoryRepository>(),
-      )..load(storyId),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF6F6FA),
-        appBar: AppBar(
-          title: const Text("Success Story"),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: const BackButton(color: Colors.black),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.share, color: Colors.black),
-              onPressed: () {},
-            ),
-          ],
-        ),
-        body: BlocListener<SuccessStoryDetailCubit, SuccessStoryDetailState>(
-          listener: (context, state) {
-            if (state is SuccessStoryDeleted) {
-              // SADECE DETAIL PAGE KAPAT
-              context.pop('story_deleted');
-              //Navigator.pop(context,true);
-            }
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F6FA),
+      appBar: AppBar(
+        title: const Text("Success Story"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: const BackButton(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: BlocListener<SuccessStoryDetailCubit, SuccessStoryDetailState>(
+        listener: (context, state) {
+          if (state is SuccessStoryDeleted) {
+            // SADECE DETAIL PAGE KAPAT
+            context.pop('story_deleted');
+            //Navigator.pop(context,true);
+          }
+        },
+        child: BlocBuilder<SuccessStoryDetailCubit, SuccessStoryDetailState>(
+          buildWhen: (previous, current) {
+            // Deleted state UI'ı rebuild ETMESİN
+            return current is! SuccessStoryDeleted;
           },
-          child: BlocBuilder<SuccessStoryDetailCubit, SuccessStoryDetailState>(
-            buildWhen: (previous, current) {
-              // Deleted state UI'ı rebuild ETMESİN
-              return current is! SuccessStoryDeleted;
-            },
-            builder: (context, state) {
-              if (state is SuccessStoryDetailLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          builder: (context, state) {
+            if (state is SuccessStoryDetailLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (state is SuccessStoryDetailError) {
-                return Center(child: Text(state.message));
-              }
+            if (state is SuccessStoryDetailError) {
+              return Center(child: Text(state.message));
+            }
 
-              if (state is! SuccessStoryDetailLoaded) {
-                return const SizedBox.shrink();
-              }
+            if (state is! SuccessStoryDetailLoaded) {
+              return const SizedBox.shrink();
+            }
 
-              final s = state;
+            final s = state;
 
 
-              /*if (state is SuccessStoryDetailLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+            /*if (state is SuccessStoryDetailLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (state is SuccessStoryDetailError) {
-                return Center(child: Text(state.message));
-              }
-              final s = state as SuccessStoryDetailLoaded;*/
+            if (state is SuccessStoryDetailError) {
+              return Center(child: Text(state.message));
+            }
+            final s = state as SuccessStoryDetailLoaded;*/
 
 
 
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 420, // 320 image + ~100 card overlap
-                      child: Stack(
-                        clipBehavior: Clip.none,
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 420, // 320 image + ~100 card overlap
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Image.network(
+                          s.coverImageUrl,
+                          height: 320,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: StatusBadge(postType: s.postType),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: _PetInfoCard(
+                              petName: s.petName,
+                              breed: s.breed,
+                              species: s.species,
+                              onViewPost: () {
+                                context.push('/post-detail/${s.story.postId}');
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// STORY
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "The Journey Home",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          s.story.story,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            height: 1.7,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        TimelineWithBackground(
+                          lostDate: s.lostDate,
+                          reunitedDate: s.reunitedDate,
+                          initialText: s.initialTimelineText,
+                          finalText: s.finalTimelineText,
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  /// HEROES
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _HeroesRow(
+                      owner: s.owner,
+                      hero: s.hero,
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  /// EDIT + DELETE
+                  if (s.isOwner)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 25, right: 10, left: 10),
+                      child: Row(
                         children: [
-                          Image.network(
-                            s.coverImageUrl,
-                            height: 320,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          Positioned(
-                            top: 16,
-                            right: 16,
-                            child: StatusBadge(postType: s.postType),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Center(
-                              child: _PetInfoCard(
-                                petName: s.petName,
-                                breed: s.breed,
-                                species: s.species,
-                                onViewPost: () {
-                                  context.push('/post-detail/${s.story.postId}');
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  // edit flow
                                 },
+                                icon: const Icon(Icons.edit_outlined),
+                                label: const Text("Edit Story"),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    /// STORY
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "The Journey Home",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            s.story.story,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              height: 1.7,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          TimelineWithBackground(
-                            lostDate: s.lostDate,
-                            reunitedDate: s.reunitedDate,
-                            initialText: s.initialTimelineText,
-                            finalText: s.finalTimelineText,
-                          ),
-
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    /// HEROES
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _HeroesRow(
-                        owner: s.owner,
-                        hero: s.hero,
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    /// EDIT + DELETE
-                    if (s.isOwner)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 25, right: 10, left: 10),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 52,
-                                child: OutlinedButton.icon(
-                                  onPressed: () async {
-                                    // edit flow
-                                  },
-                                  icon: const Icon(Icons.edit_outlined),
-                                  label: const Text("Edit Story"),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: SizedBox(
-                                height: 52,
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    showDeleteDialog(
-                                      context,
-                                      onConfirm: () {
-                                        context
-                                            .read<SuccessStoryDetailCubit>()
-                                            .deleteStory(storyId);
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.delete_outline),
-                                  label: const Text("Delete Story"),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.red,
-                                    side: BorderSide(color: Colors.red.shade200),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: SizedBox(
+                              height: 52,
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  showDeleteDialog(
+                                    context,
+                                    onConfirm: () {
+                                      context
+                                          .read<SuccessStoryDetailCubit>()
+                                          .deleteStory(widget.storyId);
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.delete_outline),
+                                label: const Text("Delete Story"),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                  side: BorderSide(color: Colors.red.shade200),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
 
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
-                    //   child: Row(
-                    //     children: [
-                    //       Expanded(
-                    //         child: SizedBox(
-                    //           height: 52,
-                    //           child: OutlinedButton.icon(
-                    //             onPressed: () async {
-                    //
-                    //             },
-                    //             icon: const Icon(Icons.edit_outlined),
-                    //             label: const Text("Edit Story"),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       const SizedBox(width: 12),
-                    //       Expanded(
-                    //         child: SizedBox(
-                    //           height: 52,
-                    //           child: OutlinedButton.icon(
-                    //             /*onPressed: () {
-                    //                   context.read<PostDetailCubit>().delete(widget.postId);
-                    //                 },*/
-                    //             onPressed: () {
-                    //               showDeleteDialog(
-                    //                 context,
-                    //                 onConfirm: () {
-                    //                   context.read<SuccessStoryDetailCubit>()
-                    //                       .deleteStory(storyId);
-                    //                 },
-                    //               );
-                    //             },
-                    //
-                    //             icon: const Icon(Icons.delete_outline),
-                    //             label: const Text("Delete Story"),
-                    //             style: OutlinedButton.styleFrom(
-                    //               foregroundColor: Colors.red,
-                    //               side:
-                    //               BorderSide(color: Colors.red.shade200),
-                    //               shape: RoundedRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(14),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
+                  //   child: Row(
+                  //     children: [
+                  //       Expanded(
+                  //         child: SizedBox(
+                  //           height: 52,
+                  //           child: OutlinedButton.icon(
+                  //             onPressed: () async {
+                  //
+                  //             },
+                  //             icon: const Icon(Icons.edit_outlined),
+                  //             label: const Text("Edit Story"),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       const SizedBox(width: 12),
+                  //       Expanded(
+                  //         child: SizedBox(
+                  //           height: 52,
+                  //           child: OutlinedButton.icon(
+                  //             /*onPressed: () {
+                  //                   context.read<PostDetailCubit>().delete(widget.postId);
+                  //                 },*/
+                  //             onPressed: () {
+                  //               showDeleteDialog(
+                  //                 context,
+                  //                 onConfirm: () {
+                  //                   context.read<SuccessStoryDetailCubit>()
+                  //                       .deleteStory(storyId);
+                  //                 },
+                  //               );
+                  //             },
+                  //
+                  //             icon: const Icon(Icons.delete_outline),
+                  //             label: const Text("Delete Story"),
+                  //             style: OutlinedButton.styleFrom(
+                  //               foregroundColor: Colors.red,
+                  //               side:
+                  //               BorderSide(color: Colors.red.shade200),
+                  //               shape: RoundedRectangleBorder(
+                  //                 borderRadius: BorderRadius.circular(14),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

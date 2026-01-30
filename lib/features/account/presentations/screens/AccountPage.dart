@@ -117,6 +117,13 @@ class _AccountPageState extends State<AccountPage> {
                     // İstersen ekstra şeyler:
                     // ScaffoldMessenger.of(context).showSnackBar(...)
                   }
+
+                  if (context.mounted) {
+                    final successStoryCubit =
+                    context.read<AccountSuccessStoriesCubit>();
+
+                    successStoryCubit.loadMySuccessStories();
+                  }
                 },
 
                 /*onPressed: () {
