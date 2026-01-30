@@ -73,6 +73,14 @@ class SuccessStoriesGrid extends StatelessWidget {
                   context.read<AccountStatsCubit>().refresh();
                 }
 
+                if (result == 'story_changed') {
+                  context.read<AccountSuccessStoriesCubit>()
+                      .loadMySuccessStories();
+
+                  context.read<AccountStatsCubit>().refresh();
+                }
+
+
               },
 
               /*onTap: () async {

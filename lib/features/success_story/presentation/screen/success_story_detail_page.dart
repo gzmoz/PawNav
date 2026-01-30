@@ -14,12 +14,16 @@ class SuccessStoryDetailPage extends StatefulWidget {
   @override
   State<SuccessStoryDetailPage> createState() =>
       _SuccessStoryDetailPageState();
+
+
 }
+
 
 
 
 class _SuccessStoryDetailPageState
     extends State<SuccessStoryDetailPage> {
+
 
   @override
   void initState() {
@@ -185,9 +189,21 @@ class _SuccessStoryDetailPageState
                             child: SizedBox(
                               height: 52,
                               child: OutlinedButton.icon(
-                                onPressed: () async {
-                                  // edit flow
+                                onPressed: () async{
+                                  //context.push('/edit-success-story/${s.story.id}');
+
+                                  final updated = await context.push<bool>(
+                                    '/edit-success-story/${s.story.id}',
+                                  );
+
+                                  if (updated == true) {
+                                    context.read<SuccessStoryDetailCubit>().load(s.story.id);
+                                    context.pop('story_changed');
+                                  }
+
+
                                 },
+
                                 icon: const Icon(Icons.edit_outlined),
                                 label: const Text("Edit Story"),
                               ),
@@ -224,56 +240,6 @@ class _SuccessStoryDetailPageState
                       ),
                     ),
 
-                  // Padding(
-                  //   padding: const EdgeInsets.only(bottom: 25, right: 10, left:10),
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: SizedBox(
-                  //           height: 52,
-                  //           child: OutlinedButton.icon(
-                  //             onPressed: () async {
-                  //
-                  //             },
-                  //             icon: const Icon(Icons.edit_outlined),
-                  //             label: const Text("Edit Story"),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       const SizedBox(width: 12),
-                  //       Expanded(
-                  //         child: SizedBox(
-                  //           height: 52,
-                  //           child: OutlinedButton.icon(
-                  //             /*onPressed: () {
-                  //                   context.read<PostDetailCubit>().delete(widget.postId);
-                  //                 },*/
-                  //             onPressed: () {
-                  //               showDeleteDialog(
-                  //                 context,
-                  //                 onConfirm: () {
-                  //                   context.read<SuccessStoryDetailCubit>()
-                  //                       .deleteStory(storyId);
-                  //                 },
-                  //               );
-                  //             },
-                  //
-                  //             icon: const Icon(Icons.delete_outline),
-                  //             label: const Text("Delete Story"),
-                  //             style: OutlinedButton.styleFrom(
-                  //               foregroundColor: Colors.red,
-                  //               side:
-                  //               BorderSide(color: Colors.red.shade200),
-                  //               shape: RoundedRectangleBorder(
-                  //                 borderRadius: BorderRadius.circular(14),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
             );
@@ -768,7 +734,6 @@ void showDeleteDialog(
     },
   );
 }
-
 
 
 

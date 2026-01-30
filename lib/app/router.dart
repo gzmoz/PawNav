@@ -76,8 +76,10 @@ import 'package:pawnav/features/success_story/data/repositories/success_story_re
 import 'package:pawnav/features/success_story/domain/repositories/success_story_repository.dart';
 import 'package:pawnav/features/success_story/domain/usecases/create_success_story.dart';
 import 'package:pawnav/features/success_story/domain/usecases/search_profiles.dart';
+import 'package:pawnav/features/success_story/presentation/cubit/edit_success_story_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/write_success_story_cubit.dart';
+import 'package:pawnav/features/success_story/presentation/screen/edit_success_story_page.dart';
 import 'package:pawnav/features/success_story/presentation/screen/success_story_detail_page.dart';
 import 'package:pawnav/features/success_story/presentation/screen/write_success_story_page.dart';
 import 'package:pawnav/features/success_story/view_more/presentation/screens/success_stories_list_page.dart';
@@ -467,6 +469,34 @@ final router = GoRouter(
       path: '/privacy-policy',
       builder: (context, state) => const PrivacyPolicyPage(),
     ),
+    GoRoute(
+      path: '/edit-success-story/:storyId',
+      builder: (context, state) {
+        final storyId = state.pathParameters['storyId']!;
+        final supabase = Supabase.instance.client;
+
+        final repository = SuccessStoryRepositoryImpl(
+          SuccessStoryRemoteDataSource(supabase),
+        );
+
+        return RepositoryProvider<SuccessStoryRepository>(
+          create: (_) => repository,
+          child: RepositoryProvider<SearchProfiles>(
+            create: (_) => SearchProfiles(repository),
+            child: BlocProvider(
+              create: (context) => EditSuccessStoryCubit(
+                repo: context.read<SuccessStoryRepository>(),
+                searchProfiles: context.read<SearchProfiles>(),
+                supabase: supabase,
+              )..init(storyId),
+              child: EditSuccessStoryPage(storyId: storyId),
+            ),
+          ),
+        );
+      },
+    ),
+
+
 
 
 

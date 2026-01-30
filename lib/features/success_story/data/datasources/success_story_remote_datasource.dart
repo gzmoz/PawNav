@@ -13,7 +13,7 @@ class SuccessStoryRemoteDataSource {
     final res = await client
         .from('posts')
         .select(
-            'id, user_id, name, species, breed, created_at, post_type, images')
+        'id, user_id, name, species, breed, created_at, post_type, images')
         .eq('id', postId)
         .single();
     return res;
