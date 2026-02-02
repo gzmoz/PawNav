@@ -12,14 +12,14 @@ class MessagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background2,
+      backgroundColor: AppColors.white5,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
+        /*leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () => Navigator.pop(context),
-        ),
+        ),*/
         title: const Text(
           "Messages",
           style: TextStyle(
@@ -34,7 +34,7 @@ class MessagePage extends StatelessWidget {
           const SizedBox(height: 12),
 
           /// SEARCH BAR
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -66,7 +66,7 @@ class MessagePage extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+          ),*/
 
           const SizedBox(height: 16),
 

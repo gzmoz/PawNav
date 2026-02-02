@@ -90,7 +90,7 @@ class MessageTile extends StatelessWidget {
               ),
             ),
 
-            /// TIME + PET IMAGE
+            /*/// TIME + PET IMAGE
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -112,7 +112,7 @@ class MessageTile extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ),*/
           ],
         ),
       ),

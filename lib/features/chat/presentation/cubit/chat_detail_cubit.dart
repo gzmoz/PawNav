@@ -71,7 +71,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
           .from('messages')
           .select()
           .eq('chat_id', chatId)
-          .order('created_at');
+          .order('created_at', ascending: true);
 
       final messages = (res as List)
           .map((e) => MessageModel.fromMap(e))

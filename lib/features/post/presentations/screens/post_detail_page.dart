@@ -7,6 +7,7 @@ import 'package:pawnav/core/utils/date_formatter.dart';
 import 'package:pawnav/core/utils/pet_color_mapper.dart';
 import 'package:pawnav/core/utils/post_status.dart';
 import 'package:pawnav/core/utils/time_ago.dart';
+import 'package:pawnav/features/chat/presentation/widgets/contact_owner_sheet.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_cubit.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_detail_state.dart';
 import 'package:pawnav/features/post/presentations/widgets/info_mini_card.dart';
@@ -281,21 +282,47 @@ class _DetailPageState extends State<DetailPage> {
                             height: 54,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final supabase = Supabase.instance.client;
-
-                                final res = await supabase.rpc(
-                                  'get_or_create_chat',
-                                  params: {
-                                    'other_user_id': post.owner!.id,
-                                  },
+                                final confirm = await showContactOwnerSheet(
+                                  context: context,
+                                  postName: post.name ?? 'Post',
+                                  postType: post.postType,
+                                  imageUrl: post.images.isNotEmpty ? post.images.first : null,
                                 );
 
+                                if (confirm != true) return;
 
-                                final chatId = res as String;
+                                try {
+                                  final supabase = Supabase.instance.client;
+                                  final currentUserId = supabase.auth.currentUser!.id;
+                                  final ownerId = post.owner!.id;
 
-                                if (!context.mounted) return;
-                                context.push('/chat/$chatId');
+                                  final chatId = await supabase.rpc(
+                                    'get_or_create_chat',
+                                    params: {'other_user_id': ownerId},
+                                  ) as String;
+
+                                  await supabase.from('messages').insert({
+                                    'chat_id': chatId,
+                                    'sender_id': currentUserId,
+                                    'message_type': 'post',
+                                    'payload': {
+                                      'post_id': post.id,
+                                      'name': post.name,
+                                      'post_type': post.postType,
+                                      'image': post.images.isNotEmpty ? post.images.first : null,
+                                    },
+                                  });
+
+                                  if (!context.mounted) return;
+                                  context.push('/chat/$chatId');
+
+                                } catch (e) {
+                                  AppSnackbar.error(context, "Could not open chat");
+                                }
                               },
+
+
+
 
                               icon: const Icon(Icons.chat_bubble_outline),
                               label: const Text("Contact Owner"),
