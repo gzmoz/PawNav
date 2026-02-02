@@ -36,6 +36,30 @@ class LocationService {
       {
         "input": query,
         "key": apiKey,
+        "types": "geocode",
+        "language": "en",
+      },
+    );
+
+    try {
+      final response = await http.get(url);
+      final json = jsonDecode(response.body);
+      return json["predictions"] ?? [];
+    } catch (e) {
+      print("Autocomplete error: $e");
+      return [];
+    }
+  }
+
+  /*static Future<List<dynamic>> placeAutoComplete(String query) async {
+    if (query.isEmpty) return [];
+
+    final url = Uri.https(
+      "maps.googleapis.com",
+      "/maps/api/place/autocomplete/json",
+      {
+        "input": query,
+        "key": apiKey,
         "components": "country:tr",
       },
     );
@@ -49,7 +73,7 @@ class LocationService {
       print("Autocomplete error: $e");
       return [];
     }
-  }
+  }*/
 
   /// ---------------------- 3) PLACE DETAILS → KOORDİNAT ----------------------
   static Future<LatLng?> placeDetailsToLatLng(String placeId) async {

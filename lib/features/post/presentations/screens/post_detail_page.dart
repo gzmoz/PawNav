@@ -15,6 +15,7 @@ import 'package:pawnav/features/post/presentations/widgets/my_carousel.dart';
 import 'package:pawnav/features/post/presentations/widgets/post_owner_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/section_card.dart';
 import 'package:pawnav/features/post/presentations/widgets/top_info_card.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DetailPage extends StatefulWidget {
   final String postId;
@@ -279,9 +280,23 @@ class _DetailPageState extends State<DetailPage> {
                             width: double.infinity,
                             height: 54,
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                // TODO: open chat
+                              onPressed: () async {
+                                final supabase = Supabase.instance.client;
+
+                                final res = await supabase.rpc(
+                                  'get_or_create_chat',
+                                  params: {
+                                    'other_user_id': post.owner!.id,
+                                  },
+                                );
+
+
+                                final chatId = res as String;
+
+                                if (!context.mounted) return;
+                                context.push('/chat/$chatId');
                               },
+
                               icon: const Icon(Icons.chat_bubble_outline),
                               label: const Text("Contact Owner"),
                               style: ElevatedButton.styleFrom(

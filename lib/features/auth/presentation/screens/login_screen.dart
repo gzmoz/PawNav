@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/errors/error_messages.dart';
 import 'package:pawnav/core/errors/failure.dart';
 import 'package:pawnav/core/errors/supabase_exceptions.dart';
+import 'package:pawnav/core/services/fcm_token_service.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
 import 'package:pawnav/core/widgets/password_text_field_component.dart';
 import 'package:pawnav/core/widgets/text_field_component.dart';
@@ -124,6 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
           .eq('id', user.id)
           .maybeSingle();
 
+      await FcmTokenService.init();
+
+
       if (profile == null ||
           profile['name'] == null ||
           profile['username'] == null ||
@@ -143,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );*/
         AppSnackbar.success(context, "Login successful!");
 
+        await FcmTokenService.init();
         context.go('/home');
       }
     } catch (e) {
@@ -222,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "E-mail or Username",
+                          "E-mail",
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -505,7 +511,9 @@ class _LoginScreenState extends State<LoginScreen> {
     // ----------------------------
     // 5) Artık direkt Home ekranına git
     // ----------------------------
+    await FcmTokenService.init();
     context.go('/home');
+
   }
 
   Widget buildOrDivider() {
@@ -539,4 +547,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+
 }

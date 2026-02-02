@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/supabase_auth_listener.dart';
+import 'package:pawnav/core/services/fcm_token_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -21,6 +24,13 @@ void main() async{
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoaWlhZmppZXpvanlzY2hpYWlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzA3ODAsImV4cCI6MjA3NzM0Njc4MH0.Z38WDjOG5wdVLOQnkccz1pD0zO2EA8I3tJYwIYwvI7s',
   );
   SupabaseAuthListener.initialize();
+
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  //await FcmTokenService.init();
+
+
+
 
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.immersiveSticky, // alt barı gizler, kaybolmaz
@@ -91,4 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     );
   }
+
+
 }
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+

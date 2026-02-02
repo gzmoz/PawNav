@@ -24,6 +24,8 @@ import 'package:pawnav/features/badges/domain/usecases/get_all_badges.dart';
 import 'package:pawnav/features/badges/domain/usecases/get_user_badges.dart';
 import 'package:pawnav/features/badges/presentation/cubit/badge_cubit.dart';
 import 'package:pawnav/features/badges/presentation/screen/badges_page.dart';
+import 'package:pawnav/features/chat/presentation/cubit/chat_detail_cubit.dart';
+import 'package:pawnav/features/chat/presentation/screens/chat_detail_screen.dart';
 import 'package:pawnav/features/editPost/data/datasources/edit_post_remote_datasource.dart';
 import 'package:pawnav/features/editPost/data/repositories/edit_post_repository_impl.dart';
 import 'package:pawnav/features/editPost/domain/usecases/get_post_for_edit.dart';
@@ -495,6 +497,18 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/chat/:chatId',
+      builder: (context, state) {
+        final chatId = state.pathParameters['chatId']!;
+        return BlocProvider(
+          create: (_) => ChatDetailCubit(chatId),
+          child: ChatDetailScreen(chatId: chatId),
+        );
+      },
+    ),
+
 
 
 

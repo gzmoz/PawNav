@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pawnav/MessagePage.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/account/data/datasources/account_post_remote_datasource.dart';
 import 'package:pawnav/features/account/data/datasources/profile_remote_datasource.dart';
@@ -15,6 +14,9 @@ import 'package:pawnav/features/account/presentations/cubit/profile_cubit.dart';
 import 'package:pawnav/features/account/presentations/cubit/saved_posts_cubit.dart';
 import 'package:pawnav/features/account/presentations/screens/AccountPage.dart';
 import 'package:pawnav/features/addPost/presentation/screen/AddPostPage.dart';
+import 'package:pawnav/features/chat/data/datasources/chat_remote_datasource.dart';
+import 'package:pawnav/features/chat/data/repositories/chat_repository.dart';
+import 'package:pawnav/features/chat/presentation/cubit/chat_list_cubit.dart';
 import 'package:pawnav/features/home/data/repositories/home_repository_impl.dart';
 import 'package:pawnav/features/home/data/repositories/recent_activity_repository_impl.dart';
 import 'package:pawnav/features/home/domain/usecases/get_posts_by_views.dart';
@@ -27,6 +29,7 @@ import 'package:pawnav/features/post/data/datasources/post_remote_datasource.dar
 import 'package:pawnav/features/post/data/repositories/post_repository_impl.dart';
 import 'package:pawnav/features/post/domain/usecases/get_posts.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
+import 'package:pawnav/features/post/presentations/screens/MessagePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -196,6 +199,15 @@ class _HomeScreenState extends State<HomeScreen> {
             )..load(),
           ),
 
+          BlocProvider(
+            create: (_) => ChatListCubit(
+              ChatRepository(
+                ChatRemoteDataSource(Supabase.instance.client),
+              ),
+            )..loadChats(),
+          ),
+
+
         ],
         child: SafeArea(
           top: false,
@@ -226,7 +238,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   index = i;
                 });
+
+                if (i == 0) {
+                  // Home tab
+                  context.read<HomeSuccessStoriesCubit>().load();
+                  context.read<FeaturedPostsCubit>().loadTop(limit: 5);
+                  context.read<RecentActivityCubit>().fetchPreview();
+                }
+
+                if (i == 4) {
+                  // Account tab
+                  context.read<AccountStatsCubit>().loadStats();
+                  context.read<AccountSuccessStoriesCubit>().loadMySuccessStories();
+                }
               },
+
+
+              /*onTap: (i) {
+                setState(() {
+                  index = i;
+                });
+              },*/
             ),
           ),
         ),

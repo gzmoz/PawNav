@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "439493499533",
+    "project_id": "pawnav-bc061",
+    "storage_bucket": "pawnav-bc061.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439493499533:android:758c9c8cd5e108dfafa0c4",
+        "android_client_info": {
+          "package_name": "com.ozgzm.pawnav.pawnav"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1xmY-Pm3yw-6j-tUMJg8pAh2y5i4MunQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
