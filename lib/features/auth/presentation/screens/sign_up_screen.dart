@@ -30,7 +30,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool isObscure = true;
 
-  Future<void> _signUpUser() async {
+  Future<bool> _signUpUser() async {
+    final supabase = Supabase.instance.client;
+
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    try {
+      // 1) Email var mı?
+      final existing = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
+      if (existing != null) {
+        AppSnackbar.error(
+          context,
+          "This email is already registered. Please log in.",
+        );
+        return false;
+      }
+
+      // 2) Sign up
+      final response = await supabase.auth.signUp(
+        email: email,
+        password: password,
+        emailRedirectTo: 'io.supabase.flutter://email-confirm',
+      );
+
+      // 3) Email doğrulama bekleniyor
+      if (response.user != null && response.session == null) {
+        AppSnackbar.info(
+          context,
+          ErrorMessages.verifyEmailToContinue,
+        );
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      final failure = SupabaseErrorHandler.handle(e);
+      AppSnackbar.error(context, failure.message);
+      return false;
+    }
+  }
+
+
+  /*Future<void> _signUpUser() async {
     final supabase = Supabase.instance.client;
 
     final email = emailController.text.trim();
@@ -92,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Failure failure = SupabaseErrorHandler.handle(e);
       AppSnackbar.error(context, failure.message);
     }
-  }
+  }*/
 
 
   @override
@@ -246,11 +293,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Eğer hiç hata yoksa true, hata varsa false döner*/
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
+                          final success = await _signUpUser();
+
+                          if (success && mounted) {
+                            context.go('/verify_email_screen');
+                          }
+                        }
+                      },
+
+                      /*onTap: () async {
+                        if (_formKey.currentState!.validate()) {
                           await _signUpUser();
                         }
                         context.go('/verify_email_screen');
 
-                      },
+                      },*/
                       child: Container(
                         width: width * 0.88,
                         padding: const EdgeInsets.symmetric(vertical: 15),
