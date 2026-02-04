@@ -141,13 +141,13 @@ class _MenuProfileState extends State<MenuProfile> {
                               title: 'Notifications',
                               onTap: () => settings.openNotifications(),
                             ),
-                            AccountMenuComponent(
+                            /*AccountMenuComponent(
                               icon: Icons.settings_outlined,
                               title: 'App Preferences',
                               onTap: () {
                                 context.push('/app-preferences');
                               },
-                            ),
+                            ),*/
                           ],
                         ),
                       ),

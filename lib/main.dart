@@ -8,6 +8,8 @@ import 'package:pawnav/app/supabase_auth_listener.dart';
 import 'package:pawnav/core/services/fcm_token_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'app/auth/auth_gate.dart';
+
 
 void main() async{
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -38,7 +40,12 @@ void main() async{
 
   await dotenv.load(fileName: ".env");
 
-  runApp(const MyApp());
+  runApp(
+    const AuthGate(
+      child: MyApp(),
+    ),
+  );
+  // runApp(const MyApp());
 }
 
 init() {

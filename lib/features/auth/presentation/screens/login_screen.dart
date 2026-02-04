@@ -120,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
+
       final profile = await supabase
           .from('profiles')
           .select('name,username')

@@ -29,7 +29,7 @@ import 'package:pawnav/features/post/data/datasources/post_remote_datasource.dar
 import 'package:pawnav/features/post/data/repositories/post_repository_impl.dart';
 import 'package:pawnav/features/post/domain/usecases/get_posts.dart';
 import 'package:pawnav/features/post/presentations/cubit/post_list_cubit.dart';
-import 'package:pawnav/features/post/presentations/screens/MessagePage.dart';
+import 'package:pawnav/features/chat/presentation/screens/MessagePage.dart';
 import 'package:pawnav/features/post/presentations/screens/PostPage.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

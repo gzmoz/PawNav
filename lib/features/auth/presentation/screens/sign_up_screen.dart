@@ -37,110 +37,112 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = passwordController.text.trim();
 
     try {
-      // 1) Email var mı?
-      final existing = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
-
-      if (existing != null) {
-        AppSnackbar.error(
-          context,
-          "This email is already registered. Please log in.",
-        );
-        return false;
-      }
-
-      // 2) Sign up
+      // 1) Auth signup
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
         emailRedirectTo: 'io.supabase.flutter://email-confirm',
       );
 
-      // 3) Email doğrulama bekleniyor
-      if (response.user != null && response.session == null) {
-        AppSnackbar.info(
-          context,
-          ErrorMessages.verifyEmailToContinue,
-        );
-        return true;
+      // Güvenlik kontrolü
+      if (response.user == null) {
+        AppSnackbar.error(context, "Signup failed.");
+        return false;
       }
 
-      return false;
+      /*
+      Email verification açık olduğu için:
+      - user oluşur
+      - session = null
+    */
+      if (response.session == null) {
+        AppSnackbar.info(context, ErrorMessages.verifyEmailToContinue);
+        return true; // verify ekranına gidebilir
+      }
+
+      return true;
     } catch (e) {
-      final failure = SupabaseErrorHandler.handle(e);
+      Failure failure = SupabaseErrorHandler.handle(e);
       AppSnackbar.error(context, failure.message);
       return false;
     }
   }
 
 
-  /*Future<void> _signUpUser() async {
-    final supabase = Supabase.instance.client;
 
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-
-    try {
-      // 1) Bu email profiles tablosunda var mı?
-      final existing = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
-
-      if (existing != null) {
-        // Email zaten kayıtlı
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("This email is already registered.")),
-        );*/
-        AppSnackbar.error(context, ErrorMessages.emailAlreadyExists);
-        return;
-      }
-
-      // 2) Yeni kullanıcı → auth.signUp()
-      final response = await supabase.auth.signUp(
-        email: email,
-        password: password,
-        emailRedirectTo: 'io.supabase.flutter://email-confirm',
-
-      );
-
-
-      /*
-      * response.session
-      * Kullanıcı kayıt olur → user oluşturulur
-        Ama giriş yapılmış bir session verilmez
-        Çünkü kullanıcı önce e-mailindeki confirm linkine tıklamak zorundadır
-      *
-      * */
-
-      // 3) Supabase doğrulama gönderdi
-      if (response.user != null && response.session == null) {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful! Please verify your email.'),
-          ),
-        );*/
-        AppSnackbar.info(
-            context, ErrorMessages.verifyEmailToContinue);
-
-        if (!mounted) return;
-        router.go('/verify_email_screen');
-
-        // context.go('/verify_email_screen');
-      }
-    } catch (e) {
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );*/
-      Failure failure = SupabaseErrorHandler.handle(e);
-      AppSnackbar.error(context, failure.message);
-    }
-  }*/
-
+  // Future<void> _signUpUser() async {
+  //   final supabase = Supabase.instance.client;
+  //
+  //   final email = emailController.text.trim();
+  //   final password = passwordController.text.trim();
+  //
+  //   final user = supabase.auth.currentUser!;
+  //
+  //   try {
+  //     // 1) Bu email profiles tablosunda var mı?
+  //     final existing = await supabase
+  //         .from('profiles')
+  //         .select('id')
+  //         .eq('email', email)
+  //         .maybeSingle();
+  //
+  //     if (existing != null) {
+  //       // Email zaten kayıtlı
+  //       /*ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text("This email is already registered.")),
+  //       );*/
+  //       AppSnackbar.error(context, ErrorMessages.emailAlreadyExists);
+  //       return;
+  //     }
+  //
+  //     if (existing == null) {
+  //       await supabase.from('profiles').insert({
+  //         'id': user.id,
+  //         'email': user.email,
+  //       });
+  //     }
+  //
+  //
+  //     // 2) Yeni kullanıcı → auth.signUp()
+  //     final response = await supabase.auth.signUp(
+  //       email: email,
+  //       password: password,
+  //       emailRedirectTo: 'io.supabase.flutter://email-confirm',
+  //
+  //     );
+  //
+  //
+  //     /*
+  //     * response.session
+  //     * Kullanıcı kayıt olur → user oluşturulur
+  //       Ama giriş yapılmış bir session verilmez
+  //       Çünkü kullanıcı önce e-mailindeki confirm linkine tıklamak zorundadır
+  //     *
+  //     * */
+  //
+  //     // 3) Supabase doğrulama gönderdi
+  //     if (response.user != null && response.session == null) {
+  //       /*ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //           content: Text('Registration successful! Please verify your email.'),
+  //         ),
+  //       );*/
+  //       AppSnackbar.info(
+  //           context, ErrorMessages.verifyEmailToContinue);
+  //
+  //       if (!mounted) return;
+  //       router.go('/verify_email_screen');
+  //
+  //       // context.go('/verify_email_screen');
+  //     }
+  //   } catch (e) {
+  //     /*ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("Error: $e")),
+  //     );*/
+  //     Failure failure = SupabaseErrorHandler.handle(e);
+  //     AppSnackbar.error(context, failure.message);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +160,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               SizedBox(height: height * 0.15),
 
               // Paw icon
@@ -211,7 +212,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-
                     // Gmail Input
                     CustomTextFormField(
                       hintText: "your.email@gmail.com",
@@ -252,11 +252,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             });
                           },
                           icon: Icon(
-                            isObscure
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                            isObscure ? Icons.visibility_off : Icons.visibility,
                           )),
-
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Password cannot be empty';

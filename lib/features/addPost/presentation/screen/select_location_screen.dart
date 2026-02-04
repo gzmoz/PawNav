@@ -23,7 +23,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   final PermissionService permissionService = PermissionService();
   GoogleMapController? _mapController;
 
-  final LatLng _initialCenter = const LatLng(39.9208, 32.8541);
+  final LatLng _initialCenter = const LatLng(30.2672, -97.7431);
   LatLng? _cameraTarget; // kamera ortası
   LatLng? selectedPoint; // seçilen nokta
   String? selectedTitle;

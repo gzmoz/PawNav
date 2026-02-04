@@ -32,7 +32,7 @@ class _MapScreenState extends State<MapScreen> {
 
   GoogleMapController? _mapController;
 
-  final LatLng _initialCenter = const LatLng(39.9208, 32.8541);
+  final LatLng _initialCenter = const LatLng(30.2672, -97.7431);
   LatLng? _cameraTarget; // kamera ortası
 
   // --- mevcut seçimler (UI için) ---

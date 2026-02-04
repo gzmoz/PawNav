@@ -46,4 +46,3 @@ class ChatListCubit extends Cubit<ChatListState> {
     return super.close();
   }
 }
-

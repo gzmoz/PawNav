@@ -104,4 +104,3 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   }
 
 }
-

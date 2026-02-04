@@ -61,8 +61,8 @@ class _MessageInputState extends State<MessageInput> {
                 child: Container(
                   width: 44,
                   height: 44,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2B6A94), // mor/mavi ana renk
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF2B6A94), // mor/mavi ana renk
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

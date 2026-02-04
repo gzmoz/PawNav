@@ -80,7 +80,9 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              context.push('/notifications');
+            },
             child: const Padding(
               padding: EdgeInsets.only(right: 15),
               child: Icon(Icons.notifications_none),

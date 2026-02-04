@@ -88,6 +88,7 @@ import 'package:pawnav/features/success_story/view_more/presentation/screens/suc
 import 'package:pawnav/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 final router = GoRouter(
   initialLocation: '/splash',
   redirect: (context, state) {
@@ -508,6 +509,7 @@ final router = GoRouter(
         );
       },
     ),
+
 
 
 
