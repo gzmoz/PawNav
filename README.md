@@ -25,9 +25,13 @@ Users can contact each other directly when a post is relevant to them.
 
 ## Demo Video
 
-A short video showing the main flow of the application:
+Click the image above to view feature based demo videos.
 
-[[Demo Video Link](https://www.youtube.com/watch?v=hx4YZAb4JNY&list=PLLTb8J0PJYO-UXUSguYNCCpRoVx5h1riJ&pp=sAgC)]
+<a href="https://www.youtube.com/watch?v=hx4YZAb4JNY&list=PLLTb8J0PJYO-UXUSguYNCCpRoVx5h1riJ&pp=sAgC">
+  <img src="https://snipboard.io/vESsQy.jpg" width="150"/>
+</a>
+
+
 
 ## Screenshots
 
