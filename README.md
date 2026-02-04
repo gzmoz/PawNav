@@ -25,15 +25,122 @@ Users can contact each other directly when a post is relevant to them.
 
 ## Demo Video
 
-A short video showing the main flow of the application:
+Click the image above to view feature based demo videos.
 
-[[Demo Video Link](https://www.youtube.com/watch?v=hx4YZAb4JNY&list=PLLTb8J0PJYO-UXUSguYNCCpRoVx5h1riJ&pp=sAgC)]
+<a href="https://www.youtube.com/watch?v=hx4YZAb4JNY&list=PLLTb8J0PJYO-UXUSguYNCCpRoVx5h1riJ&pp=sAgC">
+  <img src="https://snipboard.io/vESsQy.jpg" width="150"/>
+</a>
+
+
 
 ## Screenshots
 
-<img src="assets/screenshots/1.png" width="240"/>
-<img src="assets/screenshots/2.png" width="240"/>
-<img src="assets/screenshots/3.png" width="240"/>
+Auth screens  
+User authentication flow including sign up and login.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/auth/auth1.jpeg" width="200"/>
+  <img src="assets/screenshots/auth/auth2.jpeg" width="200"/>
+  <img src="assets/screenshots/auth/auth3.jpeg" width="200"/>
+</div>
+
+<br>
+
+Home screens  
+Main feed showing nearby posts and recent activity.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/home/home1.jpeg" width="180"/>
+  <img src="assets/screenshots/home/home2.jpeg" width="180"/>
+  <img src="assets/screenshots/home/home3.jpeg" width="180"/>
+  <img src="assets/screenshots/home/home4.jpeg" width="180"/>
+  <img src="assets/screenshots/home/home5.jpeg" width="180"/>
+</div>
+
+<br>
+
+Post list and filtering  
+Browsing posts by category and location.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/post/post1.jpeg" width="180"/>
+  <img src="assets/screenshots/post/post2.jpeg" width="180"/>
+  <img src="assets/screenshots/post/post3.jpeg" width="180"/>
+  <img src="assets/screenshots/post/post4.jpeg" width="180"/>
+  <img src="assets/screenshots/post/post5.jpeg" width="180"/>
+</div>
+
+<br>
+
+Account screens  
+User profile and account related settings.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/account/account1.jpeg" width="200"/>
+  <img src="assets/screenshots/account/account2.jpeg" width="200"/>
+  <img src="assets/screenshots/account/account3.jpeg" width="200"/>
+</div>
+
+<br>
+
+Post detail  
+Detailed view of a post including description and status.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/postdetail/postdetail1.jpeg" width="200"/>
+  <img src="assets/screenshots/postdetail/postdetail2.jpeg" width="200"/>
+  <img src="assets/screenshots/postdetail/mypostdetail1.jpeg" width="200"/>
+  <img src="assets/screenshots/postdetail/mypostdetail2.jpeg" width="200"/>
+</div>
+
+<br>
+
+Add post  
+Creating a new post with required details.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/addpost/addpost1.jpeg" width="200"/>
+  <img src="assets/screenshots/addpost/addpost2.jpeg" width="200"/>
+  <img src="assets/screenshots/addpost/addpost3.jpeg" width="200"/>
+</div>
+
+<br>
+
+Success stories  
+Resolved cases shared by users.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/success_stories/success1.jpeg" width="200"/>
+  <img src="assets/screenshots/success_stories/success2.jpeg" width="200"/>
+  <img src="assets/screenshots/success_stories/success3.jpeg" width="200"/>
+</div>
+
+<br>
+
+Badges  
+User achievements and contribution indicators.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/badges/badges1.jpeg" width="200"/>
+  <img src="assets/screenshots/badges/badges2.jpeg" width="200"/>
+</div>
+
+<br>
+
+Menu  
+Navigation and additional app options.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/menu/menu1.jpeg" width="200"/>
+  <img src="assets/screenshots/menu/menu2.jpeg" width="200"/>
+</div>
+
+
+
+
+
+
+
 
 ## Technology
 
