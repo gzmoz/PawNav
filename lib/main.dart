@@ -7,11 +7,14 @@ import 'package:pawnav/app/router.dart';
 import 'package:pawnav/app/supabase_auth_listener.dart';
 import 'package:pawnav/core/services/fcm_token_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/auth/auth_gate.dart';
 
 
 void main() async{
+  await dotenv.load(fileName: ".env");
+
   FlutterError.onError = (FlutterErrorDetails details) {
     debugPrint(' FLUTTER ERROR ');
     debugPrint(details.exceptionAsString());
@@ -22,9 +25,10 @@ void main() async{
 
   //connect to the Supabase
   await Supabase.initialize(
-    url: 'https://vhiiafjiezojyschiaia.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoaWlhZmppZXpvanlzY2hpYWlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzA3ODAsImV4cCI6MjA3NzM0Njc4MH0.Z38WDjOG5wdVLOQnkccz1pD0zO2EA8I3tJYwIYwvI7s',
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
   SupabaseAuthListener.initialize();
 
   await Firebase.initializeApp();
