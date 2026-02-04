@@ -27,7 +27,7 @@ Users can contact each other directly when a post is relevant to them.
 
 A short video showing the main flow of the application:
 
-[[Demo Video Link](https://youtu.be/hx4YZAb4JNY?si=jaq6qF5VlvELeTvc)]
+[[Demo Video Link](https://www.youtube.com/watch?v=hx4YZAb4JNY&list=PLLTb8J0PJYO-UXUSguYNCCpRoVx5h1riJ&pp=sAgC)]
 
 ## Screenshots
 
