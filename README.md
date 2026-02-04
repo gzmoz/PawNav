@@ -22,7 +22,6 @@ Users can contact each other directly when a post is relevant to them.
 • Clear post categories  
 • Direct messaging between users  
 • Push notifications  
-• Simple and focused interface  
 
 ## Demo Video
 
