@@ -10,6 +10,7 @@ Domain usecase’ini çağırır.*/
 
 class AddPostCubit extends Cubit<AddPostState> {
   final AddPost addPostUseCase;
+  bool _isSubmitting = false;
 
   AddPostCubit({
     required this.addPostUseCase,
@@ -17,6 +18,10 @@ class AddPostCubit extends Cubit<AddPostState> {
 
 
   Future<void> submitPost(Post post) async {
+    if (_isSubmitting) return; //  ikinci çağrıyı drop et
+
+    _isSubmitting = true;
+    emit(AddPostLoading());
     try {
       print("ADD POST START");
       emit(AddPostLoading());

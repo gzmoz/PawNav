@@ -476,36 +476,51 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await handleSubmitPost(
-                          context: context,
-                          selectedImages: selectedImages,
-                          uploadImages: uploadImages,
-                          species: selectedSpecies,
-                          breed: selectedBreed,
-                          color: selectedColor,
-                          gender: selectedGender,
-                          name: animalNameController.text,
-                          description: descriptionController.text,
-                          location: selectedLocation,
-                          eventDate: selectedDate,
-                          postType: widget.type,
-                        );
-                      },
+                  BlocBuilder<AddPostCubit, AddPostState>(
+                builder: (context, state) {
+                  final isLoading = state is AddPostLoading;
+
+                  return GestureDetector(
+                    onTap: isLoading
+                        ? null // 👈 ikinci basışı tamamen engeller
+                        : () async {
+                      await handleSubmitPost(
+                        context: context,
+                        selectedImages: selectedImages,
+                        uploadImages: uploadImages,
+                        species: selectedSpecies,
+                        breed: selectedBreed,
+                        color: selectedColor,
+                        gender: selectedGender,
+                        name: animalNameController.text,
+                        description: descriptionController.text,
+                        location: selectedLocation,
+                        eventDate: selectedDate,
+                        postType: widget.type,
+                      );
+                    },
+                    child: Opacity(
+                      opacity: isLoading ? 0.6 : 1.0,
                       child: Container(
                         width: width * 0.8,
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         alignment: Alignment.center,
-                        child: Text(
+                        child: isLoading
+                            ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                            : Text(
                           "Add post",
                           style: TextStyle(
                             color: Colors.white,
@@ -515,6 +530,49 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
                         ),
                       ),
                     ),
+                  );
+                },
+                ),
+
+                  // GestureDetector(
+                    //   onTap: () async {
+                    //     await handleSubmitPost(
+                    //       context: context,
+                    //       selectedImages: selectedImages,
+                    //       uploadImages: uploadImages,
+                    //       species: selectedSpecies,
+                    //       breed: selectedBreed,
+                    //       color: selectedColor,
+                    //       gender: selectedGender,
+                    //       name: animalNameController.text,
+                    //       description: descriptionController.text,
+                    //       location: selectedLocation,
+                    //       eventDate: selectedDate,
+                    //       postType: widget.type,
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     width: width * 0.8,
+                    //     padding: const EdgeInsets.symmetric(vertical: 15),
+                    //     decoration: BoxDecoration(
+                    //       gradient: const LinearGradient(
+                    //         colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                    //         begin: Alignment.topLeft,
+                    //         end: Alignment.bottomRight,
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(16),
+                    //     ),
+                    //     alignment: Alignment.center,
+                    //     child: Text(
+                    //       "Add post",
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: width * 0.035,
+                    //         fontWeight: FontWeight.bold,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -743,7 +801,7 @@ class _AddPostFormPageState extends State<AddPostFormPage> {
       postType: postType,
     );
 
-    // 4️⃣ Submit
+    //  Submit
     context.read<AddPostCubit>().submitPost(post);
   }
 

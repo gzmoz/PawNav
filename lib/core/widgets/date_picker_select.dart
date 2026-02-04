@@ -100,7 +100,8 @@ class _DatePickerSelectState extends State<DatePickerSelect> {
                         ),
 
                         todayForegroundColor:
-                        MaterialStatePropertyAll(Color(0xFF2563EB)),
+                        MaterialStatePropertyAll(Colors.black),
+
 
                         dayForegroundColor:
                         MaterialStateProperty.resolveWith((states) {
@@ -109,6 +110,7 @@ class _DatePickerSelectState extends State<DatePickerSelect> {
                           }
                           return Colors.black;
                         }),
+
 
                         dayBackgroundColor:
                         MaterialStateProperty.resolveWith((states) {

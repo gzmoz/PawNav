@@ -37,36 +37,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = passwordController.text.trim();
 
     try {
-      // 1) Auth signup
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
         emailRedirectTo: 'io.supabase.flutter://email-confirm',
       );
 
-      // Güvenlik kontrolü
-      if (response.user == null) {
+      final user = response.user;
+
+      if (user == null) {
         AppSnackbar.error(context, "Signup failed.");
         return false;
       }
 
-      /*
-      Email verification açık olduğu için:
-      - user oluşur
-      - session = null
-    */
-      if (response.session == null) {
-        AppSnackbar.info(context, ErrorMessages.verifyEmailToContinue);
-        return true; // verify ekranına gidebilir
+      if (user.identities == null || user.identities!.isEmpty) {
+        AppSnackbar.error(context, ErrorMessages.emailAlreadyExists);
+        return false;
       }
 
+      // Yeni kullanıcı → verify email
+      AppSnackbar.info(context, ErrorMessages.verifyEmailToContinue);
       return true;
+
     } catch (e) {
       Failure failure = SupabaseErrorHandler.handle(e);
       AppSnackbar.error(context, failure.message);
       return false;
     }
   }
+
 
 
 

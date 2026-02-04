@@ -482,14 +482,23 @@ class _PostPageState extends State<PostPage> {
                                             // ),
                                             GestureDetector(
                                               onTap: () async {
-                                                final result =
+                                                final result = await Navigator.of(
+                                                  context,
+                                                  rootNavigator: true,
+                                                ).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) => const SelectLocationScreen(),
+                                                  ),
+                                                );
+
+                                                /*final result =
                                                 await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (_) =>
                                                     const SelectLocationScreen(),
                                                   ),
-                                                );
+                                                );*/
 
                                                 if (result != null) {
                                                   setState(() {
@@ -978,9 +987,9 @@ class _PostPageState extends State<PostPage> {
                                                     context.pop({
                                                       "postType":
                                                       selectedPostType,
-                                                      "location":
-                                                      locationController
-                                                          .text,
+                                                      "location": locationController.text.isEmpty
+                                                          ? null
+                                                          : locationController.text,
                                                       "radius": radiusValue,
                                                       "animal": selectedAnimal,
                                                       "breed": selectedBreed,
