@@ -136,19 +136,18 @@ Navigation and additional app options.
 </div>
 
 
-
-
-
-
-
-
 ## Technology
 
-• Flutter  
-• BLoC/Cubit state management  
-• Supabase for authentication database and realtime features  
-• Firebase Cloud Messaging  
+• <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" width="15"/> Flutter  
+• <img src="https://snipboard.io/oc5AfB.jpg" width="15"/> BLoC / Cubit State Management  
+• <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" width="15"/> Supabase for authentication database and realtime features  
+• <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" width="15"/> Firebase Cloud Messaging  
 • REST based services  
+
+## Architecture
+
+- Clean Architecture (Presentation / Domain / Data)
+- Feature-Based Folder Structure
 
 ## Project Status
 
