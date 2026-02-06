@@ -27,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
 
   bool isObscure = true;
 
@@ -37,11 +39,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = passwordController.text.trim();
 
     try {
-      final response = await supabase.auth.signUp(
+      /*final response = await supabase.auth.signUp(
         email: email,
         password: password,
         emailRedirectTo: 'io.supabase.flutter://email-confirm',
+      );*/
+      final response =await supabase.auth.signUp(
+        email: email,
+        password: password,
+        emailRedirectTo: 'io.supabase.flutter://email-confirm',
+        data: {
+          'full_name': nameController.text.trim(),
+        },
       );
+
 
       final user = response.user;
 
@@ -211,6 +222,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    //full name input
+                    CustomTextFormField(
+                      hintText: "Your name",
+                      controller: nameController,
+                      obscureText: false,
+                      prefixIcon: const Icon(
+                        Icons.person,
+                        color: AppColors.primary,
+                        size: 22, // diğer iconlarla uyumlu
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Name cannot be empty';
+                        }
+                        return null;
+                      },
+                    ),
+
+
+                    SizedBox(height: 22),
+
+
                     // Gmail Input
                     CustomTextFormField(
                       hintText: "your.email@gmail.com",

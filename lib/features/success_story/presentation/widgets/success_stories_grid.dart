@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/features/account/presentations/cubit/account_status_cubit.dart';
+import 'package:pawnav/features/home/presentations/cubit/recent_activity_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/account_success_stories_state.dart';
 import 'package:pawnav/features/success_story/presentation/cubit/success_story_detail_cubit.dart';
 import 'package:pawnav/features/success_story/presentation/widgets/success_story_grid_card.dart';
+
+import '../../../home/presentations/cubit/featured_posts_cubit.dart';
+import '../../../post/presentations/cubit/post_list_cubit.dart';
 
 class SuccessStoriesGrid extends StatelessWidget {
   const SuccessStoriesGrid({super.key});
@@ -71,6 +75,11 @@ class SuccessStoriesGrid extends StatelessWidget {
                       .loadMySuccessStories();
 
                   context.read<AccountStatsCubit>().refresh();
+                  context.read<PostListCubit>().load();
+                  context.read<FeaturedPostsCubit>().loadTop(limit: 5);
+                  context.read<RecentActivityCubit>().fetchAll();
+
+
                 }
 
                 if (result == 'story_changed') {
@@ -82,34 +91,6 @@ class SuccessStoriesGrid extends StatelessWidget {
 
 
               },
-
-              /*onTap: () async {
-                final deletedStoryId = await context.push<String>(
-                  '/success-story/${item.story.id}',
-                );
-
-                if (deletedStoryId != null) {
-                  context.read<AccountSuccessStoriesCubit>()
-                      .removeStory(deletedStoryId);
-
-                  context.read<AccountStatsCubit>().refresh();
-                }
-              },*/
-
-              /*onTap: () async {
-                final deleted = await context.push<bool>(
-                  '/success-story/${item.story.id}',
-                );
-
-                if (deleted == true) {
-                  context
-                      .read<AccountSuccessStoriesCubit>()
-                      .loadMySuccessStories();
-
-                  context.read<AccountStatsCubit>().loadStats();
-                }
-
-              },*/
             );
           },
         );

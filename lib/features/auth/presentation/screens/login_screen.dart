@@ -15,6 +15,8 @@ import 'package:pawnav/core/widgets/password_text_field_component.dart';
 import 'package:pawnav/core/widgets/text_field_component.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase/supabase.dart';
+import 'package:flutter/services.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,6 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool _isGoogleSigningIn = false;
+  bool _isSigningIn = false;
 
   // State değişkeni - kedi animasyonu
   Offset catOffset = const Offset(0, 1.0);
@@ -37,6 +41,15 @@ class _LoginScreenState extends State<LoginScreen> {
     y = 1.0 → kedi şu an bulunduğu yerden 1 ekran yüksekliği aşağıda
     Yani kedi başlangıçta ekranın dışındadır.*/
 
+  Future<void> _playFeedback() async {
+    // Her cihazda çalışır
+    HapticFeedback.lightImpact();
+
+    //  Destekleyen cihazlarda ekstra click
+    SystemSound.play(SystemSoundType.click);
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
         catOffset =
-        const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
+            const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
       });
     });
   }
@@ -120,7 +133,6 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-
       final profile = await supabase
           .from('profiles')
           .select('name,username')
@@ -129,34 +141,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
       await FcmTokenService.init();
 
-
       if (profile == null ||
           profile['name'] == null ||
           profile['username'] == null ||
           (profile['name'] as String).isEmpty ||
           (profile['username'] as String).isEmpty) {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Welcome! Please complete your profile")),
-        );*/
-
-        AppSnackbar.info(context, "Welcome! Please complete your profile.");
-
-        context.go('/additional_info_screen');
+        AppSnackbar.info(context, "Welcome to PawNav!");
       } else {
-        /*ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login successful")),
-        );*/
         AppSnackbar.success(context, "Login successful!");
 
         await FcmTokenService.init();
         //context.go('/home');
       }
     } catch (e) {
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );*/
-      // AppSnackbar.error(context, "Error: $e");
       Failure failure = SupabaseErrorHandler.handle(e);
       AppSnackbar.error(context, failure.message);
     }
@@ -196,7 +193,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       offset: catOffset,
                       duration: const Duration(milliseconds: 1100), //süre
                       curve: Curves.easeInOutBack, //hareket şekli
-                      child: Transform.translate( //widget’ı x ve y eksenlerinde kaydırmak (taşımak) için kullanılan bir widget
+                      child: Transform.translate(
+                        //widget’ı x ve y eksenlerinde kaydırmak (taşımak) için kullanılan bir widget
                         offset: Offset(0, height * 0.03),
                         child: Image.asset(
                           "assets/login_screen/logcat.png",
@@ -225,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding:
-                      EdgeInsets.only(left: width * 0.1, top: width * 0.07),
+                          EdgeInsets.only(left: width * 0.1, top: width * 0.07),
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -244,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding:
-                      EdgeInsets.only(left: width * 0.1, top: width * 0.03),
+                          EdgeInsets.only(left: width * 0.1, top: width * 0.03),
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -261,27 +259,48 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: EdgeInsets.only(right: width * 0.12, top: 4),
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap:(){
-                            context.push('/forgot_password');
-                          },
-                          child: Text(
-                            "Forgot Password",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.italic,
-                                fontSize: width * 0.03,
-                                //decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                                decorationThickness: 1.8
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              context.push('/forgot_password');
+                            },
+                            splashColor: Colors.blue.withOpacity(0.2),
+                            highlightColor: Colors.blue.withOpacity(0.15),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 2),
+                              child: Text(
+                                "Forgot Password",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: width * 0.03,
+                                ),
+                              ),
                             ),
                           ),
                         ),
+                        // child: GestureDetector(
+                        //   onTap:(){
+                        //     context.push('/forgot_password');
+                        //   },
+                        //   child: Text(
+                        //     "Forgot Password",
+                        //     style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontWeight: FontWeight.w600,
+                        //         fontStyle: FontStyle.italic,
+                        //         fontSize: width * 0.03,
+                        //         //decoration: TextDecoration.underline,
+                        //         decorationColor: Colors.white,
+                        //         decorationThickness: 1.8
+                        //     ),
+                        //   ),
+                        // ),
                       ),
                     ),
-
-
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.1,
@@ -304,64 +323,125 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         child: ElevatedButton.icon(
-                          onPressed: () async {
+                          onPressed: _isSigningIn
+                              ? null
+                              : () async {
+                            setState(() => _isSigningIn = true);
+
                             await _loginUser();
+
+                            if (mounted) {
+                              setState(() => _isSigningIn = false);
+                            }
                           },
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            // backgroundColor: AppColors.background,
+                            disabledBackgroundColor: Colors.white.withOpacity(0.6),
                           ),
+                          icon: _isSigningIn
+                              ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.primary),
+                            ),
+                          )
+                              : const Icon(Icons.login, color: Colors.black),
                           label: Text(
-                            "Sign-in",
+                            _isSigningIn ? "Signing in..." : "Sign-in",
                             style: TextStyle(
                               fontSize: width * 0.035,
                               color: Colors.black,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          icon: const Icon(
-                            Icons.login,
-                            color: Colors.black,
-                          ),
                         ),
+
+                        // child: ElevatedButton.icon(
+                        //   onPressed: () async {
+                        //     await _loginUser();
+                        //   },
+                        //
+                        //   style: ElevatedButton.styleFrom(
+                        //     backgroundColor: Colors.white,
+                        //     // backgroundColor: AppColors.background,
+                        //   ),
+                        //   label: Text(
+                        //     "Sign-in",
+                        //     style: TextStyle(
+                        //       fontSize: width * 0.035,
+                        //       color: Colors.black,
+                        //     ),
+                        //   ),
+                        //   icon: const Icon(
+                        //     Icons.login,
+                        //     color: Colors.black,
+                        //   ),
+                        // ),
                       ),
                     ),
-
-
                     const SizedBox(height: 10),
                     buildOrDivider(),
                     const SizedBox(height: 10),
                     SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: width * 0.02),
-                        child: GestureDetector(
-                          onTap: () async {
-                            try {
-                              // _nativeGoogleSignIn();
-                              /*final response = await supabase.auth.signInWithOAuth(
-                                  OAuthProvider.google,
-                                  redirectTo: 'io.supabase.flutter://login-callback',
-                                );*/
-                              await _nativeGoogleSignIn();
+                      width: width * 0.39,
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: _isGoogleSigningIn
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isGoogleSigningIn = true;
+                                  });
 
-                              await _handleGoogleProfile();
-
-                            } catch (e) {
-                              /*ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text("Google login failed: $e")),
-                              );*/
-                              AppSnackbar.error(context, "Google login failed: $e");
-                            }
-                          },
-                          child: Image.asset(
-                            'assets/login_screen/google_button_2x.png',
-                            width: width * 0.39,
+                                  try {
+                                    await _nativeGoogleSignIn();
+                                    await _handleGoogleProfile();
+                                  } catch (e) {
+                                    AppSnackbar.error(
+                                      context,
+                                      "Google login failed. Please try again.",
+                                    );
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        _isGoogleSigningIn = false;
+                                      });
+                                    }
+                                  }
+                                },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              AnimatedOpacity(
+                                duration: const Duration(milliseconds: 200),
+                                opacity: _isGoogleSigningIn ? 0.6 : 1.0,
+                                child: Image.asset(
+                                  'assets/login_screen/google_button_2x.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              if (_isGoogleSigningIn)
+                                const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.black),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
-
                       ),
                     ),
-
                   ],
                 ),
               ],
@@ -394,9 +474,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   )),
             ),
-
             const SizedBox(height: 25),
-
             Positioned(
               bottom: 25,
               child: RichText(
@@ -410,14 +488,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     const TextSpan(text: 'By continuing, you agree to our '),
                     TextSpan(
                       text: 'Terms of Service',
-                      style: const TextStyle(decoration: TextDecoration.underline, color: AppColors.primary),
+                      style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: AppColors.primary),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => context.push('/terms-of-service'),
                     ),
                     const TextSpan(text: ' and '),
                     TextSpan(
                       text: 'Privacy Policy',
-                      style: const TextStyle(decoration: TextDecoration.underline, color: AppColors.primary),
+                      style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: AppColors.primary),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => context.push('/privacy-policy'),
                     ),
@@ -436,11 +518,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final session = supabase.auth.currentSession;
 
     if (session == null) {
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login failed: no session")),
-      );*/
-      // AppSnackbar.error(context, "Login failed: no session.");
-
       AppSnackbar.error(context, ErrorMessages.noSession);
 
       return;
@@ -462,10 +539,12 @@ class _LoginScreenState extends State<LoginScreen> {
     String baseUsername = googleName
         .toLowerCase()
         .replaceAll(" ", "_")
-        .replaceAll(RegExp(r'[^a-z0-9_]'), ''); //Bu karakterlerin dışında (^) kalan her şeyi bul ve '' ile sil.
+        .replaceAll(RegExp(r'[^a-z0-9_]'),
+            ''); //Bu karakterlerin dışında (^) kalan her şeyi bul ve '' ile sil.
 
     // Username sonuna random sayı ekleyelim
-    String generatedUsername = "$baseUsername${DateTime.now().millisecondsSinceEpoch % 10000}";
+    String generatedUsername =
+        "$baseUsername${DateTime.now().millisecondsSinceEpoch % 10000}";
 
     // Unique olana kadar kontrol et
     bool isUnique = false;
@@ -481,7 +560,7 @@ class _LoginScreenState extends State<LoginScreen> {
         isUnique = true;
       } else {
         generatedUsername =
-        "$baseUsername${(DateTime.now().millisecondsSinceEpoch ~/ 2) % 10000}";
+            "$baseUsername${(DateTime.now().millisecondsSinceEpoch ~/ 2) % 10000}";
       }
     }
 
@@ -506,15 +585,15 @@ class _LoginScreenState extends State<LoginScreen> {
         'photo_url': user.userMetadata?['avatar_url'],
         'created_at': DateTime.now().toIso8601String(),
       });
-
     }
 
     // ----------------------------
     // 5) Artık direkt Home ekranına git
     // ----------------------------
     await FcmTokenService.init();
+    if (!mounted) return;
+    AppSnackbar.success(context, "Login successful!");
     //context.go('/home');
-
   }
 
   Widget buildOrDivider() {
@@ -548,6 +627,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-
 }

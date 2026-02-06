@@ -1,4 +1,5 @@
 import 'package:pawnav/features/success_story/domain/entities/success_story_detail_entity.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/repositories/success_story_repository.dart';
 import '../datasources/success_story_remote_datasource.dart';
 import '../models/profile_model.dart';
@@ -28,9 +29,27 @@ class SuccessStoryRepositoryImpl implements SuccessStoryRepository {
   }
 
   @override
+  Future<void> deleteStory({
+    required String storyId,
+    required String postId,
+  }) async {
+    final supabase = Supabase.instance.client;
+
+    await supabase
+        .from('success_stories')
+        .delete()
+        .eq('id', storyId);
+
+    await supabase
+        .from('posts')
+        .update({'is_active': true})
+        .eq('id', postId);
+  }
+
+  /*@override
   Future<void> deleteStory(String storyId) async {
     await remote.deleteStory(storyId);
-  }
+  }*/
 
 
 

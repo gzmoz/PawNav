@@ -7,7 +7,11 @@ abstract class SuccessStoryRepository {
   Future<ProfileModel> getProfileById(String userId);
   Future<List<ProfileModel>> searchProfiles(String query);
   Future<SuccessStoryDetailEntity> getStoryDetail(String storyId);
-  Future<void> deleteStory(String storyId);
+  Future<void> deleteStory({
+    required String storyId,
+    required String postId,
+  });
+  //Future<void> deleteStory(String storyId);
 
 
   Future<void> createSuccessStory({

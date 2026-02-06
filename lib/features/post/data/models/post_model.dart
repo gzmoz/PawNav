@@ -16,7 +16,8 @@ class PostModel extends Post {
     required super.images,
     required super.postType,
     required super.views,
-    required super.owner
+    required super.owner,
+    required super.isActive
 
   });
 
@@ -37,6 +38,7 @@ class PostModel extends Post {
       images: map['images'] != null
           ? List<String>.from(map['images'])
           : [],
+      isActive: map['is_active'] == null || map['is_active'] == true,
       postType: map['post_type'] ?? '',
       views: map['views'] ?? 0,
       owner: ownerMap == null
@@ -46,6 +48,7 @@ class PostModel extends Post {
         name: ownerMap['name'] ?? '',
         username: ownerMap['username'] ?? '',
         photoUrl: ownerMap['photo_url'],
+
       ),
     );
   }

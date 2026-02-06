@@ -40,6 +40,7 @@ class MapRemoteDataSource {
         postType: e['post_type'],
         location: e['location'],
         images: List<String>.from(e['images'] ?? []),
+        isActive: e['is_active'] as bool? ?? false,
         name: e['name'],
       );
     }).toList();

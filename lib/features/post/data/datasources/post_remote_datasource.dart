@@ -49,6 +49,7 @@ class PostRemoteDataSource {
       images,
       post_type,
       views,
+      is_active,
       profiles (
         id,
         name,

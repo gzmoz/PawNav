@@ -6,6 +6,7 @@ class MapPost {
   final String location;
   final String? name;
   final List<String> images;
+  final bool isActive;
 
   MapPost({
     required this.id,
@@ -14,6 +15,7 @@ class MapPost {
     required this.postType,
     required this.location,
     required this.images,
+    required this.isActive,
     this.name,
   });
 }

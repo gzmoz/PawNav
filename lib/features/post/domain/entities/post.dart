@@ -17,6 +17,7 @@ class Post {
   final List<String> images;
   final String postType;
   final int views;
+  final bool isActive;
 
   final PostOwner? owner; // ekledim
 
@@ -31,6 +32,7 @@ class Post {
     required this.description,
     required this.location,
     required this.eventDate,
+    required this.isActive,
     required this.images,
     required this.postType,
     required this.views,

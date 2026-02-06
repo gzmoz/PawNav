@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
@@ -15,6 +16,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final supabase = Supabase.instance.client;
   final TextEditingController emailController = TextEditingController();
   bool resetSent = false;
+  bool _isSending = false;
+
+
+  Future<void> _playFeedback() async {
+    HapticFeedback.lightImpact();
+  }
 
 
   Future<void> _sendResetLink() async {
@@ -60,26 +67,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
     }
   }
-
-
-
-  /*Future<void> _sendResetLink() async {
-    try {
-      await supabase.auth.resetPasswordForEmail(
-        emailController.text.trim(),
-        redirectTo: 'io.supabase.flutter://reset-callback',
-
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("A reset link has been sent to your email.")),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -220,56 +207,90 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
 
 
-
-                /*// Email input
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    hintText: "Enter your email",
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      // borderSide: BorderSide(color: AppColors.primary),
-                      borderSide: BorderSide(color: Colors.grey.shade100),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),*/
-
-                // const Spacer(),
                 SizedBox(height: height * 0.05),
 
+                if (!resetSent)
+                  Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: _isSending
+                          ? null
+                          : () async {
+                        setState(() => _isSending = true);
 
-                /*// Send reset button
-                SizedBox(
-                  width: double.infinity,
-                  height: height * 0.065,
-                  child: ElevatedButton(
-                    onPressed: _sendResetLink,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: Text(
-                      "Send Reset Link",
-                      style: TextStyle(
-                        fontSize: width * 0.045,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        HapticFeedback.lightImpact();
+
+                        await _sendResetLink();
+
+                        if (mounted) {
+                          setState(() => _isSending = false);
+                        }
+                      },
+                      child: Container(
+                        width: width * 0.88,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // NORMAL TEXT
+                            AnimatedOpacity(
+                              duration: const Duration(milliseconds: 200),
+                              opacity: _isSending ? 0.0 : 1.0,
+                              child: Text(
+                                "Send Reset Link",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: width * 0.035,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            // LOADING + TEXT
+                            if (_isSending)
+                              const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    "Reset link is being sent...",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+
                       ),
                     ),
                   ),
-                ),*/
 
-                if (!resetSent)
+
+
+                /*if (!resetSent)
                   GestureDetector(
                     onTap: () async {
                       await _sendResetLink();
@@ -295,7 +316,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
 
                 const SizedBox(height: 15),
 

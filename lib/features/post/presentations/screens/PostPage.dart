@@ -73,8 +73,11 @@ class _PostPageState extends State<PostPage> {
               onPressed: () {
                 showSearch(
                   context: context,
-                  delegate: CustomSearchDelegate(),
+                  delegate: CustomSearchDelegate(
+                    context.read<PostListCubit>(),
+                  ),
                 );
+
               },
               icon: const Icon(Icons.search))
         ],
@@ -284,8 +287,10 @@ class _PostPageState extends State<PostPage> {
                               ),
                             ),
                             builder: (BuildContext context) {
-                              String selectedPostType =
-                                  _currentFilter.postType ?? "Lost";
+                              /*String selectedPostType =
+                                  _currentFilter.postType ?? "Lost";*/
+                              String? selectedPostType = _currentFilter.postType;
+
 
                               double radiusValue =
                                   _currentFilter.radiusKm ?? 10;
@@ -392,13 +397,23 @@ class _PostPageState extends State<PostPage> {
                                                   "Found",
                                                   "Adoption"
                                                 ].map((type) {
-                                                  final isSelected =
+                                                  /*final isSelected =
                                                       selectedPostType == type;
 
                                                   return GestureDetector(
                                                     onTap: () {
                                                       setState(() {
                                                         selectedPostType = type;
+                                                      });
+                                                    },*/
+                                                  final isSelected =
+                                                      (type == "Any" && selectedPostType == null) ||
+                                                          selectedPostType == type;
+
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        selectedPostType = type == "Any" ? null : type;
                                                       });
                                                     },
                                                     child: AnimatedContainer(
@@ -951,7 +966,7 @@ class _PostPageState extends State<PostPage> {
                                                 OutlinedButton(
                                                   onPressed: () {
                                                     setState(() {
-                                                      selectedPostType = "Lost";
+                                                      selectedPostType = null;
                                                       selectedAnimal = "Any";
                                                       selectedBreed = "Any";
                                                       locationController
@@ -1201,71 +1216,51 @@ class _PostPageState extends State<PostPage> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = [];
+  final PostListCubit cubit;
+
+  CustomSearchDelegate(this.cubit);
+
+
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // AppBar’ın sağındaki ikonları oluşturur (örneğin temizleme ikonu)
     return [
       IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.clear))
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+          cubit.search('');
+        },
+      ),
     ];
   }
 
   @override
   Widget? buildLeading(BuildContext context) {
-    // AppBar’ın solundaki ikon (örneğin geri butonu)
     return IconButton(
-        onPressed: () {
-          close(context, null); //close the search bar
-        },
-        icon: const Icon(Icons.arrow_back));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    // Kullanıcı “search” tuşuna bastığında ne gösterileceğini tanımlar
-    List<String> matchQuery = [];
-    for (var item in searchTerms) {
-      if (item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(matchQuery[index]),
-        );
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        cubit.search('');
+        close(context, null);
       },
     );
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) {
-    // Kullanıcı yazarken çıkan önerileri gösterir
-    List<String> matchQuery = [];
-    for (var item in searchTerms) {
-      if (item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-    return Container(
-      color: AppColors.white3,
-      child: ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(matchQuery[index]),
-          );
-        },
-      ),
-    );
+  Widget buildResults(BuildContext context) {
+    cubit.search(query);
+    return _buildResultList(cubit);
   }
+
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    cubit.search(query);
+    return _buildResultList(cubit);
+  }
+
 }
+
 
 class _BreedTile extends StatelessWidget {
   final String label;
@@ -1344,3 +1339,116 @@ class _AnimalTile extends StatelessWidget {
     );
   }
 }
+
+Widget _buildResultList(PostListCubit cubit) {
+  return StreamBuilder<PostListState>(
+    stream: cubit.stream,
+    initialData: cubit.state,
+    builder: (context, snapshot) {
+      final state = snapshot.data;
+
+      if (state is PostListLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (state is PostListLoaded) {
+        if (state.posts.isEmpty) {
+          return const Center(child: Text("No results found"));
+        }
+
+        return ListView.builder(
+          itemCount: state.posts.length,
+          itemBuilder: (context, index) {
+            final post = state.posts[index];
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                elevation: 1,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context.push('/post-detail/${post.id}');
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Row(
+                      children: [
+                        // sol küçük görsel
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: post.images.isNotEmpty
+                              ? Image.network(
+                            post.images.first,
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                          )
+                              : Container(
+                            width: 56,
+                            height: 56,
+                            color: Colors.grey.shade300,
+                            child: const Icon(Icons.pets, color: Colors.grey),
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // text alanı
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                post.name ?? 'Unknown',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                post.location,
+                                style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+
+
+            /*return ListTile(
+              title: Text(post.name ?? 'Unknown'),
+              subtitle: Text(post.location),
+              onTap: () {
+                Navigator.of(context).pop(); // search kapanır
+                context.push('/post-detail/${post.id}');
+              },
+            );*/
+          },
+        );
+      }
+
+      return const SizedBox.shrink();
+    },
+  );
+}
+
+
+

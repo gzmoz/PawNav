@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/core/utils/custom_snack.dart';
@@ -19,6 +20,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   bool obscure1 = true;
   bool obscure2 = true;
+
+  bool _isUpdating = false;
+
+  Future<void> _playFeedback() async {
+    HapticFeedback.lightImpact();
+  }
+
 
   Future<void> _resetPassword() async {
     final pass = passwordController.text.trim();
@@ -226,30 +234,108 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       padding: EdgeInsets.only(bottom: height * 0.03),
                       child: Column(
                         children: [
-                          GestureDetector(
-                            onTap: _resetPassword,
-                            child: Container(
-                              width: width * 0.88,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                          Material(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: _isUpdating
+                                  ? null
+                                  : () async {
+                                setState(() => _isUpdating = true);
+
+                                await _playFeedback();
+
+                                await _resetPassword();
+
+                                if (mounted) {
+                                  setState(() => _isUpdating = false);
+                                }
+                              },
+                              child: Container(
+                                width: width * 0.88,
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Update Password",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: width * 0.035,
-                                  fontWeight: FontWeight.bold,
+                                alignment: Alignment.center,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // NORMAL TEXT
+                                    AnimatedOpacity(
+                                      duration: const Duration(milliseconds: 200),
+                                      opacity: _isUpdating ? 0.0 : 1.0,
+                                      child: Text(
+                                        "Update Password",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: width * 0.035,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+
+                                    // LOADING + TEXT
+                                    if (_isUpdating)
+                                      const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.5,
+                                              valueColor:
+                                              AlwaysStoppedAnimation<Color>(Colors.white),
+                                            ),
+                                          ),
+                                          SizedBox(width: 12),
+                                          Text(
+                                            "Updating password...",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
+
+                          // GestureDetector(
+                          //   onTap: _resetPassword,
+                          //   child: Container(
+                          //     width: width * 0.88,
+                          //     padding: const EdgeInsets.symmetric(vertical: 15),
+                          //     decoration: BoxDecoration(
+                          //       gradient: const LinearGradient(
+                          //         colors: [Color(0xFF233E96), Color(0xFF3C59C7)],
+                          //         begin: Alignment.topLeft,
+                          //         end: Alignment.bottomRight,
+                          //       ),
+                          //       borderRadius: BorderRadius.circular(16),
+                          //     ),
+                          //     alignment: Alignment.center,
+                          //     child: Text(
+                          //       "Update Password",
+                          //       style: TextStyle(
+                          //         color: Colors.white,
+                          //         fontSize: width * 0.035,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

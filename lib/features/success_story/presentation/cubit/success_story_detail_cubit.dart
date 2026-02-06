@@ -37,7 +37,7 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
           reunitedDate: data.reunitedDate,
           postType: data.postType,
           location: data.location,
-          isOwner: isOwner, // ✅ BURASI
+          isOwner: isOwner,
 
         ),
       );
@@ -47,13 +47,29 @@ class SuccessStoryDetailCubit extends Cubit<SuccessStoryDetailState> {
     }
   }
 
-  Future<void> deleteStory(String storyId) async {
+  Future<void> deleteStory({
+    required String storyId,
+    required String postId,
+  }) async {
+    try {
+      await repository.deleteStory(
+        storyId: storyId,
+        postId: postId,
+      );
+      emit(SuccessStoryDeleted());
+    } catch (e) {
+      emit(SuccessStoryDetailError(e.toString()));
+    }
+  }
+
+
+/*Future<void> deleteStory(String storyId) async {
     try {
       await repository.deleteStory(storyId);
       emit(SuccessStoryDeleted());
     } catch (e) {
       emit(SuccessStoryDetailError(e.toString()));
     }
-  }
+  }*/
 
 }

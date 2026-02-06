@@ -16,12 +16,3 @@ class GetPosts {
 
 
 
-
-/*class GetPosts {
-  final PostRepository repo;
-  GetPosts(this.repo);
-
-  Future<List<Post>> call() {
-    return repo.getPosts();
-  }
-}*/

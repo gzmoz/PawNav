@@ -218,9 +218,14 @@ class _SuccessStoryDetailPageState
                                   showDeleteDialog(
                                     context,
                                     onConfirm: () {
-                                      context
+                                      context.read<SuccessStoryDetailCubit>().deleteStory(
+                                        storyId: state.story.id,
+                                        postId: state.story.postId,
+                                      );
+
+                                      /*context
                                           .read<SuccessStoryDetailCubit>()
-                                          .deleteStory(widget.storyId);
+                                          .deleteStory(widget.storyId);*/
                                     },
                                   );
                                 },
