@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pawnav/app/theme/colors.dart';
 import 'package:pawnav/features/onboarding/presentations/widgets/onboarding_component.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -54,9 +55,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _onFinish() {
+  Future<void> _onFinish() async {
+    await Supabase.instance.client
+        .from('profiles')
+        .update({'onboarding_completed': true})
+        .eq('id', Supabase.instance.client.auth.currentUser!.id);
+
     context.go('/home');
+
   }
+
+  /*void _onFinish() {
+    context.go('/home');
+  }*/
 
   @override
   Widget build(BuildContext context) {

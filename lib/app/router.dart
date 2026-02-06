@@ -91,7 +91,48 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
   initialLocation: '/splash',
-  redirect: (context, state) {
+  redirect: (context, state) async {
+    final supabase = Supabase.instance.client;
+    final session = supabase.auth.currentSession;
+
+    final publicRoutes = [
+      '/login',
+      '/sign_up',
+      '/forgot_password',
+      '/verify_email_screen',
+      '/onboarding',
+      '/privacy-policy',
+      '/terms-of-service',
+    ];
+
+    if (session == null) {
+      return publicRoutes.contains(state.matchedLocation)
+          ? null
+          : '/login';
+    }
+
+    final profile = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+    final onboardingDone = profile?['onboarding_completed'] == true;
+
+    if (!onboardingDone && state.matchedLocation != '/onboarding') {
+      return '/onboarding';
+    }
+
+    if (onboardingDone &&
+        (state.matchedLocation == '/onboarding' ||
+            state.matchedLocation == '/login')) {
+      return '/home';
+    }
+
+    return null;
+  },
+
+  /*redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;
 
     //public routes
@@ -101,6 +142,7 @@ final router = GoRouter(
       '/forgot_password',
       '/verify_email_screen',
       '/privacy-policy',
+      '/onboarding',
       '/terms-of-service',
     ];
 
@@ -115,27 +157,7 @@ final router = GoRouter(
     }
 
     return null;
-  },
-
-  /*redirect: (context, state) {
-    final session = Supabase.instance.client.auth.currentSession;
-    final location = state.matchedLocation;
-
-    final isAuthRoute = location == '/login' ||
-        location == '/sign_up' ||
-        location == '/splash';
-
-    if (session == null && !isAuthRoute) {
-      return '/login';
-    }
-
-    if (session != null && (location == '/login' || location == '/sign_up')) {
-      return '/home';
-    }
-
-    return null;
-  },
-*/
+  },*/
 
   routes: [
     GoRoute(

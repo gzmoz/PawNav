@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
         catOffset =
-            const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
+        const Offset(0, 0); //kedi “gerçek pozisyonuna” geri dönmek ister
       });
     });
   }
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
         AppSnackbar.success(context, "Login successful!");
 
         await FcmTokenService.init();
-        context.go('/home');
+        //context.go('/home');
       }
     } catch (e) {
       /*ScaffoldMessenger.of(context).showSnackBar(
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.only(left: width * 0.1, top: width * 0.07),
+                      EdgeInsets.only(left: width * 0.1, top: width * 0.07),
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -244,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.only(left: width * 0.1, top: width * 0.03),
+                      EdgeInsets.only(left: width * 0.1, top: width * 0.03),
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -268,13 +268,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             "Forgot Password",
                             style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.italic,
-                              fontSize: width * 0.03,
-                              //decoration: TextDecoration.underline,
-                              decorationColor: Colors.white,
-                              decorationThickness: 1.8
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.italic,
+                                fontSize: width * 0.03,
+                                //decoration: TextDecoration.underline,
+                                decorationColor: Colors.white,
+                                decorationThickness: 1.8
                             ),
                           ),
                         ),
@@ -513,7 +513,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // 5) Artık direkt Home ekranına git
     // ----------------------------
     await FcmTokenService.init();
-    context.go('/home');
+    //context.go('/home');
 
   }
 

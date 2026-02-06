@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthGate extends StatefulWidget {
@@ -23,10 +24,20 @@ class _AuthGateState extends State<AuthGate> {
           (data) async {
         final session = data.session;
         if (session == null) return;
-
         await _ensureProfileGenerated(session.user);
       },
     );
+
+
+
+    /*_authSub = supabase.auth.onAuthStateChange.listen(
+          (data) async {
+        final session = data.session;
+        if (session == null) return;
+
+        await _ensureProfileGenerated(session.user);
+      },
+    );*/
   }
 
   @override
@@ -101,4 +112,3 @@ Future<void> _ensureProfileGenerated(User user) async {
     'created_at': DateTime.now().toIso8601String(),
   });
 }
-

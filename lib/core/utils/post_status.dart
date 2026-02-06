@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pawnav/app/theme/colors.dart';
 
 class PostStatusStyle {
   static Color color(String? status) {
