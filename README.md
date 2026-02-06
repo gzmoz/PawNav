@@ -46,6 +46,18 @@ User authentication flow including sign up and login.
 
 <br>
 
+Onboarding screens  
+
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <img src="assets/screenshots/onboarding/onboarding1.jpeg" width="200"/>
+  <img src="assets/screenshots/onboarding/onboarding2.jpeg" width="200"/>
+  <img src="assets/screenshots/onboarding/onboarding3.jpeg" width="200"/>
+  <img src="assets/screenshots/onboarding/onboarding4.jpeg" width="200"/>
+
+</div>
+
+<br>
+
 Home screens  
 Main feed showing nearby posts and recent activity.
 
