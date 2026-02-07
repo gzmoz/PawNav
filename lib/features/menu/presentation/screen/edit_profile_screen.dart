@@ -21,6 +21,7 @@ class EditProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white4,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text('Edit Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -228,8 +229,13 @@ class EditProfileScreen extends StatelessWidget {
   }
 
   /// PHOTO PICKER
-
   void _showPhotoPickerSheet(BuildContext context) {
+    final state = context.read<EditProfileMenuCubit>().state;
+
+    final hasPhoto = state is EditProfileLoaded &&
+        state.profile.photoUrl?.isNotEmpty == true;
+
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -254,7 +260,6 @@ class EditProfileScreen extends StatelessWidget {
                   ),
                 ),
 
-                /// TITLE
                 const Text(
                   'Change profile photo',
                   style: TextStyle(
@@ -272,7 +277,9 @@ class EditProfileScreen extends StatelessWidget {
                   title: 'Take Photo',
                   onTap: () {
                     Navigator.pop(context);
-                    context.read<EditProfileMenuCubit>().pickImageFromCamera();
+                    context
+                        .read<EditProfileMenuCubit>()
+                        .pickImageFromCamera();
                   },
                 ),
 
@@ -285,9 +292,31 @@ class EditProfileScreen extends StatelessWidget {
                   title: 'Choose from Gallery',
                   onTap: () {
                     Navigator.pop(context);
-                    context.read<EditProfileMenuCubit>().pickImageFromGallery();
+                    context
+                        .read<EditProfileMenuCubit>()
+                        .pickImageFromGallery();
                   },
                 ),
+
+                /// REMOVE PHOTO (SADECE VARSA)
+                if (hasPhoto) ...[
+                  const SizedBox(height: 16),
+                  const Divider(),
+                  const SizedBox(height: 8),
+
+                  _PhotoActionTile(
+                    icon: Icons.delete_outline,
+                    iconColor: Colors.red,
+                    title: 'Remove photo',
+                    isDestructive: true,
+                    onTap: () {
+                      Navigator.pop(context);
+                      context
+                          .read<EditProfileMenuCubit>()
+                          .removePhoto();
+                    },
+                  ),
+                ],
               ],
             ),
           ),
@@ -295,19 +324,21 @@ class EditProfileScreen extends StatelessWidget {
       },
     );
   }
-}
 
+}
 class _PhotoActionTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
   final VoidCallback onTap;
+  final bool isDestructive;
 
   const _PhotoActionTile({
     required this.icon,
     required this.iconColor,
     required this.title,
     required this.onTap,
+    this.isDestructive = false,
   });
 
   @override
@@ -319,7 +350,9 @@ class _PhotoActionTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.grey.shade100,
+          color: isDestructive
+              ? Colors.red.withOpacity(0.06)
+              : Colors.grey.shade100,
         ),
         child: Row(
           children: [
@@ -339,9 +372,10 @@ class _PhotoActionTile extends StatelessWidget {
             const SizedBox(width: 14),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15.5,
                 fontWeight: FontWeight.w500,
+                color: isDestructive ? Colors.red : Colors.black,
               ),
             ),
           ],
@@ -350,3 +384,5 @@ class _PhotoActionTile extends StatelessWidget {
     );
   }
 }
+
+

@@ -168,23 +168,62 @@ class _AccountPageState extends State<AccountPage> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CircleAvatar(
-                                      radius: size.width * 0.15,
-                                      backgroundImage: user.photoUrl.isNotEmpty
-                                          ? (user.photoUrl.startsWith('http')
-                                          ? NetworkImage(user.photoUrl)
-                                          : FileImage(File(user.photoUrl)) as ImageProvider)
+                                    GestureDetector(
+                                      onTap: user.photoUrl.isEmpty
+                                          ? () async {
+                                        final result = await context.push('/edit-profile');
+
+                                        if (result == true && context.mounted) {
+                                          context.read<ProfileCubit>().loadProfile();
+                                        }
+                                      }
                                           : null,
-                                      backgroundColor: Colors.grey.shade200,
+                                      child: Container(
+                                        width: size.width * 0.30,
+                                        height: size.width * 0.30,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey.shade200,
+                                          image: user.photoUrl.isNotEmpty
+                                              ? DecorationImage(
+                                            image: user.photoUrl.startsWith('http')
+                                                ? NetworkImage(user.photoUrl)
+                                                : FileImage(File(user.photoUrl)) as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          )
+                                              : null,
+                                        ),
+                                        child: user.photoUrl.isEmpty
+                                            ? Center(
+                                          child: Container(
+                                            width: size.width * 0.10,
+                                            height: size.width * 0.10,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary.withOpacity(0.12),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.add,
+                                              size: 32,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        )
+                                            : null,
+                                      ),
                                     ),
 
-                                    /*CircleAvatar(
-                                      radius: size.width * 0.15,
-                                      backgroundImage: user.photoUrl.isNotEmpty
-                                          ? NetworkImage(user.photoUrl)
-                                          : null,
-                                      backgroundColor: Colors.grey.shade200,
-                                    ),*/
+                                    // CircleAvatar(
+                                    //   radius: size.width * 0.15,
+                                    //   backgroundImage: user.photoUrl.isNotEmpty
+                                    //       ? (user.photoUrl.startsWith('http')
+                                    //       ? NetworkImage(user.photoUrl)
+                                    //       : FileImage(File(user.photoUrl)) as ImageProvider)
+                                    //       : null,
+                                    //   backgroundColor: Colors.grey.shade200,
+                                    // ),
+
+
                                     const SizedBox(width: 20),
                                     Column(
                                       crossAxisAlignment:

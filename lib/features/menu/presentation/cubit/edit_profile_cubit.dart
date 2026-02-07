@@ -254,4 +254,16 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
     }
   }
 
+  void removePhoto() {
+    final s = state as EditProfileLoaded;
+
+    emit(
+      s.copyWith(
+        profile: s.profile.copyWith(photoUrl: ''),
+        isDirty: true,
+      ),
+    );
+  }
+
+
 }
