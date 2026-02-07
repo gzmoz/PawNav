@@ -27,7 +27,6 @@ class EditProfileScreen extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
       ),
-
       body: BlocConsumer<EditProfileMenuCubit, EditProfileState>(
         //  SAVE BAŞARILI OLUNCA GERİ DÖN
         listenWhen: (prev, curr) {
@@ -63,8 +62,7 @@ class EditProfileScreen extends StatelessWidget {
 
           final s = state;
 
-          final bool canSave =
-              s.isDirty && !s.isSaving && s.usernameAvailable;
+          final bool canSave = s.isDirty && !s.isSaving && s.usernameAvailable;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -128,8 +126,7 @@ class EditProfileScreen extends StatelessWidget {
                   initialValue: s.profile.email,
                   enabled: false,
                   suffixIcon: Icons.lock_outline,
-                  helperText:
-                  'Email cannot be changed once verified.',
+                  helperText: 'Email cannot be changed once verified.',
                 ),
 
                 const SizedBox(height: 28),
@@ -149,10 +146,10 @@ class EditProfileScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: canSave
                       ? () {
-                    context
-                        .read<EditProfileMenuCubit>()
-                        .editProfileSave();
-                  }
+                          context
+                              .read<EditProfileMenuCubit>()
+                              .editProfileSave();
+                        }
                       : null,
                   child: Container(
                     width: width * 0.88,
@@ -160,39 +157,39 @@ class EditProfileScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: canSave
                           ? const LinearGradient(
-                        colors: [
-                          Color(0xFF233E96),
-                          Color(0xFF3C59C7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
+                              colors: [
+                                Color(0xFF233E96),
+                                Color(0xFF3C59C7),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
                           : LinearGradient(
-                        colors: [
-                          Colors.grey.shade400,
-                          Colors.grey.shade300,
-                        ],
-                      ),
+                              colors: [
+                                Colors.grey.shade400,
+                                Colors.grey.shade300,
+                              ],
+                            ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     alignment: Alignment.center,
                     child: s.isSaving
                         ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
                         : Text(
-                      "Save Changes",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: width * 0.035,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            "Save Changes",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: width * 0.035,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
 
@@ -231,41 +228,125 @@ class EditProfileScreen extends StatelessWidget {
   }
 
   /// PHOTO PICKER
+
   void _showPhotoPickerSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) {
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Take Photo'),
-                onTap: () {
-                  Navigator.pop(context);
-                  context
-                      .read<EditProfileMenuCubit>()
-                      .pickImageFromCamera();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Choose from Gallery'),
-                onTap: () {
-                  Navigator.pop(context);
-                  context
-                      .read<EditProfileMenuCubit>()
-                      .pickImageFromGallery();
-                },
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// DRAG INDICATOR
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+
+                /// TITLE
+                const Text(
+                  'Change profile photo',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// CAMERA
+                _PhotoActionTile(
+                  icon: Icons.camera_alt,
+                  iconColor: const Color(0xFF233E96),
+                  title: 'Take Photo',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.read<EditProfileMenuCubit>().pickImageFromCamera();
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                /// GALLERY
+                _PhotoActionTile(
+                  icon: Icons.photo_library,
+                  iconColor: const Color(0xFF3C59C7),
+                  title: 'Choose from Gallery',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.read<EditProfileMenuCubit>().pickImageFromGallery();
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+class _PhotoActionTile extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final VoidCallback onTap;
+
+  const _PhotoActionTile({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey.shade100,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: iconColor,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 15.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

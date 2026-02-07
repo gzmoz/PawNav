@@ -57,15 +57,15 @@ class SuccessStoriesListPage extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     // Search
-                    SuccessStorySearchBar(
-                      onChanged: context.read<SuccessStoriesListCubit>().onSearchChanged,
-                    ),
+                    // SuccessStorySearchBar(
+                    //   onChanged: context.read<SuccessStoriesListCubit>().onSearchChanged,
+                    // ),
 
                     const SizedBox(height: 12),
 
                     // Chips
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.center,
                       child: SuccessStoryFilterChips(
                         selected: s.filter,
                         onChanged: context.read<SuccessStoriesListCubit>().onFilterChanged,

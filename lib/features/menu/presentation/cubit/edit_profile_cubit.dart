@@ -96,7 +96,7 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
     _setLocalPreview(cropped.path);
   }
 
-  /// ⚠️ SADECE PREVIEW
+  ///  SADECE PREVIEW
   void _setLocalPreview(String localPath) {
     final s = state as EditProfileLoaded;
 
@@ -131,11 +131,27 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
         profile: s.profile.copyWith(username: username),
         isDirty: true,
         errorMessage: null,
+        usernameAvailable: true,
       ),
     );
 
+    if (username.length < 3) {
+      emit(
+        (state as EditProfileLoaded).copyWith(
+          usernameAvailable: false,
+          errorMessage: 'Username must be at least 3 characters',
+        ),
+      );
+      return;
+    }
+
     if (username == s.initialProfile.username) {
-      emit(s.copyWith(usernameAvailable: true));
+      emit(
+        (state as EditProfileLoaded).copyWith(
+          usernameAvailable: true,
+          errorMessage: null,
+        ),
+      );
       return;
     }
 
@@ -145,7 +161,7 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
     );
 
     emit(
-      s.copyWith(
+      (state as EditProfileLoaded).copyWith(
         usernameAvailable: available,
         errorMessage: available ? null : 'This username is already taken',
       ),
@@ -181,7 +197,7 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
 
       String finalPhotoUrl = s.profile.photoUrl ?? '';
 
-      // 🔥 LOCAL IMAGE → STORAGE
+      //  LOCAL IMAGE → STORAGE
       if (finalPhotoUrl.isNotEmpty && !finalPhotoUrl.startsWith('http')) {
         debugPrint('UPLOAD START');
 
@@ -226,7 +242,7 @@ class EditProfileMenuCubit extends Cubit<EditProfileState> {
         ),
       );
     } catch (e, st) {
-      debugPrint('❌ EDIT PROFILE ERROR: $e');
+      debugPrint('EDIT PROFILE ERROR: $e');
       debugPrint(st.toString());
 
       emit(

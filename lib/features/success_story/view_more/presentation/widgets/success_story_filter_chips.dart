@@ -19,6 +19,71 @@ class SuccessStoryFilterChips extends StatelessWidget {
       required SuccessStoryFilter value,
     }) {
       final isSelected = selected == value;
+
+      return InkWell(
+        borderRadius: BorderRadius.circular(26),
+        onTap: () => onChanged(value),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: isSelected
+                ? const LinearGradient(
+              colors: [
+                Color(0xFF233E96),
+                Color(0xFF3C59C7),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+                : null,
+            color: isSelected ? null : Colors.white,
+            borderRadius: BorderRadius.circular(26),
+            border: isSelected
+                ? null
+                : Border.all(
+              color: Colors.black.withOpacity(0.08),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isSelected ? 0.18 : 0.06),
+                blurRadius: isSelected ? 10 : 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected
+                    ? Colors.white
+                    : Colors.black.withOpacity(0.6),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? Colors.white
+                      : Colors.black.withOpacity(0.6),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+
+    /*Widget chip({
+      required String label,
+      required IconData icon,
+      required SuccessStoryFilter value,
+    }) {
+      final isSelected = selected == value;
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
@@ -60,7 +125,7 @@ class SuccessStoryFilterChips extends StatelessWidget {
           ),
         ),
       );
-    }
+    }*/
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -90,3 +155,5 @@ class SuccessStoryFilterChips extends StatelessWidget {
   }
 
 }
+
+

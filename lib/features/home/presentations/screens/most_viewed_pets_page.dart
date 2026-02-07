@@ -49,6 +49,36 @@ class _MostViewedPetsPageState extends State<MostViewedPetsPage> {
     );
   }
 
+  // Widget _buildFilters() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //       children: PetFilter.values.map((filter) {
+  //         final isSelected = selectedFilter == filter;
+  //
+  //         return ChoiceChip(
+  //           label: Text(filter.name.capitalize()),
+  //           selected: isSelected,
+  //           onSelected: (_) {
+  //             setState(() => selectedFilter = filter);
+  //           },
+  //           showCheckmark: false,
+  //           side: BorderSide.none,
+  //           shape: const StadiumBorder(),
+  //           selectedColor: const Color(0xFF2B6A94),
+  //           backgroundColor: Colors.white,
+  //           labelStyle: TextStyle(
+  //             color: isSelected ? Colors.white : Colors.black,
+  //             fontWeight: FontWeight.w500,
+  //           ),
+  //           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+  //         );
+  //       }).toList(),
+  //     ),
+  //   );
+  // }
+
   Widget _buildFilters() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -57,27 +87,57 @@ class _MostViewedPetsPageState extends State<MostViewedPetsPage> {
         children: PetFilter.values.map((filter) {
           final isSelected = selectedFilter == filter;
 
-          return ChoiceChip(
-            label: Text(filter.name.capitalize()),
-            selected: isSelected,
-            onSelected: (_) {
+          return InkWell(
+            borderRadius: BorderRadius.circular(26),
+            onTap: () {
               setState(() => selectedFilter = filter);
             },
-            showCheckmark: false,
-            side: BorderSide.none,
-            shape: const StadiumBorder(),
-            selectedColor: const Color(0xFF2B6A94),
-            backgroundColor: Colors.white,
-            labelStyle: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w500,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: isSelected
+                    ? const LinearGradient(
+                  colors: [
+                    Color(0xFF233E96),
+                    Color(0xFF3C59C7),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+                    : null,
+                color: isSelected ? null : Colors.white,
+                borderRadius: BorderRadius.circular(26),
+                border: isSelected
+                    ? null
+                    : Border.all(
+                  color: Colors.black.withOpacity(0.08),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(
+                      isSelected ? 0.18 : 0.06,
+                    ),
+                    blurRadius: isSelected ? 10 : 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Text(
+                filter.name.capitalize(),
+                style: TextStyle(
+                  color: isSelected
+                      ? Colors.white
+                      : Colors.black.withOpacity(0.7),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           );
         }).toList(),
       ),
     );
   }
+
 
   Widget _buildList() {
     return BlocBuilder<FeaturedPostsCubit, FeaturedPostsState>(

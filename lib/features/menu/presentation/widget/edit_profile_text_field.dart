@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class EditProfileTextField extends StatelessWidget {
+class EditProfileTextField extends StatefulWidget {
   final String label;
   final String initialValue;
   final bool enabled;
@@ -21,17 +21,58 @@ class EditProfileTextField extends StatelessWidget {
   });
 
   @override
+  State<EditProfileTextField> createState() =>
+      _EditProfileTextFieldState();
+}
+
+class _EditProfileTextFieldState extends State<EditProfileTextField> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  /*@override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }*/
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+    _focusNode = FocusNode();
+  }
+
+
+  @override
+  void didUpdateWidget(covariant EditProfileTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // SADECE kullanıcı yazmıyorken sync et
+    if (!_focusNode.hasFocus &&
+        oldWidget.initialValue != widget.initialValue) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
-      enabled: enabled,
-      onChanged: onChanged,
+      controller: _controller,
+      enabled: widget.enabled,
+      onChanged: widget.onChanged,
       decoration: InputDecoration(
-        labelText: label,
-        prefixText: prefixText,
+        labelText: widget.label,
+        prefixText: widget.prefixText,
         suffixIcon:
-        suffixIcon != null ? Icon(suffixIcon) : null,
-        helperText: helperText,
+        widget.suffixIcon != null ? Icon(widget.suffixIcon) : null,
+        helperText: widget.helperText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -39,3 +80,44 @@ class EditProfileTextField extends StatelessWidget {
     );
   }
 }
+
+
+// class EditProfileTextField extends StatelessWidget {
+//   final String label;
+//   final String initialValue;
+//   final bool enabled;
+//   final String? prefixText;
+//   final IconData? suffixIcon;
+//   final String? helperText;
+//   final ValueChanged<String>? onChanged;
+//
+//   const EditProfileTextField({
+//     super.key,
+//     required this.label,
+//     required this.initialValue,
+//     this.enabled = true,
+//     this.prefixText,
+//     this.suffixIcon,
+//     this.helperText,
+//     this.onChanged,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextFormField(
+//       initialValue: initialValue,
+//       enabled: enabled,
+//       onChanged: onChanged,
+//       decoration: InputDecoration(
+//         labelText: label,
+//         prefixText: prefixText,
+//         suffixIcon:
+//         suffixIcon != null ? Icon(suffixIcon) : null,
+//         helperText: helperText,
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(30),
+//         ),
+//       ),
+//     );
+//   }
+// }
