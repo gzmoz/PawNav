@@ -33,7 +33,7 @@ void main() async{
 
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  //await FcmTokenService.init();
+  await FcmTokenService.init();
 
 
 

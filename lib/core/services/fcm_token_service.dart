@@ -7,6 +7,54 @@ class FcmTokenService {
   static final _supabase = Supabase.instance.client;
 
   static Future<void> init() async {
+    debugPrint(" FCM INIT START");
+
+    final settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    debugPrint(" FCM PERMISSION: ${settings.authorizationStatus}");
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    final token = await _messaging.getToken();
+    debugPrint(" FCM TOKEN: $token");
+
+    if (token != null) {
+      await save(token);
+    } else {
+      debugPrint(" TOKEN IS NULL");
+    }
+
+    _messaging.onTokenRefresh.listen((token) async {
+      debugPrint("TOKEN REFRESH: $token");
+      await save(token);
+    });
+  }
+
+  static Future<void> save(String token) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) {
+      debugPrint(" NO USER FOR TOKEN SAVE");
+      return;
+    }
+
+    await _supabase
+        .from('profiles')
+        .update({'fcm_token': token})
+        .eq('id', user.id);
+
+    debugPrint(" FCM TOKEN SAVED TO SUPABASE");
+  }
+}
+
+/*class FcmTokenService {
+  static final _messaging = FirebaseMessaging.instance;
+  static final _supabase = Supabase.instance.client;
+
+  static Future<void> init() async {
     await _messaging.requestPermission();
 
     final token = await _messaging.getToken();
@@ -37,4 +85,4 @@ class FcmTokenService {
       debugPrint("❌ FCM SAVE ERROR: $e");
     }
   }
-}
+}*/
