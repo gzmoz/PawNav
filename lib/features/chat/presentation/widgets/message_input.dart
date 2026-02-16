@@ -55,6 +55,8 @@ class _MessageInputState extends State<MessageInput> {
                   final text = controller.text.trim();
                   if (text.isEmpty) return;
 
+
+
                   context.read<ChatDetailCubit>().sendMessage(text);
                   controller.clear();
                 },

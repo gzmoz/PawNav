@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawnav/features/chat/data/models/message_model.dart';
 import 'package:pawnav/features/chat/presentation/cubit/chat_detail_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class ChatDetailCubit extends Cubit<ChatDetailState> {
   final String chatId;
@@ -83,7 +84,6 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
-
   Future<void> sendMessage(String text) async {
     try {
       final userId = supabase.auth.currentUser!.id;
@@ -94,13 +94,79 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
         'text': text,
       });
 
+      //  Firebase Push
+      try {
+        final chat = await supabase
+            .from('chats')
+            .select('a_id,b_id')
+            .eq('id', chatId)
+            .single();
+
+        final receiverId =
+        chat['a_id'] == userId ? chat['b_id'] : chat['a_id'];
+
+        final profile = await supabase
+            .from('profiles')
+            .select('fcm_token')
+            .eq('id', receiverId)
+            .single();
+
+        final receiverToken = profile['fcm_token'];
+
+        print("Receiver token: $receiverToken");
+
+
+        if (receiverToken != null) {
+          await FirebaseFunctions.instance
+              .httpsCallable('sendChatPush')
+              .call({
+            'fcmToken': receiverToken,
+            'text': text,
+          });
+        }
+
+      } catch (e) {
+        print("Push error: $e");
+      }
+
       await supabase.from('chats').update({
         'last_message': text,
         'last_message_at': DateTime.now().toIso8601String(),
       }).eq('id', chatId);
+
     } catch (e) {
       emit(ChatDetailError(e.toString()));
     }
   }
+
+
+
+// Future<void> sendMessage(String text) async {
+  //   try {
+  //     final userId = supabase.auth.currentUser!.id;
+  //
+  //     await supabase.from('messages').insert({
+  //       'chat_id': chatId,
+  //       'sender_id': userId,
+  //       'text': text,
+  //     });
+  //
+  //     await supabase.functions.invoke(
+  //       'send_chat_push',
+  //       body: {
+  //         'chat_id': chatId,
+  //         'sender_id': userId,
+  //         'text': text,
+  //       },
+  //     );
+  //
+  //     await supabase.from('chats').update({
+  //       'last_message': text,
+  //       'last_message_at': DateTime.now().toIso8601String(),
+  //     }).eq('id', chatId);
+  //   } catch (e) {
+  //     emit(ChatDetailError(e.toString()));
+  //   }
+  // }
 
 }

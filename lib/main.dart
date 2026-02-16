@@ -13,6 +13,7 @@ import 'app/auth/auth_gate.dart';
 
 
 void main() async{
+  
   await dotenv.load(fileName: ".env");
 
   FlutterError.onError = (FlutterErrorDetails details) {
