@@ -23,48 +23,45 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     return super.close();
   }
 
-
   void subscribeRealtime() {
     _channel = supabase.channel('messages:$chatId');
 
     _channel!
         .onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'messages',
-      filter: PostgresChangeFilter(
-        type: PostgresChangeFilterType.eq,
-        column: 'chat_id',
-        value: chatId,
-      ),
-      callback: (payload) {
-        if (payload.newRecord == null) return;
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'chat_id',
+            value: chatId,
+          ),
+          callback: (payload) {
+            if (payload.newRecord == null) return;
 
-        final newMessage =
-        MessageModel.fromMap(payload.newRecord!);
+            final newMessage = MessageModel.fromMap(payload.newRecord!);
 
-        final currentState = state;
-        if (currentState is ChatDetailLoaded) {
-          // duplicate kontrolü
-          final exists = currentState.messages
-              .any((m) => m.id == newMessage.id);
+            final currentState = state;
+            if (currentState is ChatDetailLoaded) {
+              // duplicate kontrolü
+              final exists =
+                  currentState.messages.any((m) => m.id == newMessage.id);
 
-          if (!exists) {
-            emit(
-              currentState.copyWith(
-                messages: [
-                  ...currentState.messages,
-                  newMessage,
-                ],
-              ),
-            );
-          }
-        }
-      },
-    )
+              if (!exists) {
+                emit(
+                  currentState.copyWith(
+                    messages: [
+                      ...currentState.messages,
+                      newMessage,
+                    ],
+                  ),
+                );
+              }
+            }
+          },
+        )
         .subscribe();
   }
-
 
   Future<void> loadInitialMessages() async {
     try {
@@ -74,9 +71,8 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
           .eq('chat_id', chatId)
           .order('created_at', ascending: true);
 
-      final messages = (res as List)
-          .map((e) => MessageModel.fromMap(e))
-          .toList();
+      final messages =
+          (res as List).map((e) => MessageModel.fromMap(e)).toList();
 
       emit(ChatDetailLoaded(messages: messages));
     } catch (e) {
@@ -88,10 +84,18 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     try {
       final userId = supabase.auth.currentUser!.id;
 
+      final chat =
+          await supabase.from('chats').select().eq('id', chatId).maybeSingle();
+
+      if (chat == null) {
+        throw Exception("Chat not found!");
+      }
+
       await supabase.from('messages').insert({
         'chat_id': chatId,
         'sender_id': userId,
         'text': text,
+        'message_type': 'text',
       });
 
       //  Firebase Push
@@ -102,8 +106,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
             .eq('id', chatId)
             .single();
 
-        final receiverId =
-        chat['a_id'] == userId ? chat['b_id'] : chat['a_id'];
+        final receiverId = chat['a_id'] == userId ? chat['b_id'] : chat['a_id'];
 
         final profile = await supabase
             .from('profiles')
@@ -115,16 +118,12 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
         print("Receiver token: $receiverToken");
 
-
         if (receiverToken != null) {
-          await FirebaseFunctions.instance
-              .httpsCallable('sendChatPush')
-              .call({
+          await FirebaseFunctions.instance.httpsCallable('sendChatPush').call({
             'fcmToken': receiverToken,
             'text': text,
           });
         }
-
       } catch (e) {
         print("Push error: $e");
       }
@@ -133,40 +132,8 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
         'last_message': text,
         'last_message_at': DateTime.now().toIso8601String(),
       }).eq('id', chatId);
-
     } catch (e) {
       emit(ChatDetailError(e.toString()));
     }
   }
-
-
-
-// Future<void> sendMessage(String text) async {
-  //   try {
-  //     final userId = supabase.auth.currentUser!.id;
-  //
-  //     await supabase.from('messages').insert({
-  //       'chat_id': chatId,
-  //       'sender_id': userId,
-  //       'text': text,
-  //     });
-  //
-  //     await supabase.functions.invoke(
-  //       'send_chat_push',
-  //       body: {
-  //         'chat_id': chatId,
-  //         'sender_id': userId,
-  //         'text': text,
-  //       },
-  //     );
-  //
-  //     await supabase.from('chats').update({
-  //       'last_message': text,
-  //       'last_message_at': DateTime.now().toIso8601String(),
-  //     }).eq('id', chatId);
-  //   } catch (e) {
-  //     emit(ChatDetailError(e.toString()));
-  //   }
-  // }
-
 }

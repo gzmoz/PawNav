@@ -15,17 +15,18 @@ class ChatListCubit extends Cubit<ChatListState> {
   }
 
   void _subscribeToChats() {
-    _channel = supabase.channel('chats-list');
+    _channel = supabase.channel('chat-list');
 
     _channel!
         .onPostgresChanges(
-      event: PostgresChangeEvent.update,
-      schema: 'public',
-      table: 'chats',
-      callback: (payload) {
-        loadChats();
-      },
-    )
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          callback: (payload) {
+            print("MESSAGE INSERT EVENT RECEIVED");
+            loadChats();
+          },
+        )
         .subscribe();
   }
 
